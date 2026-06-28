@@ -423,7 +423,7 @@ This tool does not provide securities investment advice, does not recommend indi
 ## 6. How to Use
 
 1. Open the live page:  
-   https://spotpan.github.io/luoshu-timing-lab/
+   https://spotpan.github.io/luoshu-timing-lab/en
 
 2. Enter a one-sentence question.  
    Example:  
