@@ -640,7 +640,7 @@ function traceRows(type,sub,p,init,t,conv,dm){
   return [
     {tag:'先天定时',text:`当地时间生成四盘：年 <code>${p.year.stem}${p.year.branch}</code>、月 <code>${p.month.stem}${p.month.branch}</code>、日 <code>${p.day.stem}${p.day.branch}</code>、时 <code>${p.hour.stem}${p.hour.branch}</code>。四盘天干进入十态，地支只作承载与库位调制。`},
     {tag:'中天成场',text:`十态落入洛书九宫，经同库互通、五行生克、空间加权与十五守恒后，形成以 <code>${top[0][0]}</code> 为主、<code>${top[1][0]}</code> 为辅的时空场。${init.spatial.direction}`},
-    {tag:'后天取用',text:`当前问事为 <code>${queryNames[type]} / ${sub}</code>。${qmap[type]} 因此系统会优先用这个问题域去翻译盘象，而不是输出一条抽象吉凶。`},
+    {tag:'后天取用',text:`当前问事为 <code>${queryNames[type]} / ${sub}</code>。${qmap[type]||'当前问题域使用通用时机结构解释。'} 因此系统会优先用这个问题域去翻译盘象，而不是输出一条抽象吉凶。`},
     type==='weather'
       ? {tag:'天气象意拆解',text:`本项只看 <code>水汽</code>、<code>晴热</code>、<code>阻滞</code> 与 <code>稳定</code> 四类象意，不使用问主日主，也不使用合化断语。请以真实天气预报为准。`}
       : type==='investment'
