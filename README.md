@@ -257,3 +257,267 @@ https://spotpan.github.io/luoshu-timing-lab/
 ## 仓库简介建议
 
 洛书时机仪：一个东方时空哲学实验工具，用于比较行动窗口、观察行业轮动与记录案例复盘。
+
+---
+
+# English Version
+
+# Luoshu Timing Lab
+
+**Luoshu Timing Lab** is an experimental tool inspired by Eastern temporal-spatial philosophy. It is not a replication of traditional divination systems, nor is it a deterministic prediction engine. Instead, it is a modern interpretive framework based on the Luoshu nine-grid structure, yin-yang and five-element symbolism, contemporary time encoding, and scenario-based action mapping.
+
+Live demo:  
+https://spotpan.github.io/luoshu-timing-lab/en
+
+Current version: `v0.2++ public beta invest-specific`
+
+---
+
+## 1. Project Positioning
+
+Luoshu Timing Lab explores a simple question:
+
+> Can the same action present different structural tendencies under different times, places, and problem contexts?
+
+Traditional Chinese symbolic systems contain many ways of observing time, space, human intention, events, and situational momentum. However, many traditional rules are complex, opaque, and difficult to adapt to modern use cases. Luoshu Timing Lab does not attempt to reproduce those systems directly. Instead, it uses Luoshu, yin-yang, the five elements, and a three-layer temporal-spatial structure as inspiration to build a modern timing-analysis interface.
+
+The goal is not to “tell fate,” but to:
+
+- compare two possible time windows;
+- identify the dominant force, resistance, and action tendency;
+- translate abstract temporal-spatial structure into understandable action language;
+- support case-based review and iterative refinement.
+
+In one sentence:
+
+> It is not about asking fate. It is about observing momentum.
+
+---
+
+## 2. Design Philosophy
+
+Luoshu Timing Lab is built around a three-layer temporal-spatial model.
+
+### 2.1 Pre-Form Layer: Time Encoding
+
+The first layer receives modern calendar time, including year, month, day, and hour. The system converts continuous time into a ten-state yin-yang and five-element representation, which forms the initial temporal state.
+
+### 2.2 Middle Layer: Field Formation
+
+The middle layer corresponds to the Luoshu nine-grid field. After entering the nine-grid structure, the time state is processed through yin-yang balancing, five-element interaction, spatial propagation, and central-field adjustment.
+
+In this system, the Luoshu grid is not a decorative diagram. It functions as a symbolic spatial filter for expressing structural relationships.
+
+### 2.3 Applied Layer: Scenario Interpretation
+
+The applied layer translates the nine-grid field according to the user’s selected scenario. Different scenarios activate different interpretive heads, such as contracts, projects, business, weather, location, relationship, and investment.
+
+Therefore, the same temporal field may produce different action language depending on the question being asked.
+
+---
+
+## 3. Core Principles
+
+This project follows several principles:
+
+1. **Not deterministic prediction**  
+   The output is an observation of tendency and structure, not an absolute statement about the future.
+
+2. **Not a direct copy of traditional systems**  
+   The project is inspired by Luoshu, yin-yang, and five-element thought, but its rule system is a modern reconstruction.
+
+3. **Not a replacement for professional advice**  
+   Weather, investment, medical, legal, and other professional matters must rely on real data, domain expertise, and independent judgment.
+
+4. **Explainability matters**  
+   The interface aims to show dominant force, secondary force, weak point, nine-grid structure, interpretive reasoning, and scenario mapping.
+
+5. **Reviewability matters**  
+   Users may save local cases and later compare the system’s interpretation with real outcomes.
+
+---
+
+## 4. Main Features
+
+### 4.1 One-Sentence Question
+
+Users can enter a natural-language question, such as:
+
+- Is today a suitable window to observe the new-energy sector?
+- Is this morning suitable for discussing a collaboration?
+- Is this afternoon suitable for publishing a project update?
+- Is today suitable for visiting a location?
+- Is now a suitable time to contact someone?
+
+### 4.2 A/B Timing Comparison
+
+Users can enter two time windows. The system generates a nine-grid field for each time and compares their differences.
+
+This is useful for comparing:
+
+- morning vs afternoon;
+- today vs tomorrow;
+- acting now vs delaying;
+- meeting at time A vs time B;
+- observing a buy-in window at time A vs time B.
+
+### 4.3 Nine-Grid Symbolic Field
+
+The system uses an original nine-grid symbolic language:
+
+| Palace | Meaning |
+|---|---|
+| Hidden Boundary Palace | hidden rules, review pressure, implicit boundaries |
+| Balance Order Palace | explicit rules, contracts, order, decision |
+| Inner Flame Palace | subtle heat, inner activation, ambiguous warmth |
+| Growth Branch Palace | growth, initiative, outward push, breakthrough |
+| Central Pivot Palace | carrying capacity, coordination, balance, structural reality |
+| Radiant Flame Palace | expression, visibility, heat, publication |
+| Root Reserve Palace | foundation, incubation, internal growth, underlying relationship |
+| Flow Initiation Palace | communication, information, connection, initial flow |
+| Deep Water Palace | emotion, depth, buffering, hidden flow |
+
+### 4.4 Action Translation
+
+The system generates scenario-specific action language. For example:
+
+- Contract scenarios: terms, boundaries, responsibilities, review;
+- Project scenarios: release, reporting, pushing forward, waiting;
+- Business scenarios: launch, traffic, cash flow, cost;
+- Location scenarios: carrying capacity, stability, flow, blockage;
+- Relationship scenarios: communication, meeting, testing, real-world pressure;
+- Weather scenarios: moisture, heat, obstruction, stability;
+- Investment scenarios: sector rotation, buy-in observation, take-profit observation, holding observation.
+
+---
+
+## 5. Investment / Sector Module
+
+The investment module is a major enhancement in the current version. It maps sector categories into the five-element structure and uses timing comparison to observe sector-rotation tendencies.
+
+### 5.1 Sector-to-Element Mapping
+
+| Element | Sector Directions |
+|---|---|
+| Wood | biotech, traditional Chinese medicine, innovative medicine, education services, agriculture and seed industry, growth consumption, environmental forestry |
+| Fire | AI applications, media and gaming, internet platforms, computing power and data centers, photovoltaic and energy storage, new-energy vehicle supply chain |
+| Earth | real-estate chain, infrastructure, building materials, cement and engineering, coal and resources, utilities, high-dividend assets |
+| Metal | banks, securities, insurance, advanced manufacturing, robotics and automation, semiconductor equipment, chip hardware, defense equipment, gold and precious metals |
+| Water | logistics and express delivery, shipping and ports, cross-border trade, tourism and travel, e-commerce circulation, data-flow and payment-flow platforms |
+
+### 5.2 Questions the Investment Module Can Explore
+
+- Which sector direction appears more active under the current time field?
+- Is the current window more suitable for buy-in observation or take-profit review?
+- Which directions are better suited for holding observation?
+- Which high-heat themes may require take-profit checks?
+- Which low-position sectors may deserve rotation attention?
+- Do two different time windows imply different sector tendencies?
+
+### 5.3 Investment Boundary
+
+This tool does not provide securities investment advice, does not recommend individual stocks, and does not constitute a basis for buying or selling. The investment module is only for observing sector symbolism and timing rhythm. Real investment decisions should be based on fundamentals, price action, volume, position management, risk tolerance, and professional judgment.
+
+---
+
+## 6. How to Use
+
+1. Open the live page:  
+   https://spotpan.github.io/luoshu-timing-lab/
+
+2. Enter a one-sentence question.  
+   Example:  
+   `Is today a suitable window to observe the new-energy sector?`
+
+3. Select a primary scenario.  
+   Example:  
+   `Investment / Sector`
+
+4. Select a secondary scenario.  
+   Example:  
+   `Buy-in Observation: Growth / High-Beta Direction`
+
+5. Set Time A and Time B.  
+   You can compare morning vs afternoon, today vs tomorrow, or now vs later.
+
+6. Select a location or enter latitude.  
+   The current version uses local time and weak latitude adjustment. It does not use astrology, traditional stars, or classical auxiliary spirits.
+
+7. Run the analysis and review:
+   - dominant force;
+   - action translation;
+   - A/B difference;
+   - nine-grid symbolic field;
+   - professional panel;
+   - local case record.
+
+---
+
+## 7. Local Cases and Feedback
+
+The current version supports local case saving. Cases are stored only in the current browser. They are not automatically uploaded and cannot be seen by other users.
+
+Users may:
+
+- save the current case;
+- view local cases;
+- export local cases;
+- submit review feedback.
+
+Before submitting feedback, please remove personal information such as names, contact details, addresses, account information, and specific position sizes.
+
+---
+
+## 8. Version Status
+
+The project is currently in public beta.
+
+Currently supported:
+
+- three-layer visual structure;
+- A/B timing comparison;
+- nine-grid symbolic field;
+- action translation;
+- method explanation;
+- case review;
+- weather-symbolism module;
+- investment-sector module;
+- local case saving and export;
+- review-feedback entry.
+
+Not yet included:
+
+- astrology outer field;
+- sixteen-palace extension;
+- traditional auxiliary spirit system;
+- user accounts;
+- public case wall;
+- backend database;
+- real-time market data;
+- real-time weather data.
+
+---
+
+## 9. Disclaimer
+
+Luoshu Timing Lab is an experimental tool inspired by Eastern temporal-spatial philosophy. Its output is for action tendency observation, personal reflection, and case review only. It does not constitute deterministic prediction, nor does it replace professional advice in weather, investment, medical, legal, psychological, or other professional fields.
+
+For investment-related questions, this tool does not provide individual stock recommendations and does not constitute buy, sell, or hold advice. Users should make decisions based on their own risk tolerance, professional information, and independent judgment.
+
+For weather-related questions, this tool does not replace real weather forecasts, radar observations, meteorological warnings, or professional weather services.
+
+---
+
+## 10. Project Vision
+
+The long-term goal of Luoshu Timing Lab is not to build a mysterious prediction tool, but to explore a new interpretive framework for Eastern temporal-spatial thinking:
+
+> Place time, location, subject, and question structure into one explainable field, and observe how the action window changes.
+
+The project aims to build a bridge between traditional symbolic thinking and modern interactive products, allowing the ancient practice of observing time, momentum, and transformation to be re-expressed in a clearer, more transparent, and more reviewable way.
+
+---
+
+## Suggested Repository Description
+
+Luoshu Timing Lab: an experimental Eastern temporal-spatial tool for comparing action windows, observing sector rotation, and recording case reviews.
