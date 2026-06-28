@@ -87,6 +87,20 @@
     .score b{display:block;margin:3px 0 5px;font-size:20px}
     .meter{height:5px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden}
     .meter i{display:block;height:100%;width:calc(var(--s)*1%);background:linear-gradient(90deg,#fde68a,#67e8f9)}
+    .score em{display:inline-flex;margin-left:6px;font-size:11px;font-style:normal;color:#fde68a;background:rgba(246,207,120,.10);border:1px solid rgba(246,207,120,.20);padding:2px 6px;border-radius:999px}
+    .scenePanel,.houtianPanel{margin:14px 0 16px;padding:14px;border-radius:22px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.042)}
+    .sceneGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
+    .sceneMetric{padding:12px;border-radius:17px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10)}
+    .sceneMetric .top{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#cfe0f3;font-size:12px}
+    .sceneMetric .val{font-size:26px;font-weight:950;color:#fff;margin:5px 0 3px}
+    .sceneMetric .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11px;color:#9fb0c7}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 7px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#dbeafe;font-size:11px}
+    .pill.hot{color:#fde68a;border-color:rgba(246,207,120,.30);background:rgba(246,207,120,.10)}
+    .pill.risk{color:#fecaca;border-color:rgba(248,113,113,.30);background:rgba(248,113,113,.10)}
+    .sortRows{display:grid;gap:8px;margin-top:10px}
+    .sortRow{display:grid;grid-template-columns:42px 58px 1fr 74px;align-items:center;gap:8px;padding:9px 10px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.10)}
+    .sortRow .el{font-size:18px;font-weight:950;color:#fff}.sortRow .rank{font-size:12px;color:#fde68a}.sortRow .desc{font-size:12px;color:#c9d8ec;line-height:1.45}.sortRow .grade{font-size:16px;font-weight:950;text-align:right;color:#fff}
+    .hSplit{display:grid;grid-template-columns:1.05fr .95fr;gap:12px;margin-top:10px}.hCard{padding:13px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10)}.hCard h4{margin:0 0 8px;font-size:14px}.hCard p{margin:0;line-height:1.72;color:#dbe8f7;font-size:13px}.transIndex{font-size:34px;font-weight:950;color:#fde68a;margin:2px 0}.transType{font-size:13px;color:#fff}.noticeStrong{margin-top:10px;padding:10px 12px;border-radius:14px;background:rgba(103,232,249,.08);border:1px solid rgba(103,232,249,.18);color:#dbeafe;line-height:1.65;font-size:13px}
     .triadTrace{display:grid;gap:10px;margin-top:12px}
     .traceCard{padding:14px;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12)}
     .traceCard .tag{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:12px;background:rgba(255,255,255,.09);color:#fff;margin-bottom:8px}
@@ -282,7 +296,7 @@
       <div class="methodGrid">
         <div class="methodCard"><b>先天定时</b><p>以事件地或问事地的当地时间生成年、月、日、时四盘，并将四盘天干直接累积为十态能量。</p></div>
         <div class="methodCard"><b>中天成场</b><p>十态落入洛书九宫，经同库互通、五行生克、空间加权与十五守恒形成中天时空场。</p></div>
-        <div class="methodCard"><b>后天取用</b><p>结合问事类型、主体锚点与合化状态，将盘象转译为行动窗口、风险提示和可执行建议。</p></div>
+        <div class="methodCard"><b>后天取用</b><p>以固定生克排序定主次，以年/月天干与中天场强做评级，再用合化判断结构转向，将盘象转译为行动窗口、风险提示和可执行建议。</p></div>
       </div>
       <div class="pillLine">
         <span class="pillNote">不宣称替代传统</span>
@@ -633,10 +647,133 @@ function actionGrid(type,t){
     {icon:'⛨',label:'避免动作',value:avoid}
   ];
 }
+
+function elementOfStem(stem){return stem?stem.slice(1):''}
+function clampScore(x){return Math.max(0,Math.min(100,Math.round(x)))}
+function displayScore(x){return clampScore(50+(x-50)*1.38)}
+function gradeLabel(v){if(v>=85)return '强信号'; if(v>=70)return '中强'; if(v>=55)return '中等'; if(v>=40)return '偏弱'; return '弱'}
+function gradeLetter(v,idx){if(idx===0||v>=86)return 'S'; if(idx===1||v>=74)return 'A'; if(idx===2||v>=62)return 'B'; if(idx===3||v>=50)return 'C'; return 'D'}
+function signalRole(role){return role==='risk'?'风险指标':(role==='core'?'核心指标':(role==='transform'?'转化指标':'辅助指标'))}
+function changeLabel(d){const a=Math.abs(d); if(a>=20)return '强变化'; if(a>=13)return '明显变化'; if(a>=6)return '可感变化'; return '轻微变化'}
+function sceneMainElements(type,sub){
+  if(type==='investment') return ['金','水','土'];
+  if(type==='contract') return ['金','土','水'];
+  if(type==='project') return ['木','火','土'];
+  if(type==='business') return ['土','金','水'];
+  if(type==='relationship') return ['水','木','火'];
+  if(type==='weather') return ['水','火','土'];
+  if(type==='direction'){
+    if((sub||'').includes('交易')) return ['金','水','土'];
+    if((sub||'').includes('休息')||(sub||'').includes('安静')) return ['水','木','土'];
+    if((sub||'').includes('沟通')||(sub||'').includes('会面')) return ['水','木','火'];
+    if((sub||'').includes('整理')||(sub||'').includes('避让')) return ['土','金','水'];
+    return ['木','水','土'];
+  }
+  return ['土','水','金'];
+}
+function elementPhrase(el,type){
+  const common={水:'信息流、沟通流、资金流与缓冲',木:'生发、启动、成长与关系推进',火:'热度、表达、曝光与情绪升温',土:'承载、资源、成本、责任与稳定',金:'规则、交易、边界、审查与决断'};
+  if(type==='investment') return {水:'资金流/信息流',木:'成长叙事/新题材',火:'热度/曝光',土:'防守/承接',金:'交易规则/估值筛选'}[el]||common[el];
+  if(type==='direction') return {水:'沟通与流动方位',木:'启动与出门方位',火:'展示与表达方位',土:'中心承载方位',金:'规则与交易方位'}[el]||common[el];
+  return common[el];
+}
+const houtianFixedOrders={
+  金:['水','火','木','土'],
+  水:['木','土','火','金'],
+  木:['火','金','土','水'],
+  火:['土','水','金','木'],
+  土:['金','木','水','火']
+};
+const houtianRelationLabels={
+  first:'我生者｜外泄成用',
+  second:'克我者｜压力成权',
+  third:'我克者｜可控对象',
+  fourth:'生我者｜来源被泄'
+};
+function houtianRelationOrder(host){return houtianFixedOrders[host]||['水','火','木','土'].filter(x=>x!==host)}
+function relationLabelByIndex(i){return [houtianRelationLabels.first,houtianRelationLabels.second,houtianRelationLabels.third,houtianRelationLabels.fourth][i-1]||'主用'}
+function houtianModel(p,t,conv,type,sub){
+  const main=sceneMainElements(type,sub);
+  const host=main[0]||'土';
+  const fixedOrder=houtianRelationOrder(host);
+  const order=[host,...fixedOrder];
+  const bg={水:0,木:0,火:0,土:0,金:0}; const ye=elementOfStem(p.year.stem), me=elementOfStem(p.month.stem); if(bg[ye]!==undefined) bg[ye]+=0.40; if(bg[me]!==undefined) bg[me]+=0.60;
+  const vals={水:t.水,木:t.木,火:t.火,土:t.土,金:t.金};
+  const relationWeight={0:.34,1:.26,2:.18,3:.10,4:.02};
+  const rows=order.map((el,i)=>{
+    const scene=main.includes(el)?(main[0]===el ? .34 : (main[1]===el ? .22 : .13)):-.04;
+    const bgBoost=(bg[el]||0)*.26;
+    const relBoost=relationWeight[i]||0;
+    const raw=vals[el]*(1+scene+bgBoost+relBoost);
+    const score=displayScore(clampScore(45+raw*38));
+    return {el,raw,score,bg:bg[el]||0,scene,relBoost,relation:i===0?'主用五行':relationLabelByIndex(i),phrase:elementPhrase(el,type)};
+  });
+  rows.forEach((r,i)=>{r.rank=i+1;r.grade=gradeLetter(r.score,i);r.level=gradeLabel(r.score)});
+  const tr=transformDetail(conv.transform,type,sub);
+  const inner=fixedOrder.join(' > ');
+  const summary=`当前为 ${host}局。${host}为主用；${host}局内部生克序列固定为 ${inner}。该序列来自“我生者 > 克我者 > 我克者 > 生我者”的后天排序规则。页面评级在固定排序上叠加年/月背景、中天场强与问事场景，用来表示当下信号强弱，但不改变生克顺序。`;
+  return {rows,main,host,fixedOrder,bg,transform:tr,summary};
+}
+const transformMechanisms={
+  '阳木 + 阴土 → 化土':{name:'生发落地型',from:'主动生发遇到现实承载',to:'成本、责任、稳定与落地',strategy:'宜落地、宜算账、宜定资源，不宜只谈愿景。'},
+  '阴木 + 阳金 → 化金':{name:'模糊定界型',from:'隐性生长遇到明确规则',to:'边界、筛选、条款与审查',strategy:'宜审边界、宜明确条件，不宜含糊推进。'},
+  '阳火 + 阴金 → 化水':{name:'热度冷却型',from:'外部热度遇到隐性规则',to:'冷却、换手、信息回流与重新沟通',strategy:'宜降温、宜复核信息，不宜追高、强推或硬表达。'},
+  '阴火 + 阳水 → 化木':{name:'暗火生机型',from:'内在意愿遇到流动信息',to:'新的生发、机会启动与关系萌芽',strategy:'宜轻启动、宜沟通试探、宜小步推进。'},
+  '阳土 + 阴水 → 化火':{name:'承载显化型',from:'现实承载遇到隐性流动',to:'显化、曝光、表达与升温',strategy:'宜表达、宜亮相、宜发布，但要控制节奏和热度。'}
+};
+function transformStatus(idx){if(idx>=85)return '强转化'; if(idx>=70)return '明显转化'; if(idx>=55)return '牵制转化'; if(idx>=40)return '弱转化'; return '未形成明显转化'}
+function transformSceneText(name,type,sub){
+  const map={
+    '阳木 + 阴土 → 化土':{investment:'成长想象转向业绩兑现、估值落地和财务验证。',relationship:'关系推进会遇到现实条件、经济压力或责任边界。',contract:'初步意向转为交付、付款、责任条款。',project:'创意推进转为资源、排期和团队承载。',business:'增长想法需要回到成本、场地和承载能力。',direction:'适合中心位、稳定位和整理位。',weather:'生发受土承接，变化趋向稳定或受阻。'},
+    '阴木 + 阳金 → 化金':{investment:'成长叙事被估值、财报、监管或资金纪律筛选。',relationship:'试探关系进入态度明确、条件确认或边界判断。',contract:'模糊意向进入条款审查。',project:'内部想法被流程、上级或制度筛选。',business:'商业想法需要通过规则、合同和交易边界筛选。',direction:'金位增强，适合审视、谈规则、规避模糊空间。',weather:'木势被金收，变化趋向收束和清晰。'},
+    '阳火 + 阴金 → 化水':{investment:'高热题材遇到隐性抛压、规则约束或资金分歧，可能进入换手。',relationship:'表达欲遇到对方边界，需要缓冲，不宜逼问。',contract:'强推进遇到隐藏条款，适合补信息。',project:'公开发布遇到反馈或审查，需要调整口径。',business:'曝光热度遇到规则边界，适合看客流、反馈和转化。',direction:'从火位转向水位，先看信息流、沟通流和资金流。',weather:'热象被金收，可能转为水汽或冷却象意。'},
+    '阴火 + 阳水 → 化木':{investment:'低调方向遇到资金流或消息流，可能出现新题材萌芽。',relationship:'内在好感被沟通激活，适合轻联系或轻见面。',contract:'暗中意向通过沟通变成新合作可能。',project:'内部想法经信息交换变成新方案。',business:'小热度被流量激活，适合轻量测试增长。',direction:'水木方向更适合启动、沟通和出门。',weather:'水火相激后转木，偏向云系生发或变化启动。'},
+    '阳土 + 阴水 → 化火':{investment:'防守/资源逻辑遇到资金流，可能出现补涨、曝光或估值重估。',relationship:'稳定基础遇到情绪流动，适合升温和表达。',contract:'基础条件成熟后，进入公开确认或签署动作。',project:'资源准备完成后，适合汇报、发布和展示。',business:'承载条件与流量相遇，适合上新、曝光或活动。',direction:'火位可用，适合亮相，但要避免过度刺激。',weather:'承载与隐性水流转火，可能表现为热度显化。'}
+  };
+  const row=map[name]||{}; return row[type]||row.investment||'当前转化会改变原有强弱逻辑，需要结合场景重新解释。';
+}
+function transformDetail(tr,type,sub){
+  if(!tr||!tr.name) return {index:0,status:'未形成明显转化',name:'未触发',mechanism:'无明显后天合化',scene:'当前以取用排序和中天场强为主。',strategy:'不宜过度解释转向信号，先看主导五行与场景指标。'};
+  const idx=clampScore(24 + tr.strength*170 + tr.balance*32);
+  const m=transformMechanisms[tr.name]||{name:'结构转化型',from:'两股力量相遇',to:`化${tr.to}`,strategy:'观察结构转向。'};
+  return {index:idx,status:transformStatus(idx),name:tr.name,mechanism:m.name,from:m.from,to:m.to,scene:transformSceneText(tr.name,type,sub),strategy:m.strategy,strength:tr.strength,balance:tr.balance,rawLevel:tr.level};
+}
+function houtianPanelHTML(p,t,conv,type,sub){
+  const ht=houtianModel(p,t,conv,type,sub), tr=ht.transform;
+  const rows=ht.rows.map(r=>`<div class="sortRow"><div class="el" style="color:${colors[r.el]}">${r.el}</div><div class="rank">#${r.rank}｜${r.level}</div><div class="desc">${r.relation}｜${r.phrase}｜背景权重 ${r.bg.toFixed(1)}，场景权重 ${r.scene>0?'+':''}${r.scene.toFixed(2)}</div><div class="grade">${r.grade}</div></div>`).join('');
+  return `<div class="houtianPanel"><div class="sectionTitle">后天取用｜排序定主次，合化定转向</div><div class="noticeStrong">${ht.summary} 指数为相对强度显示，用于比较时机窗口，不代表概率。</div><div class="hSplit"><div class="hCard"><h4>后天五行固定排序与评级</h4><div class="sortRows">${rows}</div></div><div class="hCard"><h4>后天合化｜结构转化信号</h4><div class="transIndex">${tr.index}</div><div class="transType">${tr.status}｜${tr.name}</div><p><b>转化机制：</b>${tr.mechanism}。${tr.from?`结构从“${tr.from}”转向“${tr.to}”。`:''}</p><p><b>场景译义：</b>${tr.scene}</p><p><b>行动策略：</b>${tr.strategy}</p></div></div></div>`;
+}
+function sceneMetricSet(type,sub,t,conv,p){
+  const sc=buildScores(type,t), tr=transformDetail(conv.transform,type,sub), arr=[];
+  const add=(label,val,role='core')=>arr.push({label,value:displayScore(val),raw:val,role,level:gradeLabel(displayScore(val))});
+  if(type==='investment'){
+    const it=investmentTendency(t,sub); add('行业轮动',Math.round((it.buy+it.hold+100-it.risk)/3),'core'); add('高关注强度',it.buy,'core'); add('止盈压力',it.sell,'risk'); add('防守价值',it.hold,'assist'); add('追高风险',it.risk,'risk'); add('合化转向',tr.index,'transform');
+  }else if(type==='direction'){
+    const da=directionAnalysis(conv,sub); add('方位取势',da.best.score,'core'); add('辅助可用',da.second.score,'assist'); add('沟通方位',Math.max(...da.rows.filter(r=>[1,3,6,8].includes(r.n)).map(r=>r.score)),'core'); add('交易方位',Math.max(...da.rows.filter(r=>[9,4,5,1].includes(r.n)).map(r=>r.score)),'assist'); add('慎用提醒',100-da.cautious.score,'risk'); add('合化转向',tr.index,'transform');
+  }else if(type==='relationship'){
+    add('见面适配',Math.round((sc.推进+sc.沟通+sc.稳定-sc.风险/2)/2.5),'core'); add('沟通柔和',sc.沟通,'core'); add('现实压力',sc.风险,'risk'); add('推进阻力',Math.round(100-sc.推进+sc.风险*.35),'risk'); add('试探窗口',Math.round((sc.推进+sc.沟通)/2),'assist'); add('合化转向',tr.index,'transform');
+  }else if(type==='contract'){
+    add('条款清晰',Math.round(45+t.金*48+t.土*24),'core'); add('隐藏风险',sc.风险,'risk'); add('谈判弹性',Math.round(42+t.水*44+t.木*12-t.金*10),'assist'); add('落地承载',sc.落地,'core'); add('急签风险',Math.round(sc.风险*0.75+(100-sc.沟通)*0.25),'risk'); add('合化转向',tr.index,'transform');
+  }else if(type==='project'){
+    add('发布热度',Math.round(42+t.火*44+t.木*18),'core'); add('协同流动',sc.沟通,'core'); add('落地承载',sc.落地,'assist'); add('外部阻力',sc.风险,'risk'); add('反馈窗口',Math.round((sc.推进+sc.沟通)/2),'assist'); add('合化转向',tr.index,'transform');
+  }else if(type==='business'){
+    add('交易承接',sc.落地,'core'); add('客流流动',sc.沟通,'core'); add('曝光热度',Math.round(42+t.火*45+t.木*12),'assist'); add('成本压力',sc.风险,'risk'); add('小闭环适配',Math.round((sc.落地+sc.稳定-sc.风险/2)/1.5),'core'); add('合化转向',tr.index,'transform');
+  }else if(type==='weather'){
+    const wt=weatherTendency(t); add('水汽',wt.moisture,'core'); add('晴热',wt.heat,'core'); add('阻滞',wt.block,'risk'); add('稳定',wt.stable,'assist'); add('流动',sc.沟通,'assist'); add('合化转向',tr.index,'transform');
+  }else{
+    add('行动就绪',sc.推进,'core'); add('稳定承接',sc.稳定,'assist'); add('阻力结构',sc.风险,'risk'); add('沟通流动',sc.沟通,'core'); add('落地能力',sc.落地,'assist'); add('合化转向',tr.index,'transform');
+  }
+  return arr.map(x=>({...x,value:clampScore(x.value)}));
+}
+function sceneMetricsHTML(type,sub,t,conv,p){
+  const items=sceneMetricSet(type,sub,t,conv,p).map(m=>`<div class="sceneMetric"><div class="top"><span>${m.label}</span><span class="pill ${m.role==='risk'?'risk':(m.role==='core'?'hot':'')}">${signalRole(m.role)}</span></div><div class="val">${m.value}</div><div class="meta"><span class="pill">${m.level}</span><span class="pill">原始 ${Math.round(m.raw)}</span></div></div>`).join('');
+  return `<div class="scenePanel"><div class="sectionTitle">场景专属指标｜让数据更可读</div><div class="noticeStrong">本版不只输出通用推进/风险，而是按问事场景生成专属指标，并用“弱—中等—中强—强信号”标出重要性。</div><div class="sceneGrid">${items}</div></div>`;
+}
+
 function traceRows(type,sub,p,init,t,conv,dm){
   const top=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1]);
   const weak=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>a[1]-b[1])[0];
-  const qmap={investment:`投资看行业五行、窗口节奏和风险约束。${investmentElement(sub).text}` ,relationship:'感情看水木生发，金土往往对应现实条件、经济压力、责任与边界。',contract:'签约看金土规则与承载，水是沟通缓冲。',business:'商业看土金承载和交易规则，水是流量，火是曝光，木是增长。',project:'项目看木火显化，土为落地，金为边界，水为协作。',site:'地点问题当前先看时机，不替代对象盘。',weather:'天气问题只作水汽、晴热、阻滞与稳定性的象意参考，不替代真实天气预报。',compare:'比较类问题重点看 A/B 差分。'};
+  const qmap={investment:`投资看行业五行、窗口节奏和风险约束。${investmentElement(sub).text}` ,relationship:'感情看水木生发，金土往往对应现实条件、经济压力、责任与边界。',contract:'签约看金土规则与承载，水是沟通缓冲。',business:'商业看土金承载和交易规则，水是流量，火是曝光，木是增长。',project:'项目看木火显化，土为落地，金为边界，水为协作。',site:'地点问题当前先看时机，不替代对象盘。',direction:'方位/空间问题把九宫场映射为九个方向，用来观察取势、沟通、交易、休息或避让位置。',weather:'天气问题只作水汽、晴热、阻滞与稳定性的象意参考，不替代真实天气预报。',compare:'比较类问题重点看 A/B 差分。'};
   return [
     {tag:'先天定时',text:`当地时间生成四盘：年 <code>${p.year.stem}${p.year.branch}</code>、月 <code>${p.month.stem}${p.month.branch}</code>、日 <code>${p.day.stem}${p.day.branch}</code>、时 <code>${p.hour.stem}${p.hour.branch}</code>。四盘天干进入十态，地支只作承载与库位调制。`},
     {tag:'中天成场',text:`十态落入洛书九宫，经同库互通、五行生克、空间加权与十五守恒后，形成以 <code>${top[0][0]}</code> 为主、<code>${top[1][0]}</code> 为辅的时空场。${init.spatial.direction}`},
@@ -648,7 +785,7 @@ function traceRows(type,sub,p,init,t,conv,dm){
         : {tag:'行动译文拆解',text:`主势为 <code>${top[0][0]}</code>，弱项为 <code>${weak[0]}</code>；${relationForDM(dm,t)} ${conv.transform.name?`检测到 <code>${conv.transform.name}</code>（${conv.transform.level}），表示结构可能发生性质转化。`:'未检测到显著合化。'}`}
   ];
 }
-function scoreHTML(sc,type){const weatherLabels={推进:'水汽',稳定:'稳定',风险:'阻滞',沟通:'流动',落地:'晴热'};const investLabels={推进:'买入观察',稳定:'持有稳定',风险:'风险提示',沟通:'流动性',落地:'卖出/止盈'};const directionLabels={推进:'取势',稳定:'稳定',风险:'慎用',沟通:'沟通',落地:'落点'};return `<div class="scoreGrid">${Object.entries(sc).map(([k,v])=>{const label=type==='weather'?(weatherLabels[k]||k):(type==='investment'?(investLabels[k]||k):(type==='direction'?(directionLabels[k]||k):k));return `<div class="score"><span>${label}指数</span><b>${v}</b><div class="meter" style="--s:${v}"><i></i></div></div>`}).join('')}</div>`;}
+function scoreHTML(sc,type){const weatherLabels={推进:'水汽',稳定:'稳定',风险:'阻滞',沟通:'流动',落地:'晴热'};const investLabels={推进:'买入观察',稳定:'持有稳定',风险:'风险提示',沟通:'流动性',落地:'卖出/止盈'};const directionLabels={推进:'取势',稳定:'稳定',风险:'慎用',沟通:'沟通',落地:'落点'};return `<div class="scoreGrid">${Object.entries(sc).map(([k,v])=>{const label=type==='weather'?(weatherLabels[k]||k):(type==='investment'?(investLabels[k]||k):(type==='direction'?(directionLabels[k]||k):k));const ds=displayScore(v);return `<div class="score"><span>${label}指数<em>${gradeLabel(ds)}</em></span><b>${ds}</b><div class="meter" style="--s:${ds}"><i></i></div></div>`}).join('')}</div>`;}
 function shareCard(v,t){const top=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1])[0][0];const weak=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>a[1]-b[1])[0][0];return `<div class="shareCard"><div class="brand">洛书时机仪｜时机卡</div><div class="quote">${v.action}</div><div class="foot">主势：${top} ｜ 阻力：${weak} ｜ 不是问命，而是看势。</div></div>`}
 function glyphLegend(){return `<div class="glyphLegend">${palaceDef.map(p=>`<div class="glyphItem"><b>${p.glyph} ${p.name}</b><br>${p.cname}｜灵象：${p.beast}</div>`).join('')}</div>`;}
 function fullNarrative(type,sub,t,tr,dm,spatial){return `${readingText(type,sub,t,tr,dm,spatial)} <br><b>现实建议：</b>${suggest(type,t)}`}
@@ -670,11 +807,16 @@ function render(targetId,d,label){
   const metrics=[['水势',t.水],['木势',t.木],['火势',t.火],['金势',t.金],['土势',t.土],['阳/阴',`${t.阳}/${t.阴}`]].map(([n,v])=>`<div class="metric"><span>${n}</span><b>${v}</b></div>`).join('');
   const states=actionGrid(queryType.value,t).map(c=>`<div class="state"><div class="icon">${c.icon}</div><span>${c.label}</span><b>${c.value}</b></div>`).join('');
   const directionPanel=queryType.value==='direction'?directionCompassHTML(conv,subType.value):'';
+  const scenePanel=sceneMetricsHTML(queryType.value,subType.value,t,conv,p);
+  const houtianPanel=houtianPanelHTML(p,t,conv,queryType.value,subType.value);
+  const ht=houtianModel(p,t,conv,queryType.value,subType.value);
   const trace=traceRows(queryType.value,subType.value,p,init,t,conv,dm).map(r=>`<div class="traceCard"><span class="tag">${r.tag}</span><p>${r.text}</p></div>`).join('');
   document.getElementById(targetId).innerHTML=`
     <div class="sectionTitle">${label}｜${d.toLocaleString('zh-CN',{hour12:false})}</div>
     <div style="color:var(--muted);line-height:1.7;font-size:14px">${question.value?`问题：${question.value}`:'未填写问题'} ｜ 场景：${queryNames[queryType.value]} / ${subType.value || '未选'} ｜ 主体：${dm.value}${dm.auto?'（日盘临时）':''}</div>
     <div class="verdict"><div class="label">后天行动译文</div><div class="headline">${vd.action}</div><div class="why">${vd.why}</div></div>
+    ${scenePanel}
+    ${houtianPanel}
     <div class="states">${states}</div>
     ${directionPanel}
     ${scoreHTML(vd.scores,queryType.value)}
@@ -683,16 +825,19 @@ function render(targetId,d,label){
     <div class="triadTrace">${trace}</div>
     <details><summary>展开专业盘：四盘、九宫灵象、五行指标</summary><div class="inside"><div class="tokens">${tokenHTML}</div><div class="sectionTitle" style="margin-top:16px">中天九宫灵象场</div><div class="loshu">${palHTML}</div>${glyphLegend()}<div class="metrics">${metrics}</div></div></details>
     <div class="reading"><b>完整行动译文</b><br>${fullNarrative(queryType.value,subType.value,t,conv.transform,dm,init.spatial)}<div class="disclaimer">本工具为人文数理与时机分析工具，不构成医学、法律、投资、婚恋、天气或商业决策的确定性建议。当前页面展示的是“结构化生成的行动译文”，不是事先写死的整段答案。</div></div>`;
-  return {p,init,conv,t,vd};
+  return {p,init,conv,t,vd,ht};
 }
 function renderDiff(a,b){
   const keys=['水','木','火','金','土','阳','阴'];
-  const rows=keys.map(k=>`${k}：${a.t[k]} → ${b.t[k]}（${(b.t[k]-a.t[k]).toFixed(2)}）`).join('<br>');
+  const rows=keys.map(k=>`${k}：${a.t[k]} → ${b.t[k]}（${(b.t[k]-a.t[k]).toFixed(2)}｜${changeLabel((b.t[k]-a.t[k])*100)}）`).join('<br>');
   const diffs={水:b.t.水-a.t.水,木:b.t.木-a.t.木,火:b.t.火-a.t.火,金:b.t.金-a.t.金,土:b.t.土-a.t.土};
   const main=Object.entries(diffs).sort((x,y)=>Math.abs(y[1])-Math.abs(x[1]))[0];
-  const recommend=(b.vd.scores.推进+b.vd.scores.稳定-b.vd.scores.风险) > (a.vd.scores.推进+a.vd.scores.稳定-a.vd.scores.风险) ? '推荐时刻 B' : '推荐时刻 A';
-  diffBox.innerHTML=`<div class="sectionTitle">A / B 时机差分</div><div style="line-height:1.85">${rows}</div><p><b>主变化：</b>${main[0]}势变化最明显（${main[1].toFixed(2)}）。${main[1]>0?'B 时刻该类信号增强。':'B 时刻该类信号减弱。'}</p><p><b>系统建议：</b>${recommend}。请结合上方两个“后天行动译文”，看哪一个更符合你的行动目标。</p>`;
+  const scoreA=bundleScore(a), scoreB=bundleScore(b);
+  const recommend=scoreB>scoreA ? '推荐时刻 B' : '推荐时刻 A';
+  const transDelta=(b.ht.transform.index-a.ht.transform.index);
+  diffBox.innerHTML=`<div class="sectionTitle">A / B 时机差分</div><div style="line-height:1.85">${rows}</div><p><b>主变化：</b>${main[0]}势变化最明显（${main[1].toFixed(2)}）。${main[1]>0?'B 时刻该类信号增强。':'B 时刻该类信号减弱。'}</p><p><b>后天转化差分：</b>A 为 ${a.ht.transform.index}（${a.ht.transform.status}），B 为 ${b.ht.transform.index}（${b.ht.transform.status}），变化 ${transDelta>0?'+':''}${transDelta}｜${changeLabel(transDelta)}。</p><p><b>系统建议：</b>${recommend}。本建议综合场景指标、风险项与后天转化强度，而不是只看单一五行强弱。</p>`;
 }
+function bundleScore(x){const sc=x.vd.scores; return sc.推进+sc.稳定+sc.沟通+sc.落地-sc.风险 + (x.ht.transform.index>=70?4:0)}
 function run(){ if(!dtA.value) setNow(); const aDate=new Date(dtA.value); const a=render('resultA',aDate,'时刻 A'); updateMiniBoard('A', aDate, a.conv); if(dtB.value){ const bDate=new Date(dtB.value); const b=render('resultB',bDate,'时刻 B'); updateMiniBoard('B', bDate, b.conv); renderDiff(a,b);} else {document.getElementById('resultB').innerHTML='<div class="sectionTitle">时刻 B</div><div style="color:var(--muted)">未输入第二时刻。填写后可进行 A/B 结构对比。</div>'; document.getElementById('miniBTime').textContent='未输入'; document.getElementById('miniBoardB').innerHTML=''; diffBox.innerHTML='';}}
 
 queryType.addEventListener('change',()=>{updateSubTypes();run();});
