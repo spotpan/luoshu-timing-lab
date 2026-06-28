@@ -203,29 +203,30 @@
       <div class="notice">推荐用法：先写明一个具体行动，再比较 <b>时刻 A</b> 与 <b>时刻 B</b>。系统将依据问题类型加载对应的“问事取用”，并输出三界轨迹、时机结构与行动译文。</div>
       <div class="smallTitle">快速问事卡</div>
       <div class="quickCards">
-        <div class="qcard" data-q="investment|行业总览/五行归类|今天适合观察哪个行业方向？">投资｜行业观察</div>
-        <div class="qcard" data-q="investment|买入观察窗口|今天适合观察新能源板块的买入窗口吗？">投资｜买入窗口</div>
-        <div class="qcard" data-q="investment|卖出/止盈观察|今天适合观察半导体板块的卖出或止盈窗口吗？">投资｜卖出窗口</div>
+        <div class="qcard" data-q="investment|行业轮动总览|今天哪个行业方向更值得观察？">投资｜行业轮动</div>
+        <div class="qcard" data-q="investment|买入观察：火类科技/AI/新能源|今天适合观察科技、AI 或新能源的买入窗口吗？">投资｜科技AI</div>
+        <div class="qcard" data-q="investment|买入观察：金类金融/制造/半导体|今天适合观察金融、制造或半导体的买入窗口吗？">投资｜金融制造</div>
+        <div class="qcard" data-q="investment|卖出观察：高热度题材/短线获利盘|今天适合检查高热度题材的止盈窗口吗？">投资｜止盈观察</div>
+        <div class="qcard" data-q="investment|持有观察：土类红利/基建/资源|今天适合继续观察红利、基建或资源类的持有窗口吗？">投资｜持有窗口</div>
         <div class="qcard" data-q="contract|合同/条款|今天适合推进签约吗？">签约｜条款审视</div>
         <div class="qcard" data-q="project|汇报/发布|今天适合汇报或发布吗？">项目｜汇报发布</div>
         <div class="qcard" data-q="business|开店/启动|这周适合轻量启动吗？">商业｜轻量启动</div>
         <div class="qcard" data-q="weather|出行/天气参考|今天出门天气感受如何？">天气｜出行参考</div>
         <div class="qcard" data-q="site|看房/看店选时|今天适合去看地点吗？">地点｜看房看店</div>
         <div class="qcard" data-q="relationship|是否见面|今天适合和她/他见面吗？">感情｜是否见面</div>
-        <div class="qcard" data-q="relationship|现实条件/经济压力|今晚适合谈经济压力和现实条件吗？">感情｜经济压力</div>
         <div class="qcard" data-q="compare|对比两个时机|上午和下午哪个更适合行动？">对比｜两个时段</div>
       </div>
 
       <div class="sectionTitle">输入区</div>
       <div class="field">
         <label>一句话问题</label>
-        <textarea id="question" placeholder="例如：今天适合观察新能源板块的买入窗口吗？"></textarea>
+        <textarea id="question" placeholder="例如：今天适合观察科技、AI 或新能源的买入窗口吗？"></textarea>
       </div>
       <div class="grid2">
         <div class="field"><label>一级问事</label><select id="queryType"></select></div>
         <div class="field"><label>二级场景</label><select id="subType"></select></div>
       </div>
-      <div class="field"><label>补充背景（可选）</label><textarea id="context" placeholder="例如：只做小仓位观察，不作为直接交易依据；想比较今天上午和下午哪个窗口更适合观察。"></textarea></div>
+      <div class="field"><label>补充背景（可选）</label><textarea id="context" placeholder="例如：只做复盘观察，不作为直接交易依据；想比较上午和下午哪个窗口更适合关注行业轮动。"></textarea></div>
       <div class="grid2">
         <div class="field"><label>时刻 A</label><input id="dtA" type="datetime-local"></div>
         <div class="field"><label>时刻 B</label><input id="dtB" type="datetime-local"></div>
@@ -304,7 +305,7 @@
 
 <script>
 const queries={
-  investment:['行业总览/五行归类','木类：医药/教育/农业/成长消费','火类：科技/AI/传媒/新能源','土类：地产/基建/资源承载','金类：金融/制造/半导体/贵金属','水类：物流/航运/贸易/流通','买入观察窗口','卖出/止盈观察','持有/观望窗口'],
+  investment:['行业轮动总览','木类：医药/教育/农业/消费','火类：科技/AI/传媒/新能源','土类：地产/基建/资源/红利','金类：金融/制造/半导体/贵金属','水类：物流/航运/贸易/平台流通','买入观察：成长/弹性方向','买入观察：稳健/防守方向','卖出观察：高热度题材/短线获利盘','卖出观察：弱势行业/破位风险','持有观察：红利/现金流/低波动','轮动观察：从高热到低位补涨'],
   contract:['合同/条款','谈判/边界','启动/签署'],
   project:['项目推进','汇报/发布','协作/节奏'],
   business:['开店/启动','客流/试运营','合作/合伙','现金流/承载'],
@@ -415,27 +416,62 @@ function weatherTendency(t){
   return {summary,detail,moisture,heat,block,stable};
 }
 
+const investmentMap={
+  木:{name:'木类',sectors:['医药生物','中药/创新药','教育服务','农业种业','食品饮料中的成长消费','环保与林业'],logic:'偏长期成长、研发培育、修复与消费韧性。'},
+  火:{name:'火类',sectors:['AI应用','传媒游戏','互联网平台','算力/数据中心','光伏/储能','新能源车链'],logic:'偏热度、传播、算力、电能转换与高关注度题材。'},
+  土:{name:'土类',sectors:['地产链','基建建材','水泥工程','煤炭资源','公用事业','高股息红利'],logic:'偏承载、资产、周期、现金流与防守稳定。'},
+  金:{name:'金类',sectors:['银行/券商/保险','高端制造','机器人/自动化','半导体设备/芯片硬件','军工装备','黄金/贵金属'],logic:'偏规则、定价、硬件、制造、金融秩序与避险属性。'},
+  水:{name:'水类',sectors:['物流快递','航运港口','跨境贸易','旅游出行','电商流通','数据流/支付流'],logic:'偏流动、运输、渠道、交易和信息传播。'}
+};
 function investmentElement(sub){
-  if(!sub) return {el:'',text:'本系统将行业先按五行象意粗分，再用当前时机结构观察风险与节奏。'};
-  if(sub.includes('木类')) return {el:'木',text:'木类行业偏向生长、研发、培育与长期成长，例如医药、教育、农业、成长消费。'};
-  if(sub.includes('火类')) return {el:'火',text:'火类行业偏向热度、传播、算力、能源转换与高关注度，例如科技、AI、传媒、新能源。'};
-  if(sub.includes('土类')) return {el:'土',text:'土类行业偏向承载、资产、周期与基础设施，例如地产、基建、资源承载。'};
-  if(sub.includes('金类')) return {el:'金',text:'金类行业偏向规则、金融、硬件、制造与定价，例如金融、制造、半导体、贵金属。'};
-  if(sub.includes('水类')) return {el:'水',text:'水类行业偏向流动、渠道、运输、交易与信息流，例如物流、航运、贸易、流通。'};
-  return {el:'',text:'当前为投资观察类问题，可结合二级类别将行业归入木、火、土、金、水五类，再观察买入、卖出或观望窗口。'};
+  if(!sub) return {el:'',label:'行业总览',sectors:[],text:'本系统将行业先按五行象意粗分，再用当前时机结构观察行业轮动、买入观察、卖出止盈与持有风险。'};
+  for(const el of ['木','火','土','金','水']){
+    if(sub.includes(el+'类')){const m=investmentMap[el]; return {el,label:m.name,sectors:m.sectors,text:`${m.name}行业：${m.sectors.join('、')}。${m.logic}`};}
+  }
+  if(sub.includes('科技')||sub.includes('AI')||sub.includes('新能源')||sub.includes('传媒')){const m=investmentMap.火; return {el:'火',label:'火类科技/AI/新能源',sectors:m.sectors,text:`火类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('金融')||sub.includes('制造')||sub.includes('半导体')||sub.includes('贵金属')){const m=investmentMap.金; return {el:'金',label:'金类金融/制造/半导体',sectors:m.sectors,text:`金类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('红利')||sub.includes('基建')||sub.includes('资源')||sub.includes('地产')){const m=investmentMap.土; return {el:'土',label:'土类红利/基建/资源',sectors:m.sectors,text:`土类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('成长')||sub.includes('医药')||sub.includes('农业')||sub.includes('消费')){const m=investmentMap.木; return {el:'木',label:'木类医药/农业/消费',sectors:m.sectors,text:`木类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('物流')||sub.includes('航运')||sub.includes('贸易')||sub.includes('流通')||sub.includes('平台')){const m=investmentMap.水; return {el:'水',label:'水类物流/航运/流通',sectors:m.sectors,text:`水类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  return {el:'',label:'行业总览',sectors:[],text:'当前为投资观察类问题，可结合二级类别将行业归入木、火、土、金、水，再观察买入、卖出、持有或轮动窗口。'};
+}
+function topInvestmentElements(t){
+  return Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+}
+function sectorLineFor(el,mode){
+  const m=investmentMap[el];
+  if(!m) return '';
+  const pick=m.sectors.slice(0,4).join('、');
+  if(mode==='sell') return `${m.name}可重点检查：${pick}中已经连续放量、短线涨幅较大或估值拥挤的方向。`;
+  if(mode==='hold') return `${m.name}可重点观察：${pick}中现金流、订单或政策逻辑更稳定的方向。`;
+  if(mode==='risk') return `${m.name}风险点：${pick}若缺少成交确认，容易只形成短线波动。`;
+  return `${m.name}可重点观察：${pick}。`;
 }
 function investmentTendency(t,sub){
   const m=investmentElement(sub);
+  const rank=topInvestmentElements(t);
+  const focusEl=m.el || rank[0];
+  const secondEl=rank.find(e=>e!==focusEl) || rank[1];
   const elementScore=m.el? t[m.el] : Math.max(t.水,t.木,t.火,t.土,t.金);
-  const buy=Math.round(Math.max(0,Math.min(100,40 + t.木*24 + t.水*22 + t.火*12 - t.金*12 - t.土*8 + elementScore*10)));
-  const sell=Math.round(Math.max(0,Math.min(100,38 + t.金*28 + t.火*18 + t.土*12 - t.水*10 + (sub&&sub.includes('卖出')?10:0))));
-  const hold=Math.round(Math.max(0,Math.min(100,42 + t.土*28 + t.金*18 + t.水*10 - t.火*8)));
+  const buy=Math.round(Math.max(0,Math.min(100,40 + t.木*24 + t.水*22 + t.火*12 - t.金*12 - t.土*8 + elementScore*10 + (sub&&sub.includes('买入')?8:0))));
+  const sell=Math.round(Math.max(0,Math.min(100,38 + t.金*28 + t.火*18 + t.土*12 - t.水*10 + (sub&&sub.includes('卖出')?12:0))));
+  const hold=Math.round(Math.max(0,Math.min(100,42 + t.土*28 + t.金*18 + t.水*10 - t.火*8 + (sub&&sub.includes('持有')?8:0))));
   const risk=Math.round(Math.max(0,Math.min(100,40 + t.金*20 + t.火*18 + t.土*12 - t.水*10)));
-  let summary='偏观察，不宜把盘象直接当成交易指令。';
-  if(sub&&sub.includes('买入')) summary=buy>=sell+8?'买入观察信号相对更强，但仍以小仓位和风控为先。':'买入观察信号不算突出，更适合等待确认。';
-  else if(sub&&sub.includes('卖出')) summary=sell>=buy?'卖出/止盈观察信号相对更强，适合检查仓位与风险。':'卖出信号不算单边明确，可先观察波动与确认位。';
-  else if(sub&&sub.includes('持有')) summary=hold>=risk?'持有/观望信号相对更稳。':'持有稳定性一般，建议先看风险暴露。';
-  return {summary,buy,sell,hold,risk,map:m};
+  let mainMode='观察';
+  if(sub&&sub.includes('卖出')) mainMode='卖出/止盈观察';
+  else if(sub&&sub.includes('持有')) mainMode='持有观察';
+  else if(sub&&sub.includes('买入')) mainMode='买入观察';
+  else if(sub&&sub.includes('轮动')) mainMode='轮动观察';
+  let summary='以行业轮动观察为主，不宜把盘象直接当成交易指令。';
+  if(mainMode==='买入观察') summary=buy>=sell+8?`买入观察信号相对更强，可优先看${investmentMap[focusEl].name}中的低位确认或回踩承接。`:`买入观察信号不算突出，更适合等价格、成交量和趋势确认。`;
+  else if(mainMode==='卖出/止盈观察') summary=sell>=buy?`卖出/止盈观察信号相对更强，可优先检查高热度题材、连续放量和短线获利盘。`:`卖出信号不算单边明确，可先观察冲高回落、跌破支撑或量能衰减。`;
+  else if(mainMode==='持有观察') summary=hold>=risk?`持有/观望信号相对更稳，可优先看现金流、防守和低波动方向。`:`持有稳定性一般，建议先看风险暴露和仓位集中度。`;
+  else if(mainMode==='轮动观察') summary=`轮动观察更适合从${investmentMap[rank[0]].name}主势，比较${investmentMap[rank[1]].name}与${investmentMap[rank[2]].name}是否出现补涨。`;
+  const buyLine=sectorLineFor(focusEl,'buy') + (secondEl?` 备选：${sectorLineFor(secondEl,'buy')}`:'');
+  const sellLine=sectorLineFor(rank.includes('火')?'火':rank[0],'sell');
+  const holdLine=sectorLineFor(rank.includes('土')?'土':rank[0],'hold');
+  const riskLine=`若风险指数高于买入观察，优先降低追涨冲动，等待回踩、缩量企稳或基本面确认。`;
+  return {summary,buy,sell,hold,risk,map:m,focusEl,secondEl,rank,mainMode,buyLine,sellLine,holdLine,riskLine};
 }
 
 function readingText(type,sub,t,tr,dm,spatial){
@@ -456,11 +492,11 @@ function readingText(type,sub,t,tr,dm,spatial){
   }
   if(type==='investment'){
     const it=investmentTendency(t,sub);
-    return `投资/行业观察：${it.summary} ${it.map.text} 买入观察 ${it.buy}，卖出/止盈观察 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。${spatial.direction} 本项只用于复盘观察，不构成任何买入、卖出或持有建议。`;
+    return `投资/行业观察：${it.summary} ${it.map.text} 具体观察方向：${it.buyLine} 卖出/止盈检查：${it.sellLine} 持有观察：${it.holdLine} 指数：买入观察 ${it.buy}，卖出/止盈 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。${spatial.direction} 本项只用于复盘观察，不构成任何买入、卖出或持有的个人化建议。`;
   }
   return `当前主势为 ${top[0][0]}，次势为 ${top[1][0]}，弱项为 ${weak[0]}。${q} ${relationForDM(dm,t)} ${spatial.direction} ${tr.name?`本盘出现 ${tr.name}（${tr.level}），提示事情可能从强弱判断进入“性质转化”。`:''}`;
 }
-function suggest(type,t){ if(type==='investment') return '只作行业五行与窗口节奏观察，不构成投资建议；实际交易请以基本面、价格、仓位、止损和专业意见为准。'; if(type==='relationship') return t.金+t.土>t.水+t.木?'先谈节奏与边界，不要把现实条件变成资格审查。':'可以温和推进，先沟通感受，再视反馈加码。'; if(type==='contract') return t.金>t.水?'优先审条款、定边界，再做签署。':'可以推进谈判，但仍要写清责任。'; if(type==='business') return t.土+t.金>t.木+t.火?'适合轻量试运营，不宜一次性重投入。':'适合测试增长与曝光，但要留意承载。'; if(type==='project') return '先确认推进阻力来自节奏、边界还是协作，再选择动作。'; if(type==='site') return '把本盘当作选时参考，地点对象信息仍需补齐。'; if(type==='weather') return '请以气象部门、雷达回波和真实预报为准。本盘仅用于观察水汽、晴热、阻滞或稳定倾向，不建议据此安排高风险户外活动。'; return '优先看 A/B 差分，选择阻力更小的窗口。'; }
+function suggest(type,t){ if(type==='investment') return '可把输出当作行业轮动观察清单：先看对应细分行业，再用价格位置、成交量、基本面、仓位和止损条件复核；不构成个人化投资建议。'; if(type==='relationship') return t.金+t.土>t.水+t.木?'先谈节奏与边界，不要把现实条件变成资格审查。':'可以温和推进，先沟通感受，再视反馈加码。'; if(type==='contract') return t.金>t.水?'优先审条款、定边界，再做签署。':'可以推进谈判，但仍要写清责任。'; if(type==='business') return t.土+t.金>t.木+t.火?'适合轻量试运营，不宜一次性重投入。':'适合测试增长与曝光，但要留意承载。'; if(type==='project') return '先确认推进阻力来自节奏、边界还是协作，再选择动作。'; if(type==='site') return '把本盘当作选时参考，地点对象信息仍需补齐。'; if(type==='weather') return '请以气象部门、雷达回波和真实预报为准。本盘仅用于观察水汽、晴热、阻滞或稳定倾向，不建议据此安排高风险户外活动。'; return '优先看 A/B 差分，选择阻力更小的窗口。'; }
 function buildScores(type,t){
   let base={推进:50,稳定:50,风险:50,沟通:50,落地:50};
   if(type==='investment'){const it=investmentTendency(t,subType.value); base.推进=it.buy; base.稳定=it.hold; base.风险=it.risk; base.沟通=Math.round(Math.max(0,Math.min(100,42+t.水*24+t.金*12+t.木*8))); base.落地=it.sell;}
@@ -473,7 +509,7 @@ function buildScores(type,t){
   return base;
 }
 function verdict(type,t,tr){const sc=buildScores(type,t); let action='宜试探，不宜逼定', why='当前时空场更适合低风险推进，先看反馈再决定加码。';
-  if(type==='investment'){const it=investmentTendency(t,subType.value); action=it.summary; why=`${it.map.text} 买入观察 ${it.buy}，卖出/止盈观察 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。本项只作复盘观察，不构成投资建议。`; return {action,why,scores:sc};}
+  if(type==='investment'){const it=investmentTendency(t,subType.value); action=it.summary; why=`重点方向：${it.buyLine} 卖出/止盈检查：${it.sellLine} 持有观察：${it.holdLine} 买入观察 ${it.buy}，卖出/止盈 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。本项只作复盘观察，不构成个人化投资建议。`; return {action,why,scores:sc};}
   else if(type==='relationship'){ if(sc.风险>=70&&sc.沟通<58){action='宜缓谈现实条件'; why='金土压力高于水木生发，容易把关系谈成条件审查。';} else if(sc.推进>=64&&sc.沟通>=58){action='宜温和推进'; why='水木与表达信号尚可，适合轻柔沟通与适度升温。';} }
   else if(type==='contract'){ if(sc.风险>=66){action='宜审条款，不宜急签'; why='边界信号强，但隐藏条件与风险暴露也高。';} else {action='宜谈边界，可推进'; why='规则与承载较清楚，适合把约定写实。';} }
   else if(type==='business'){ if(sc.落地>=64&&sc.风险<70){action='宜轻量启动'; why='土金落地信号较强，适合先跑小闭环。';} else {action='宜先验证模型'; why='增长、客流或承载条件仍需验证。';} }
@@ -493,10 +529,10 @@ function actionGrid(type,t){
   const weak=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>a[1]-b[1])[0];
   let doAct='低风险试探', avoid='硬推结论';
   if(type==='investment'){const it=investmentTendency(t,subType.value); return [
-    {icon:'◎',label:'行业归类',value:it.map.el?`${it.map.el}类行业`:'五行总览'},
-    {icon:'⟫',label:'买入观察',value:`${it.buy}`},
-    {icon:'↺',label:'卖出/止盈',value:`${it.sell}`},
-    {icon:'⛨',label:'风险提示',value:`${it.risk}`}
+    {icon:'◎',label:'重点行业',value:it.map.label||`${it.focusEl}类行业`},
+    {icon:'⟫',label:'买入观察',value:`${it.focusEl}类：${investmentMap[it.focusEl].sectors.slice(0,2).join('、')}`},
+    {icon:'↺',label:'卖出检查',value:`${it.sell>=it.buy?'高热题材/获利盘':'量能衰减方向'}`},
+    {icon:'⛨',label:'风险提示',value:`${it.risk} / 100`}
   ];}
   if(type==='relationship'){doAct='柔性沟通'; avoid='资格审查';}
   if(type==='contract'){doAct='厘清边界'; avoid='仓促签署';}
@@ -528,7 +564,7 @@ function traceRows(type,sub,p,init,t,conv,dm){
     type==='weather'
       ? {tag:'天气象意拆解',text:`本项只看 <code>水汽</code>、<code>晴热</code>、<code>阻滞</code> 与 <code>稳定</code> 四类象意，不使用问主日主，也不使用合化断语。请以真实天气预报为准。`}
       : type==='investment'
-        ? {tag:'投资观察拆解',text:`本项先将行业归入五行，再观察 <code>买入</code>、<code>卖出/止盈</code>、<code>持有</code> 与 <code>风险</code> 四类窗口。它不使用确定性买卖断语，也不替代基本面、价格与仓位管理。`}
+        ? {tag:'投资观察拆解',text:`本项先将行业归入五行，再给出对应细分行业的 <code>买入观察</code>、<code>卖出/止盈检查</code>、<code>持有观察</code> 与 <code>风险提示</code>。它输出的是观察清单，不替代基本面、价格、成交量与仓位管理。`}
         : {tag:'行动译文拆解',text:`主势为 <code>${top[0][0]}</code>，弱项为 <code>${weak[0]}</code>；${relationForDM(dm,t)} ${conv.transform.name?`检测到 <code>${conv.transform.name}</code>（${conv.transform.level}），表示结构可能发生性质转化。`:'未检测到显著合化。'}`}
   ];
 }
