@@ -1,0 +1,1796 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>洛书时机仪 v0.7.0 Vercel K线代理版</title>
+  <style>
+    :root{
+      --bg:#071019;
+      --bg2:#0c1324;
+      --card:rgba(255,255,255,.07);
+      --line:rgba(255,255,255,.14);
+      --text:#eef6ff;
+      --muted:#9fb0c7;
+      --gold:#f6cf78;
+      --cyan:#7be7f6;
+      --purple:#c5b4ff;
+      --water:#64b5ff;
+      --wood:#38d79f;
+      --fire:#ff7f9f;
+      --metal:#ffd557;
+      --earth:#cb97ff;
+      --shadow:0 28px 80px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:radial-gradient(circle at 10% 8%,rgba(123,231,246,.12),transparent 24%),radial-gradient(circle at 84% 12%,rgba(246,207,120,.12),transparent 26%),radial-gradient(circle at 50% 100%,rgba(197,180,255,.1),transparent 28%),linear-gradient(135deg,#061018,#0c1020 52%,#15101d);color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;min-height:100%}
+    body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:42px 42px;mask-image:radial-gradient(circle at center,#000,transparent 78%);opacity:.35}
+    #bgParticles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.8}
+    .wrap{position:relative;z-index:1;width:min(1380px,calc(100% - 34px));margin:0 auto;padding:28px 0 50px}
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+    .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:stretch}
+    .heroMain{padding:26px 26px 22px;position:relative;overflow:visible;min-height:760px;height:100%}
+    .heroAside{padding:20px;align-self:stretch;height:100%;overflow:visible}
+
+    .heroAside .modes{grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+    .heroAside .mode{padding:11px 12px}
+    .heroAside .notice{margin:10px 0 12px;padding:12px 13px}
+    .quickCards{max-height:178px;overflow:auto;padding-right:2px}
+    .heroAside .sectionTitle{margin-top:12px}
+    .heroAside textarea{min-height:58px}
+    #stockPool{min-height:70px}
+    #marketApiField{font-size:12.5px;line-height:1.65}
+    .heroVisual{margin-top:16px}
+    .miniBoards{margin-top:14px}
+
+
+    .inputCore{display:grid;gap:10px}
+    .advancedBox{border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.04);padding:10px 12px;margin-top:10px}
+    .advancedBox summary{cursor:pointer;color:#fde68a;font-weight:850;font-size:13px}
+    .advancedBox .insideAdv{margin-top:10px;max-height:205px;overflow:auto;padding-right:4px}
+    .compactHint{font-size:12px;color:#9fb0c7;line-height:1.55;margin:6px 0 0}
+    .heroAside .quickCards{max-height:132px;overflow:auto}
+    .heroAside .sectionTitle{margin:10px 0 10px}
+    .heroAside .field{margin-bottom:9px}
+    .heroAside textarea{min-height:54px}
+    #stockPool{min-height:62px}
+    .heroAside .btns{margin-top:10px}
+
+
+    .heroAside .field{margin-bottom:10px}
+    .heroAside textarea{min-height:58px}
+    #question{min-height:64px}
+    #context{min-height:54px}
+    #stockPool{min-height:62px}
+    .quickCards{max-height:118px;overflow:auto;padding-right:2px}
+    .leftDisclaimer{margin-top:12px;padding:12px 13px;border-radius:16px;border:1px solid rgba(246,207,120,.20);background:rgba(246,207,120,.06);color:#cbd7ea;font-size:12.5px;line-height:1.65}
+    .rightMiniNote{margin-top:8px;padding:10px 12px;border-radius:14px;border:1px solid rgba(123,231,246,.18);background:rgba(123,231,246,.055);color:#bcd5e7;font-size:12px;line-height:1.55}
+
+
+    /* v0.4.5: right hero panel stretches to match the left panel height */
+    .hero > .panel{height:100%}
+
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid rgba(246,207,120,.33);background:rgba(246,207,120,.08);color:#ffe7b4;font-size:13px;margin-bottom:16px}
+    h1{font-size:clamp(34px,5vw,68px);line-height:1.02;margin:0;letter-spacing:-2px}
+    .subH{display:block;font-size:clamp(20px,2.2vw,32px);font-weight:620;color:#d8e7ff;letter-spacing:-.5px;margin-top:6px}
+    .grad{background:linear-gradient(90deg,#fff,#fde68a 42%,#67e8f9 92%);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .slogan{font-size:18px;line-height:1.8;color:var(--muted);max-width:860px;margin:16px 0 20px}
+    .slogan b{color:#fff}
+    .philo{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch;margin-top:8px;position:relative;z-index:2}
+    .realm{position:relative;padding:14px 14px 14px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.035));overflow:hidden}
+    .realm.center{border-color:rgba(246,207,120,.35);background:linear-gradient(180deg,rgba(246,207,120,.14),rgba(255,255,255,.04))}
+    .realm b{display:block;font-size:18px;margin-bottom:6px}
+    .realm span{display:block;font-size:12px;line-height:1.6;color:#aebfd7}
+    .realm .sig{display:inline-flex;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.09);margin-bottom:8px;font-size:12px;color:#fff}
+    .arrow{display:flex;align-items:center;justify-content:center;font-size:24px;color:#fde68a}
+    .heroVisual{position:relative;height:260px;margin-top:22px;border-radius:22px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));overflow:hidden}
+    #heroCanvas{position:absolute;inset:0;width:100%;height:100%}
+    .legendRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-size:13px;color:#dbe7f5}
+    .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+    .mode{padding:14px;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12)}
+    .mode.active{background:linear-gradient(135deg,rgba(123,231,246,.12),rgba(246,207,120,.08));border-color:rgba(123,231,246,.35)}
+    .mode strong{display:block;font-size:15px}
+    .mode span{display:block;font-size:12px;color:var(--muted);margin-top:4px;line-height:1.55}
+    .sectionTitle{font-size:20px;margin:0 0 14px;letter-spacing:-.4px}
+    .smallTitle{margin:0 0 8px;font-size:15px;color:#fff}
+    .field{margin-bottom:13px}
+    label{display:block;font-size:13px;color:#d8e2f0;margin-bottom:8px}
+    input,select,textarea{width:100%;color:var(--text);background:rgba(8,13,22,.72);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:12px 13px;outline:none;font-size:15px}
+    input:focus,select:focus,textarea:focus{border-color:rgba(123,231,246,.7);box-shadow:0 0 0 3px rgba(123,231,246,.12)}
+    select option{background:#111827;color:#fff}
+    textarea{min-height:74px;resize:vertical}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    button{cursor:pointer;border:0;border-radius:16px;padding:13px 16px;font-weight:850;color:#071019;background:linear-gradient(135deg,#fde68a,#67e8f9);box-shadow:0 12px 26px rgba(103,232,249,.16)}
+    button.secondary{background:rgba(255,255,255,.08);color:#eef6ff;border:1px solid rgba(255,255,255,.14);box-shadow:none}
+    .quickCards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0 16px}
+    .qcard{padding:11px 10px;border-radius:16px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.12);font-size:13px;color:#dfe9f8;cursor:pointer;line-height:1.5}
+    .notice{padding:12px 14px;border:1px solid rgba(123,231,246,.22);border-radius:16px;background:rgba(123,231,246,.055);line-height:1.7;color:#dbeafe;margin-bottom:12px;font-size:14px}
+    .main{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+    .resultPanel{padding:22px}
+    .verdict{padding:18px;border-radius:22px;border:1px solid rgba(246,207,120,.32);background:linear-gradient(135deg,rgba(246,207,120,.14),rgba(123,231,246,.08));margin-bottom:14px}
+    .verdict .label{font-size:12px;color:#fde68a;text-transform:uppercase;letter-spacing:.12em}
+    .verdict .headline{font-size:30px;font-weight:950;letter-spacing:-.8px;margin:6px 0 8px}
+    .verdict .why{line-height:1.7;color:#eef2f7}
+    .states{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 16px}
+    .state{padding:12px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11)}
+    .state span{font-size:11px;color:var(--muted)}
+    .state b{display:block;margin-top:4px;font-size:13px}
+    .state .icon{font-size:18px;opacity:.86;margin-bottom:3px}
+    .scoreGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px}
+    .score{padding:11px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.11)}
+    .score span{display:block;font-size:11px;color:var(--muted)}
+    .score b{display:block;margin:3px 0 5px;font-size:20px}
+    .meter{height:5px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden}
+    .meter i{display:block;height:100%;width:calc(var(--s)*1%);background:linear-gradient(90deg,#fde68a,#67e8f9)}
+    .score em{display:inline-flex;margin-left:6px;font-size:11px;font-style:normal;color:#fde68a;background:rgba(246,207,120,.10);border:1px solid rgba(246,207,120,.20);padding:2px 6px;border-radius:999px}
+    .scenePanel,.houtianPanel{margin:14px 0 16px;padding:14px;border-radius:22px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.042)}
+    .sceneGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
+    .sceneMetric{padding:12px;border-radius:17px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10)}
+    .sceneMetric .top{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#cfe0f3;font-size:12px}
+    .sceneMetric .val{font-size:26px;font-weight:950;color:#fff;margin:5px 0 3px}
+    .sceneMetric .meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11px;color:#9fb0c7}
+    .pill{display:inline-flex;align-items:center;border-radius:999px;padding:2px 7px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#dbeafe;font-size:11px}
+    .pill.hot{color:#fde68a;border-color:rgba(246,207,120,.30);background:rgba(246,207,120,.10)}
+    .pill.risk{color:#fecaca;border-color:rgba(248,113,113,.30);background:rgba(248,113,113,.10)}
+    .sortRows{display:grid;gap:8px;margin-top:10px}
+    .sortRow{display:grid;grid-template-columns:42px 58px 1fr 74px;align-items:center;gap:8px;padding:9px 10px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.10)}
+    .sortRow .el{font-size:18px;font-weight:950;color:#fff}.sortRow .rank{font-size:12px;color:#fde68a}.sortRow .desc{font-size:12px;color:#c9d8ec;line-height:1.45}.sortRow .grade{font-size:16px;font-weight:950;text-align:right;color:#fff}
+    .hSplit{display:grid;grid-template-columns:1.05fr .95fr;gap:12px;margin-top:10px}.hCard{padding:13px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10)}.hCard h4{margin:0 0 8px;font-size:14px}.hCard p{margin:0;line-height:1.72;color:#dbe8f7;font-size:13px}.transIndex{font-size:34px;font-weight:950;color:#fde68a;margin:2px 0}.transType{font-size:13px;color:#fff}.noticeStrong{margin-top:10px;padding:10px 12px;border-radius:14px;background:rgba(103,232,249,.08);border:1px solid rgba(103,232,249,.18);color:#dbeafe;line-height:1.65;font-size:13px}
+    .triadTrace{display:grid;gap:10px;margin-top:12px}
+    .traceCard{padding:14px;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12)}
+    .traceCard .tag{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:12px;background:rgba(255,255,255,.09);color:#fff;margin-bottom:8px}
+    .traceCard p{margin:0;line-height:1.76;color:#dbe8f7}
+    .traceCard code{background:rgba(255,255,255,.09);padding:2px 6px;border-radius:7px;color:#fff}
+    .shareCard{margin-top:16px;padding:18px;border-radius:22px;border:1px solid rgba(255,255,255,.14);background:radial-gradient(circle at top right,rgba(246,207,120,.13),transparent 32%),linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03))}
+    .shareCard .brand{font-size:12px;letter-spacing:.18em;color:#fde68a;text-transform:uppercase}
+    .shareCard .quote{font-size:23px;font-weight:900;margin:8px 0 6px}
+    .shareCard .foot{font-size:13px;color:#cfe1f7;line-height:1.7}
+    details{margin-top:16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.038);overflow:hidden}
+    summary{list-style:none;cursor:pointer;padding:14px 16px;font-weight:850}
+    summary::-webkit-details-marker{display:none}
+    .inside{padding:0 16px 16px}
+    .tokens{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+    .token{padding:14px;border-radius:18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11)}
+    .token span{font-size:12px;color:var(--muted)}
+    .token b{display:block;font-size:19px;margin:4px 0}
+    .loshu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .palace{position:relative;min-height:144px;padding:14px;border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.12);overflow:hidden}
+    .palace::after{content:"";position:absolute;inset:auto 0 0 0;height:4px;background:var(--c);opacity:.95}
+    .pg{position:absolute;right:10px;top:10px;font-size:28px;opacity:.33}
+    .palace .num{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+    .palace .name{font-size:20px;font-weight:900;margin-top:10px}
+    .palace .cname{font-size:13px;color:#fde68a;margin-top:3px}
+    .palace .beast{font-size:11px;color:#98abc3;margin-top:4px}
+    .palace .val{font-size:25px;font-weight:950;margin-top:6px}
+    .bar{height:6px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:10px}
+    .bar i{display:block;height:100%;width:calc(var(--v)*100%);background:var(--c)}
+    .glyphLegend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .glyphItem{padding:10px;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);font-size:12px;line-height:1.6;color:#dbe8f7}
+    .metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:14px}
+    .metric{padding:12px;border-radius:16px;background:rgba(255,255,255,.048);border:1px solid rgba(255,255,255,.1)}
+    .metric span{font-size:11px;color:var(--muted)}
+    .metric b{display:block;font-size:24px;margin-top:5px}
+    .reading{margin-top:16px;padding:16px;border-radius:18px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.12);line-height:1.8;color:#dfe8f7}
+    .reading b{color:#fff}
+    .diff{padding:18px;margin-top:16px;border-radius:20px;border:1px solid rgba(246,207,120,.25);background:rgba(246,207,120,.07)}
+    .disclaimer{margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(255,127,159,.08);border:1px solid rgba(255,127,159,.18);font-size:12px;line-height:1.75;color:#ffd7e3}
+    .infoSections{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;margin-top:22px}
+    .infoPanel{padding:22px}
+    .methodGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+    .methodCard{padding:14px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045)}
+    .methodCard b{display:block;font-size:15px;margin-bottom:6px;color:#fff}
+    .methodCard p{margin:0;color:#dbe8f7;font-size:13px;line-height:1.7}
+    .formalText{color:#dbe8f7;line-height:1.85;font-size:14px}
+    .formalText b{color:#fff}
+    .versionList{display:grid;gap:8px;margin-top:12px}
+    .versionItem{padding:12px 13px;border-radius:15px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);font-size:13px;line-height:1.7;color:#dbe8f7}
+    .caseGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .caseLog{margin-top:12px;display:grid;gap:8px;max-height:260px;overflow:auto;padding-right:3px}
+    .caseItem{padding:11px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.04);font-size:12px;line-height:1.65;color:#dbe8f7}
+    .caseItem b{color:#fff}
+    .pillLine{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .pillNote{display:inline-flex;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.045);font-size:12px;color:#dbe8f7}
+    .miniBoards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;position:relative;z-index:2}
+    .miniBoard{padding:12px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03))}
+    .miniBoard .mbTitle{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:13px;color:#dbe8f7}
+    .miniBoard .mbTitle b{font-size:14px;color:#fff}
+    .miniGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .miniPal{position:relative;padding:8px 8px 10px;border-radius:14px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.045);min-height:74px;overflow:hidden}
+    .miniPal::after{content:"";position:absolute;inset:auto 0 0 0;height:3px;background:var(--c);opacity:.95}
+    .miniPal .g{font-size:16px;opacity:.8}
+    .miniPal .n{font-size:11px;color:#fde68a;margin-top:2px;line-height:1.25}
+    .miniPal .b{font-size:10px;color:#97a8be;line-height:1.2;margin-top:2px}
+    .miniPal .v{font-size:14px;font-weight:900;margin-top:6px}
+    .directionPanel{margin-top:14px;padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045)}
+    .directionSummary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 14px}
+    .directionSummary .ds{padding:12px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10)}
+    .directionSummary .ds span{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}
+    .directionSummary .ds b{font-size:15px;color:#fff}
+    .dirCompass{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .dirCell{position:relative;min-height:96px;padding:10px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);overflow:hidden}
+    .dirCell::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--c);opacity:.95}
+    .dirCell .dtop{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#cfe0f3}
+    .dirCell .dname{margin-top:5px;font-size:13px;color:#fde68a;font-weight:800}
+    .dirCell .duse{margin-top:4px;font-size:11px;color:#9fb0c7;line-height:1.35}
+    .dirCell .dscore{margin-top:8px;font-size:18px;font-weight:950;color:#fff}
+    .dirCell.best{box-shadow:0 0 0 1px rgba(246,207,120,.45),0 16px 42px rgba(246,207,120,.10)}
+    footer{text-align:center;font-size:12px;color:#97a9c4;margin-top:24px}
+    @media (max-width:1100px){.hero,.main{grid-template-columns:1fr}.philo{grid-template-columns:1fr;}.arrow{transform:rotate(90deg)}.quickCards,.scoreGrid,.states,.tokens,.metrics,.glyphLegend,.miniBoards,.methodGrid,.infoSections{grid-template-columns:1fr 1fr}.heroVisual{height:220px}}
+    @media (max-width:700px){.quickCards,.scoreGrid,.states,.tokens,.metrics,.glyphLegend,.grid2,.grid3,.miniBoards,.methodGrid,.infoSections,.caseGrid{grid-template-columns:1fr}.philo{gap:8px}.wrap{width:min(100% - 20px,1380px)}.heroMain,.heroAside,.resultPanel{padding:18px}.heroVisual{height:190px}}
+  
+    .investDecision{margin-top:12px;padding:14px;border-radius:18px;border:1px solid rgba(246,207,120,.22);background:rgba(246,207,120,.055)}
+    .investDecision .headline{font-size:18px;font-weight:950;color:#fff;margin-bottom:6px}
+    .investDecision .line{color:#cbd7ea;line-height:1.7;font-size:14px}
+    .investRanks{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+    .investRank{border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);padding:10px}
+    .investRank b{display:block;font-size:18px;color:#fff}
+    .investRank span{display:block;font-size:12px;color:#9fb0c7;margin-top:2px}
+
+
+
+
+    .fallbackChart{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.14)}
+    .fallbackChart .fallbackTitle{font-size:11px;color:#95a6bf;margin-bottom:5px}
+
+
+
+    .sourceProbe{margin-top:8px;padding:10px 11px;border-radius:13px;background:rgba(255,255,255,.045);border:1px dashed rgba(255,255,255,.14);font-size:12px;color:#cbd7ea;line-height:1.65}
+    .sourceProbe b{color:#fff}
+    .probeList{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
+    .probeItem{padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.14)}
+    .probeOk{color:#9ee6b0}
+    .probeFail{color:#ffb4b4}
+    @media(max-width:760px){.probeList{grid-template-columns:1fr}}
+
+    .maSignal{margin-top:8px;padding:10px 11px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);font-size:12px;color:#cbd7ea;line-height:1.65}
+    .maSignal b{color:#fff}
+    .maTag{display:inline-block;margin-left:6px;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);font-size:11px;color:#dfe9f7}
+
+    .quoteInfo{margin-top:8px;padding:10px 11px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);font-size:12px;color:#cbd7ea;line-height:1.65}
+    .quoteInfo b{color:#fff}
+    .quoteGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
+    .quoteCell{padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.16)}
+
+
+
+
+    .guaranteedChart{margin-top:8px}
+    .chartNote{font-size:11px;color:#95a6bf;margin:6px 0 4px;line-height:1.45}
+    @media (max-width: 760px){
+      .guaranteedChart{display:block}
+    }
+
+    .phoneSafeChart{display:none;margin-top:8px}
+    @media (max-width: 760px){
+      .phoneSafeChart{display:block}
+      .mobileChartFallback{display:none!important}
+      .tvDesktopOnly{display:none!important}
+    }
+
+    .mobileChartFallback{display:none;margin-top:8px}
+    .tvOpenBtn{display:inline-block;margin-top:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#dfe9f7;text-decoration:none;font-size:12px}
+    @media (max-width: 760px){
+      .tvDesktopOnly{display:none!important}
+      .mobileChartFallback{display:block}
+      .tvFrame{height:220px}
+    }
+
+    .tvFrame{width:100%;height:240px;border:0;border-radius:14px;background:rgba(0,0,0,.22);margin-top:8px}
+
+    .sparkSvg{width:100%;height:72px;margin-top:8px;border-radius:12px;background:rgba(0,0,0,.18);overflow:hidden}
+    .apiTag{display:inline-block;padding:3px 8px;border-radius:999px;background:rgba(123,231,246,.12);border:1px solid rgba(123,231,246,.24);font-size:11px;color:#bcefff;margin-left:6px}
+
+    .stockPanel{margin-top:12px;padding:14px;border-radius:18px;border:1px solid rgba(123,231,246,.20);background:rgba(123,231,246,.045)}
+    .stockPanel .headline{font-size:18px;font-weight:950;color:#fff;margin-bottom:6px}
+    .stockCards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+    .stockCard{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);padding:12px}
+    .stockCard .name{font-size:17px;font-weight:950;color:#fff}
+    .stockCard .score{font-size:28px;font-weight:950;color:var(--gold);margin:6px 0}
+    .stockCard .meta{font-size:12px;color:#9fb0c7;line-height:1.5}
+    .stockCard .reason{font-size:13px;color:#cbd7ea;line-height:1.65;margin-top:6px}
+    .stockTable{margin-top:10px;display:grid;gap:6px}
+    .stockRow{display:grid;grid-template-columns:.35fr 1.1fr .8fr .55fr 1.6fr;gap:8px;padding:8px;border-radius:12px;background:rgba(255,255,255,.045);font-size:13px;color:#cbd7ea}
+    @media(max-width:900px){.investRanks,.stockCards{grid-template-columns:1fr}.stockRow{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<canvas id="bgParticles"></canvas>
+<div class="wrap">
+  <section class="hero">
+    <div class="panel heroMain">
+      <div class="badge">● 洛书时机仪 v0.7.0 Vercel K线代理版</div>
+      <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
+      <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
+      <div class="philo">
+        <div class="realm"><span class="sig">先天</span><b>时轮</b><span>年、月、日、时构成时间输入层，生成十态能量。时间不是答案，时间只是输入。</span></div>
+        <div class="arrow">→</div>
+        <div class="realm center"><span class="sig">中天</span><b>洛书场</b><span>十态落入九宫，经同库互通、五行生克、空间加权与十五守恒，形成“时空场”。九宫不是图案，九宫是滤波器。</span></div>
+        <div class="arrow">→</div>
+        <div class="realm"><span class="sig">后天</span><b>行印</b><span>按问事取用、主体锚点与合化状态，将场的结果翻译成行动窗口。判词不是预言，判词是行动译文。</span></div>
+      </div>
+      <div class="heroVisual">
+        <canvas id="heroCanvas"></canvas>
+      </div>
+      <div class="miniBoards">
+        <div class="miniBoard">
+          <div class="mbTitle"><b>时刻 A · 中天九宫场</b><span id="miniATime">—</span></div>
+          <div class="miniGrid" id="miniBoardA"></div>
+        </div>
+        <div class="miniBoard">
+          <div class="mbTitle"><b>时刻 B · 中天九宫场</b><span id="miniBTime">—</span></div>
+          <div class="miniGrid" id="miniBoardB"></div>
+        </div>
+      </div>
+      <div class="legendRow">
+        <div class="chip">主入口：比时机</div>
+        <div class="chip">语言：行动译文</div>
+        <div class="chip">结构：先天 → 中天 → 后天</div>
+        <div class="chip">核心：可解释 A/B 时机比较</div>
+      </div>
+      <div class="leftDisclaimer">声明：本工具是东方时空哲学的可解释行动系统原型，不提供确定性预测；投资与股票模块只作候选观察，不构成买入、卖出或持有建议。免费行情接口仅用于展示与复盘。</div>
+    </div>
+
+    <div class="panel heroAside">
+      <div class="modes">
+        <div class="mode active"><strong>比时机</strong><span>最有差异化的入口：同一问题比较两个时间窗口。</span></div>
+        <div class="mode"><strong>问一件事</strong><span>直接生成当前时刻的行动译文与行动四格。</span></div>
+        <div class="mode"><strong>看三界</strong><span>展开完整三界轨迹、九宫灵象与专业盘。</span></div>
+      </div>
+
+      <div class="notice">推荐用法：先写明一个具体行动，再比较 <b>时刻 A</b> 与 <b>时刻 B</b>。系统将依据问题类型加载对应的“问事取用”，并输出三界轨迹、时机结构与行动译文。</div>
+      <div class="smallTitle">快速问事卡</div>
+      <div class="quickCards">
+        <div class="qcard" data-q="investment|行业轮动总览|今天哪个行业方向更值得观察？">投资｜行业轮动</div>
+        <div class="qcard" data-q="investment|买入观察：火类科技/AI/新能源|今天适合观察科技、AI 或新能源的买入窗口吗？">投资｜科技AI</div>
+        <div class="qcard" data-q="investment|买入观察：金类金融/制造/半导体|今天适合观察金融、制造或半导体的买入窗口吗？">投资｜金融制造</div>
+        <div class="qcard" data-q="investment|卖出观察：高热度题材/短线获利盘|今天适合检查高热度题材的止盈窗口吗？">投资｜止盈观察</div>
+        <div class="qcard" data-q="investment|持有观察：土类红利/基建/资源|今天适合继续观察红利、基建或资源类的持有窗口吗？">投资｜持有窗口</div>
+        <div class="qcard" data-q="contract|合同/条款|今天适合推进签约吗？">签约｜条款审视</div>
+        <div class="qcard" data-q="project|汇报/发布|今天适合汇报或发布吗？">项目｜汇报发布</div>
+        <div class="qcard" data-q="business|开店/启动|这周适合轻量启动吗？">商业｜轻量启动</div>
+        <div class="qcard" data-q="weather|出行/天气参考|今天出门天气感受如何？">天气｜出行参考</div>
+        <div class="qcard" data-q="site|看房/看店选时|今天适合去看地点吗？">地点｜看房看店</div>
+        <div class="qcard" data-q="direction|当前位置取势|现在从哪个方位取势更顺？">方位｜当前位置</div>
+        <div class="qcard" data-q="direction|财务/交易方向|今天适合朝哪个方位处理财务或交易问题？">方位｜交易方向</div>
+        <div class="qcard" data-q="relationship|是否见面|今天适合和她/他见面吗？">感情｜是否见面</div>
+        <div class="qcard" data-q="compare|对比两个时机|上午和下午哪个更适合行动？">对比｜两个时段</div>
+      </div>
+
+      <div class="sectionTitle">输入区</div>
+      <div class="field">
+        <label>一句话问题</label>
+        <textarea id="question" placeholder="例如：今天适合观察科技、AI 或新能源的买入窗口吗？"></textarea>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>一级问事</label><select id="queryType"></select></div>
+        <div class="field"><label>二级场景</label><select id="subType"></select></div>
+      </div>
+      <div class="field"><label>股票代码观察池（可选｜每行一个代码）</label><textarea id="stockPool" placeholder="不输入时，系统按当前首选行业自动给出候选。&#10;A股：300750 / 600519 / 000001&#10;港股：00700.HK / 03690.HK&#10;美股：AAPL / MSFT / NVDA"></textarea></div>
+      <div class="rightMiniNote" id="marketApiField"><b>免费行情接口：</b>GitHub Pages 版统一使用 TradingView Widget 显示图表；腾讯接口只负责报价与涨跌幅。查询频率写死为 60 秒缓存、每次只抓主候选 2 只。</div>
+      <div class="field"><label>补充背景（可选）</label><textarea id="context" placeholder="例如：只做复盘观察，不作为直接交易依据；想比较上午和下午哪个窗口更适合关注行业轮动。"></textarea></div>
+      <div class="grid2">
+        <div class="field"><label>时刻 A</label><input id="dtA" type="datetime-local"></div>
+        <div class="field"><label>时刻 B</label><input id="dtB" type="datetime-local"></div>
+      </div>
+      <div class="grid3">
+        <div class="field"><label>城市预设</label><select id="cityPreset">
+          <option value="">不选（手动纬度）</option>
+          <option>Shenzhen</option><option>Sydney</option><option>Beijing</option><option>Hong Kong</option><option>Melbourne</option><option>New York</option>
+        </select></div>
+        <div class="field"><label>纬度</label><input id="latitude" type="number" step="0.1" value="22.5"></div>
+        <div class="field"><label>问主主体</label><select id="dayMaster"></select></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>空间调制</label><select id="spatialOn"><option value="on">启用纬度弱调制</option><option value="off">关闭</option></select></div>
+        <div class="field"><label>说明</label><input value="采用当地时间入盘；经度暂不参与计算。" disabled></div>
+      </div>
+      <div class="btns">
+        <button id="nowBtn">使用本机当前时间</button>
+        <button class="secondary" id="runBtn">生成三界时机结构</button>
+      </div>
+      <div class="disclaimer">右侧保留完整输入，并与左侧九宫视觉面板保持同高；左侧恢复完整 A/B 九宫小盘与原有视觉结构。</div>
+    </div>
+  </section>
+
+  <section class="main">
+    <div class="panel resultPanel" id="resultA"></div>
+    <div class="panel resultPanel" id="resultB"></div>
+  </section>
+  <section class="panel resultPanel diff" id="diffBox"></section>
+
+  <section class="infoSections">
+    <div class="panel infoPanel">
+      <div class="sectionTitle">方法说明｜设计公理与边界</div>
+      <div class="formalText">
+        <p><b>洛书时机仪不是传统术数复刻，也不是确定性预测工具。</b>它是一套以洛书、阴阳、五行和现代时空编码为启发的人文数理实验系统，用于分析行动发生时的时间、空间、主体和问题结构。</p>
+        <p>本系统将规则明确视为“设计公理”，其有效性不来自不可质疑的权威，而来自结构自洽、解释稳定、案例复盘和持续校准。换言之，它关注的不是“断定结果”，而是“解释此刻为何更适合某种行动方式”。</p>
+      </div>
+      <div class="methodGrid">
+        <div class="methodCard"><b>先天定时</b><p>以事件地或问事地的当地时间生成年、月、日、时四盘，并将四盘天干直接累积为十态能量。</p></div>
+        <div class="methodCard"><b>中天成场</b><p>十态落入洛书九宫，经同库互通、五行生克、空间加权与十五守恒形成中天时空场。</p></div>
+        <div class="methodCard"><b>后天取用</b><p>以固定生克排序定主次，以年/月天干与中天场强做评级，再用合化判断结构转向，将盘象转译为行动窗口、风险提示和可执行建议。</p></div>
+      </div>
+      <div class="pillLine">
+        <span class="pillNote">不宣称替代传统</span>
+        <span class="pillNote">不构成专业决策意见</span>
+        <span class="pillNote">重视案例复盘</span>
+        <span class="pillNote">规则可迭代</span>
+      </div>
+    </div>
+
+    <div class="panel infoPanel">
+      <div class="sectionTitle">版本规则｜当前采用与暂缓内容</div>
+      <div class="versionList">
+        <div class="versionItem"><b>当前采用：</b>2024-01-01 00:00:00 为纪元起点；四盘时间编码；十态向量优先；地支作为承载和库位调制。</div>
+        <div class="versionItem"><b>当前采用：</b>洛书九宫主盘；1/6 水库，3/8 木库，2/7 火库，4/9 金库，5 为土库与中枢守恒。</div>
+        <div class="versionItem"><b>当前采用：</b>当地时间入盘；纬度仅作低权重空间调制；经度暂不参与计算，以避免地方太阳时与行政时区的混杂。</div>
+        <div class="versionItem"><b>暂缓引入：</b>星座、十六宫外盘、传统神煞、风水地点对象盘。后续仅在案例复盘稳定后作为外层辅盘实验。</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel infoPanel" style="margin-top:22px">
+    <div class="sectionTitle">案例复盘｜把新共识建立在记录之上</div>
+    <div class="formalText">每一次问事都可以被记录、反馈和复盘。建议记录问题、时间地点、系统结论、实际行动与后续结果。案例库不是为了证明“绝对准确”，而是为了观察规则在真实场景中的稳定性、偏差和可修正空间。</div>
+    <div class="caseGrid">
+      <div class="field"><label>本次案例摘要</label><textarea id="caseNote" placeholder="例如：今晚是否适合谈经济压力；系统建议宜试探，不宜逼定；计划三天后复盘。"></textarea></div>
+      <div class="field"><label>后续反馈 / 复盘结果</label><textarea id="caseFeedback" placeholder="例如：实际选择、对方反馈、哪部分判断有共鸣、哪部分偏差较大。"></textarea></div>
+    </div>
+    <div class="btns"><button id="saveCaseBtn">保存到本机</button><button class="secondary" id="exportCaseBtn">导出本地案例</button><button class="secondary" id="feedbackBtn">提交复盘反馈</button></div>
+    <div class="notice" style="margin-top:12px">本地案例只保存在当前浏览器，不会自动上传，也不会被他人看到。若希望参与内测复盘，可手动导出或提交复盘反馈；提交前建议删除姓名、联系方式、住址等个人隐私信息。</div>
+    <div class="caseLog" id="caseLog"></div>
+  </section>
+
+  <footer>洛书时机仪｜先天定时 · 中天成场 · 后天取用 ｜ 不是问命，而是看势。</footer>
+</div>
+
+<script>
+const queries={
+  investment:['行业轮动总览','木类：医药/教育/农业/消费','火类：科技/AI/传媒/新能源','土类：地产/基建/资源/红利','金类：金融/制造/半导体/贵金属','水类：物流/航运/贸易/平台流通','买入观察：成长/弹性方向','买入观察：稳健/防守方向','卖出观察：高热度题材/短线获利盘','卖出观察：弱势行业/破位风险','持有观察：红利/现金流/低波动','轮动观察：从高热到低位补涨'],
+  contract:['合同/条款','谈判/边界','启动/签署'],
+  project:['项目推进','汇报/发布','协作/节奏'],
+  business:['开店/启动','客流/试运营','合作/合伙','现金流/承载'],
+  weather:['雨/湿气象意','晴热/火象意','出行/天气参考'],
+  site:['住宅/店铺选时','办公/看房选时','看房/看店选时'],
+  direction:['当前位置取势','住宅中心取势','办公桌/工位取势','店铺/门面取势','出门方向选择','会面座位方向','安静休息方向','沟通谈事方向','财务/交易方向','整理避让方向'],
+  relationship:['是否见面','相亲初识/试探','主动联系','关系推进','现实条件/经济压力','冷淡与观望','复合与修复'],
+  compare:['对比两个时机']
+};
+const queryNames={investment:'投资/行业',contract:'签约',project:'项目',business:'商业',weather:'天气',site:'地点',direction:'方位/空间',relationship:'感情',compare:'时机比较'};
+const STEMS=['阳水','阴水','阳木','阴木','阳火','阴火','阳土','阴土','阳金','阴金'];
+const BRANCHES=['寅','卯','辰','巳','午','未','申','酉','戌','亥','子','丑'];
+const BRANCH_MOD={子:{水:.22},亥:{水:.18},寅:{木:.18},卯:{木:.22},巳:{火:.18},午:{火:.22},申:{土:.14,金:.08},酉:{土:.12,金:.12},辰:{金扰动:.22},丑:{阳库:.22},未:{阴库:.22},戌:{全库:.22}};
+const palaceDef=[
+  {n:4,key:'yinMetal',name:'玄裁宫',cname:'隐规则与裁度',beast:'裁蛇',glyph:'✦',el:'金',x:0,y:0},
+  {n:9,key:'yangMetal',name:'天衡宫',cname:'显规则与秩序',beast:'衡鹰',glyph:'⚖',el:'金',x:1,y:0},
+  {n:2,key:'yinFire',name:'烛影宫',cname:'暗光与内燃',beast:'烛狐',glyph:'◐',el:'火',x:2,y:0},
+  {n:3,key:'yangWood',name:'生枝宫',cname:'生发与突破',beast:'枝鹿',glyph:'✧',el:'木',x:0,y:1},
+  {n:5,key:'earth',name:'中枢宫',cname:'守恒与承载',beast:'枢龟',glyph:'◎',el:'土',x:1,y:1},
+  {n:7,key:'yangFire',name:'曜焰宫',cname:'显化与热度',beast:'曜鸟',glyph:'☼',el:'火',x:2,y:1},
+  {n:8,key:'yinWood',name:'藏根宫',cname:'根基与酝酿',beast:'根藤',glyph:'❈',el:'木',x:0,y:2},
+  {n:1,key:'yangWater',name:'启流宫',cname:'流动与连接',beast:'流鱼',glyph:'≈',el:'水',x:1,y:2},
+  {n:6,key:'yinWater',name:'藏渊宫',cname:'沉潜与缓冲',beast:'渊鲸',glyph:'◌',el:'水',x:2,y:2}
+];
+const colors={水:'var(--water)',木:'var(--wood)',火:'var(--fire)',金:'var(--metal)',土:'var(--earth)'};
+const dayMasterOptions=['自动（用日盘天干）',...STEMS];
+const actionGlyph={推进:'⟫',试探:'◔',观望:'◌',止损:'⛨',谈边界:'⚖',换时机:'↺'};
+const epoch=new Date(2024,0,1,0,0,0);
+const weights={year:.20,month:.25,day:.35,hour:.20};
+const stemKey={'阳水':'yangWater','阴水':'yinWater','阳木':'yangWood','阴木':'yinWood','阳火':'yangFire','阴火':'yinFire','阳土':'yangEarth','阴土':'yinEarth','阳金':'yangMetal','阴金':'yinMetal'};
+const gen={水:'木',木:'火',火:'土',土:'金',金:'水'};
+const ctrl={水:'火',火:'金',金:'木',木:'土',土:'水'};
+const eightLines=[[4,9,2],[3,5,7],[8,1,6],[4,3,8],[9,5,1],[2,7,6],[4,5,6],[2,5,8]];
+
+const queryType=document.getElementById('queryType');
+const subType=document.getElementById('subType');
+const dayMaster=document.getElementById('dayMaster');
+const cityPreset=document.getElementById('cityPreset');
+const latitude=document.getElementById('latitude');
+const spatialOn=document.getElementById('spatialOn');
+const dtA=document.getElementById('dtA');
+const dtB=document.getElementById('dtB');
+const question=document.getElementById('question');
+const context=document.getElementById('context');
+const stockPool=document.getElementById('stockPool');
+const diffBox=document.getElementById('diffBox');
+
+function initUI(){
+  queryType.innerHTML=Object.entries(queryNames).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+  updateSubTypes();
+  dayMaster.innerHTML=dayMasterOptions.map(v=>`<option value="${v}">${v}</option>`).join('');
+}
+function updateSubTypes(){
+  const arr=queries[queryType.value]||[];
+  subType.innerHTML=arr.map(v=>`<option value="${v}">${v}</option>`).join('');
+}
+function fmtLocal(d){const z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}T${z(d.getHours())}:${z(d.getMinutes())}`}
+function setNow(){const a=new Date();const b=new Date(a.getTime()+6*3600*1000);dtA.value=fmtLocal(a);dtB.value=fmtLocal(b)}
+function cityLat(name){return {Shenzhen:22.5,Sydney:-33.9,Beijing:39.9,'Hong Kong':22.3,Melbourne:-37.8,'New York':40.7}[name]}
+
+function combo(k){return{stem:STEMS[((k%10)+10)%10],branch:BRANCHES[(((k+2)%12)+12)%12],k:((k%60)+60)%60}}
+function daysBetween(a,b){return Math.floor((a-b)/86400000)}
+function hoursBetween(a,b){return Math.floor((a-b)/3600000)}
+function fourPillars(d){return{year:combo(d.getFullYear()-2024),month:combo((d.getFullYear()-2024)*12+d.getMonth()),day:combo(daysBetween(new Date(d.getFullYear(),d.getMonth(),d.getDate()),epoch)),hour:combo(hoursBetween(d,epoch))}}
+function emptyTen(){return{yangWater:0,yinWater:0,yangWood:0,yinWood:0,yangFire:0,yinFire:0,yangEarth:0,yinEarth:0,yangMetal:0,yinMetal:0,mods:{metalDisturb:0,yangStore:0,yinStore:0,fullStore:0,waterField:0,woodField:0,fireField:0,earthRule:0},spatial:{direction:'未启用',amount:0,lat:null}}}
+function addStem(v,stem,w){v[stemKey[stem]]+=w}
+function branchMod(v,b,w){const m=.25*w;if(b==='辰')v.mods.metalDisturb+=m;if(b==='丑')v.mods.yangStore+=m;if(b==='未')v.mods.yinStore+=m;if(b==='戌')v.mods.fullStore+=m;if(['子','亥'].includes(b))v.mods.waterField+=m;if(['寅','卯'].includes(b))v.mods.woodField+=m;if(['巳','午'].includes(b))v.mods.fireField+=m;if(['申','酉'].includes(b))v.mods.earthRule+=m}
+function applyBranchMods(v){let m=v.mods; v.yinMetal+=m.metalDisturb*.65; v.yangMetal+=m.metalDisturb*.25; v.yangEarth+=m.yangStore*.5; v.yinEarth+=m.yinStore*.5; v.yangEarth+=m.fullStore*.2; v.yinEarth+=m.fullStore*.2; v.yinWater+=m.waterField*.4; v.yangWood+=m.woodField*.35; v.yangFire+=m.fireField*.35; v.yinMetal+=m.earthRule*.28; v.yangEarth+=m.earthRule*.12;}
+function applyLatitude(v){const on=spatialOn.value==='on'; const lat=parseFloat(latitude.value); v.spatial.lat=Number.isFinite(lat)?lat:null; if(!on||!Number.isFinite(lat)){v.spatial.direction='未启用'; return}
+  const w=.06; const absNorm=Math.min(1,Math.abs(lat)/90); const bias=(.5-absNorm)*2*w;
+  if(bias>0){v.yangFire+=bias*.38; v.yangWood+=bias*.34; v.yangEarth+=bias*.12; v.yangWater+=bias*.08; v.yangMetal+=bias*.08; v.spatial.direction='低纬偏阳：火木阳性略增'; v.spatial.amount=+bias.toFixed(3)}
+  else if(bias<0){const a=-bias; v.yinWater+=a*.38; v.yinMetal+=a*.34; v.yinEarth+=a*.14; v.yinWood+=a*.07; v.yinFire+=a*.07; v.spatial.direction='高纬偏阴：水金阴性略增'; v.spatial.amount=+a.toFixed(3)}
+  else {v.spatial.direction='中纬平衡：空间调制近零'; v.spatial.amount=0}
+}
+function initialTen(p){const v=emptyTen(); [['year',weights.year],['month',weights.month],['day',weights.day],['hour',weights.hour]].forEach(([k,w])=>{addStem(v,p[k].stem,w);branchMod(v,p[k].branch,w)}); applyBranchMods(v); applyLatitude(v); return v}
+function clamp(x){return Math.max(0,Math.min(1,x))}
+function tenToPalaces(t){return{1:t.yangWater,6:t.yinWater,3:t.yangWood,8:t.yinWood,7:t.yangFire,2:t.yinFire,9:t.yangMetal,4:t.yinMetal,5:t.yangEarth+t.yinEarth,earthYang:t.yangEarth,earthYin:t.yinEarth}}
+function palacesToTen(p,oldEarth){const s=oldEarth.yang+oldEarth.yin+1e-6;return{yangWater:p[1],yinWater:p[6],yangWood:p[3],yinWood:p[8],yangFire:p[7],yinFire:p[2],yangMetal:p[9],yinMetal:p[4],yangEarth:p[5]*(oldEarth.yang/s),yinEarth:p[5]*(oldEarth.yin/s)}}
+function sameStore(p){const pairs=[[1,6],[3,8],[7,2],[9,4]];let q={...p};pairs.forEach(([a,b])=>{const mean=(p[a]+p[b])/2,mix=.18;q[a]=p[a]*(1-mix)+mean*mix;q[b]=p[b]*(1-mix)+mean*mix});return q}
+function palaceByN(n){return palaceDef.find(x=>x.n===n)}
+function palaceElement(n){return palaceByN(n).el}
+function spatialWeight(a,b){if(a===b)return 0;const A=palaceByN(a),B=palaceByN(b);const man=Math.abs(A.x-B.x)+Math.abs(A.y-B.y);const pair=([[1,6],[3,8],[7,2],[9,4]].some(([x,y])=>(a===x&&b===y)||(a===y&&b===x)));if(pair)return 1;if(man===1)return .8;if((A.x===1&&B.x===1)||(A.y===1&&B.y===1)||(a===5||b===5))return .65;return .4}
+function elementPass(p){let q={...p};const alpha=.11,beta=.13,nums=[1,2,3,4,5,6,7,8,9];nums.forEach(t=>{let delta=0;nums.forEach(s=>{if(s===t)return;const se=palaceElement(s),te=palaceElement(t),w=spatialWeight(s,t),val=p[s];if(gen[se]===te)delta+=alpha*w*val;if(ctrl[se]===te)delta-=beta*w*val});q[t]=clamp(p[t]+delta)});return q}
+function loshuBalance(p){let q={...p};const sums=eightLines.map(line=>line.reduce((a,n)=>a+p[n],0));const avg=sums.reduce((a,b)=>a+b,0)/sums.length;const theta=.12,gamma=.045;eightLines.forEach((line,idx)=>{const ex=sums[idx]-avg;if(Math.abs(ex)>theta){line.forEach(n=>{if(n!==5)q[n]=clamp(q[n]-Math.sign(ex)*gamma*Math.abs(ex)/3)});q[5]=clamp(q[5]+Math.sign(ex)*gamma*Math.abs(ex)/4)}});return q}
+function detectTransform(v){
+  const pairs=[
+    ['阳木','阴土','土',v.yangWood,v.yinEarth],
+    ['阴木','阳金','金',v.yinWood,v.yangMetal],
+    ['阳火','阴金','水',v.yangFire,v.yinMetal],
+    ['阴火','阳水','木',v.yinFire,v.yangWater],
+    ['阳土','阴水','火',v.yangEarth,v.yinWater]
+  ];
+  let best={name:'',to:'',strength:0,level:'未触发',balance:0,x:0,y:0,pairSum:0};
+  for(const [a,b,to,x,y] of pairs){
+    const strength=Math.min(x,y);
+    const pairSum=x+y;
+    const bal=Math.max(x,y)>0?strength/Math.max(x,y):0;
+    const priority=strength*0.62 + bal*0.23 + pairSum*0.15;
+    const bestPriority=best.strength*0.62 + best.balance*0.23 + best.pairSum*0.15;
+    if(strength>.08 && priority>bestPriority){
+      best={name:`${a} + ${b} → 化${to}`,to,strength:+strength.toFixed(3),balance:+bal.toFixed(3),x:+x.toFixed(3),y:+y.toFixed(3),pairSum:+pairSum.toFixed(3),level:(strength>=.30&&bal>=.75)?'成化':(strength>=.20&&bal>=.45)?'弱合':'争合/牵制'};
+    }
+  }
+  return best;
+}
+function convolve(v){const p0=tenToPalaces(v),p1=sameStore(p0),p2=elementPass(p1),p3=loshuBalance(p2);const ten=palacesToTen(p3,{yang:v.yangEarth,yin:v.yinEarth});const trans=detectTransform(ten);let final={...ten};if(trans.name){const add=.18*trans.strength;const map={土:['yangEarth','yinEarth'],金:['yangMetal','yinMetal'],水:['yangWater','yinWater'],木:['yangWood','yinWood'],火:['yangFire','yinFire']};map[trans.to].forEach(k=>final[k]+=add/2)}Object.keys(final).forEach(k=>final[k]=+clamp(final[k]).toFixed(2));return{initial:p0,afterStore:p1,afterElement:p2,afterBalance:p3,ten:final,palaces:tenToPalaces(final),transform:trans}}
+function totals(t){return{水:+(t.yangWater+t.yinWater).toFixed(2),木:+(t.yangWood+t.yinWood).toFixed(2),火:+(t.yangFire+t.yinFire).toFixed(2),金:+(t.yangMetal+t.yinMetal).toFixed(2),土:+(t.yangEarth+t.yinEarth).toFixed(2),阳:+(t.yangWater+t.yangWood+t.yangFire+t.yangMetal+t.yangEarth).toFixed(2),阴:+(t.yinWater+t.yinWood+t.yinFire+t.yinMetal+t.yinEarth).toFixed(2)}}
+function resolveDayMaster(v,p){if(!v||v==='auto'||String(v).startsWith('自动')) return {value:p.day.stem,auto:true}; return {value:v,auto:false}}
+function relationForDM(dm,t){const el=dm.value.slice(1); const strongest=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1])[0][0];
+  if(el===strongest) return `问主主体为 ${dm.value}${dm.auto?'（由日盘临时取主）':''}，与当前主势同频，容易顺着这股力量行动，但也可能被同类气场放大。`;
+  const restr={水:'土',木:'金',火:'水',土:'木',金:'火'};
+  const gen={水:'金',木:'水',火:'木',土:'火',金:'土'};
+  if(restr[el]===strongest) return `问主主体为 ${dm.value}，当前主势对主体存在压制，适合减阻、缓谈、换角度，而不宜硬推。`;
+  if(gen[el]===strongest) return `问主主体为 ${dm.value}，当前主势对主体有生扶作用，适合把握窗口、顺势推进。`;
+  return `问主主体为 ${dm.value}，与当前主势既非明显相生，也非强克，宜以节奏管理和边界把控为主。`;
+}
+function weatherTendency(t){
+  const moisture = Math.round(Math.max(0,Math.min(100,42 + t.水*45 + t.金*12 - t.火*18 - t.土*16)));
+  const heat = Math.round(Math.max(0,Math.min(100,40 + t.火*48 + t.木*12 - t.水*18)));
+  const block = Math.round(Math.max(0,Math.min(100,38 + t.土*45 + t.金*18 - t.水*15)));
+  const stable = Math.round(Math.max(0,Math.min(100,42 + t.土*32 + t.金*22 - t.水*10 - t.火*8)));
+  let summary='暂无明显单一倾向。';
+  if(moisture>=heat+10 && moisture>=block) summary='偏向水汽/湿意增强。';
+  else if(heat>=moisture+10 && heat>=block) summary='偏向晴热/燥热增强。';
+  else if(block>=moisture && block>=heat) summary='偏向稳定或受阻，变化不算顺畅。';
+  let detail=`水汽指数 ${moisture}，晴热指数 ${heat}，阻滞指数 ${block}，稳定指数 ${stable}。`;
+  if(moisture>=60) detail+=' 水汽信号相对明显，可理解为湿意、云量或降水条件被抬高。';
+  if(heat>=60) detail+=' 晴热信号相对明显，可理解为日照、热度或干燥感增强。';
+  if(block>=60) detail+=' 阻滞信号偏高，可理解为天气过程推进不畅或形势偏稳定。';
+  return {summary,detail,moisture,heat,block,stable};
+}
+
+const investmentMap={
+  木:{name:'木类',sectors:['医药生物','中药/创新药','教育服务','农业种业','食品饮料中的成长消费','环保与林业'],logic:'偏长期成长、研发培育、修复与消费韧性。'},
+  火:{name:'火类',sectors:['AI应用','传媒游戏','互联网平台','算力/数据中心','光伏/储能','新能源车链'],logic:'偏热度、传播、算力、电能转换与高关注度题材。'},
+  土:{name:'土类',sectors:['地产链','基建建材','水泥工程','煤炭资源','公用事业','高股息红利'],logic:'偏承载、资产、周期、现金流与防守稳定。'},
+  金:{name:'金类',sectors:['银行/券商/保险','高端制造','机器人/自动化','半导体设备/芯片硬件','军工装备','黄金/贵金属'],logic:'偏规则、定价、硬件、制造、金融秩序与避险属性。'},
+  水:{name:'水类',sectors:['物流快递','航运港口','跨境贸易','旅游出行','电商流通','数据流/支付流'],logic:'偏流动、运输、渠道、交易和信息传播。'}
+};
+function investmentElement(sub){
+  if(!sub) return {el:'',label:'行业总览',sectors:[],text:'本系统将行业先按五行象意粗分，再用当前时机结构观察行业轮动、买入观察、卖出止盈与持有风险。'};
+  for(const el of ['木','火','土','金','水']){
+    if(sub.includes(el+'类')){const m=investmentMap[el]; return {el,label:m.name,sectors:m.sectors,text:`${m.name}行业：${m.sectors.join('、')}。${m.logic}`};}
+  }
+  if(sub.includes('科技')||sub.includes('AI')||sub.includes('新能源')||sub.includes('传媒')){const m=investmentMap.火; return {el:'火',label:'火类科技/AI/新能源',sectors:m.sectors,text:`火类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('金融')||sub.includes('制造')||sub.includes('半导体')||sub.includes('贵金属')){const m=investmentMap.金; return {el:'金',label:'金类金融/制造/半导体',sectors:m.sectors,text:`金类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('红利')||sub.includes('基建')||sub.includes('资源')||sub.includes('地产')){const m=investmentMap.土; return {el:'土',label:'土类红利/基建/资源',sectors:m.sectors,text:`土类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('成长')||sub.includes('医药')||sub.includes('农业')||sub.includes('消费')){const m=investmentMap.木; return {el:'木',label:'木类医药/农业/消费',sectors:m.sectors,text:`木类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  if(sub.includes('物流')||sub.includes('航运')||sub.includes('贸易')||sub.includes('流通')||sub.includes('平台')){const m=investmentMap.水; return {el:'水',label:'水类物流/航运/流通',sectors:m.sectors,text:`水类重点可看：${m.sectors.join('、')}。${m.logic}`};}
+  return {el:'',label:'行业总览',sectors:[],text:'当前为投资观察类问题，可结合二级类别将行业归入木、火、土、金、水，再观察买入、卖出、持有或轮动窗口。'};
+}
+function topInvestmentElements(t){
+  return Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
+}
+function sectorLineFor(el,mode){
+  const m=investmentMap[el];
+  if(!m) return '';
+  const pick=m.sectors.slice(0,4).join('、');
+  if(mode==='sell') return `${m.name}可重点检查：${pick}中已经连续放量、短线涨幅较大或估值拥挤的方向。`;
+  if(mode==='hold') return `${m.name}可重点观察：${pick}中现金流、订单或政策逻辑更稳定的方向。`;
+  if(mode==='risk') return `${m.name}风险点：${pick}若缺少成交确认，容易只形成短线波动。`;
+  return `${m.name}可重点观察：${pick}。`;
+}
+
+function investmentElementScores(t,sub){
+  const selected=investmentElement(sub).el;
+  const base={水:t.水,木:t.木,火:t.火,土:t.土,金:t.金};
+  const scores={};
+  for(const el of ['木','火','土','金','水']){
+    let s=45 + base[el]*42;
+    // investment-specific interpretation: flow + rules + support matter, excessive heat raises attention but also risk
+    if(el==='水') s += t.金*8 + t.木*4 - t.土*5;
+    if(el==='木') s += t.水*8 + t.火*4 - t.金*5;
+    if(el==='火') s += t.木*7 + t.金*4 - t.水*4;
+    if(el==='土') s += t.火*7 + t.金*5 - t.木*4;
+    if(el==='金') s += t.土*7 + t.水*5 - t.火*3;
+    if(selected===el) s += 6;
+    if(sub&&sub.includes('买入')) s += (el==='木'||el==='水'||el==='火')?5:-1;
+    if(sub&&sub.includes('卖出')) s += (el==='火'||el==='金')?6:0;
+    if(sub&&sub.includes('持有')) s += (el==='土'||el==='金'||el==='水')?5:0;
+    if(sub&&sub.includes('轮动')) s += (el==='木'||el==='火'||el==='水')?3:0;
+    scores[el]=displayScore(clampScore(Math.round(s)));
+  }
+  return scores;
+}
+function focusLevel(score){
+  if(score>=82) return {label:'高关注',verb:'可以列为主观察方向'};
+  if(score>=70) return {label:'可关注',verb:'可以观察，但要等待价格与量能确认'};
+  if(score>=58) return {label:'中性观察',verb:'可以放入备选，不宜作为主线'};
+  if(score>=45) return {label:'谨慎观察',verb:'暂不适合作为主观察方向'};
+  return {label:'低关注',verb:'不建议作为当前主观察方向'};
+}
+function investmentRankRows(t,sub){
+  const scores=investmentElementScores(t,sub);
+  return Object.entries(scores).sort((a,b)=>b[1]-a[1]).map(([el,score],i)=>({el,score,rank:i+1,level:focusLevel(score).label,map:investmentMap[el]}));
+}
+
+function normalizeSymbol(code){
+  let c=String(code||'').trim().toUpperCase();
+  if(!c) return '';
+  if(/^\d{6}$/.test(c)){
+    if(c.startsWith('6')) return c+'.SH';
+    return c+'.SZ';
+  }
+  if(/^\d{5}$/.test(c)) return c+'.HK';
+  return c;
+}
+function inferMarket(symbol){
+  if(symbol.endsWith('.SH')||symbol.endsWith('.SZ')) return 'A股';
+  if(symbol.endsWith('.HK')) return '港股';
+  if(symbol.endsWith('.T')) return '日股';
+  if(symbol.endsWith('.L')) return '英股';
+  return '美股/全球';
+}
+const demoStockMeta={
+  '300750.SZ':{name:'宁德时代',el:'火'},'002415.SZ':{name:'海康威视',el:'金'},'600519.SH':{name:'贵州茅台',el:'木'},'000001.SZ':{name:'平安银行',el:'金'},'601318.SH':{name:'中国平安',el:'金'},
+  '00700.HK':{name:'腾讯控股',el:'火'},'03690.HK':{name:'美团',el:'水'},'09988.HK':{name:'阿里巴巴',el:'水'},
+  'AAPL':{name:'Apple',el:'金'},'MSFT':{name:'Microsoft',el:'火'},'NVDA':{name:'NVIDIA',el:'火'},'TSLA':{name:'Tesla',el:'火'},'GOOGL':{name:'Alphabet',el:'水'},'AMZN':{name:'Amazon',el:'水'}
+};
+
+const defaultIndustryStocks={
+  火:['NVDA','MSFT','300750.SZ','00700.HK'],
+  金:['AAPL','002415.SZ','000001.SZ','601318.SH'],
+  水:['GOOGL','AMZN','03690.HK','09988.HK'],
+  木:['600519.SH'],
+  土:['601318.SH','000001.SZ']
+};
+function defaultRecommendedStocks(t,sub){
+  const it=investmentTendency(t,sub);
+  const codes=[];
+  const add=(el,n)=>{
+    let k=0;
+    (defaultIndustryStocks[el]||[]).forEach(c=>{
+      if(!codes.includes(c)&&k<n){codes.push(c);k++;}
+    });
+  };
+  add(it.rank[0],2);
+  add(it.rank[1],2);
+  if(it.focusEl && ![it.rank[0],it.rank[1]].includes(it.focusEl)) add(it.focusEl,1);
+  add(it.rank[2],1);
+  return codes.slice(0,5).map(c=>{
+    const meta=demoStockMeta[c]||{name:c,el:it.rank[0]};
+    return {code:c,name:meta.name||c,el:meta.el||it.rank[0],market:inferMarket(c),raw:c,auto:true,needsData:true};
+  });
+}
+function extractStockCode(line){
+  const raw=String(line||'').trim().toUpperCase();
+  if(!raw) return '';
+  const patterns=[
+    /\b\d{6}\.(SH|SZ)\b/,
+    /\b\d{5}\.HK\b/,
+    /\b\d{6}\b/,
+    /\b\d{5}\b/,
+    /\b[A-Z]{1,5}(\.[A-Z])?\b/
+  ];
+  for(const p of patterns){
+    const m=raw.match(p);
+    if(m) return m[0];
+  }
+  return raw.split(/[,，\t \|｜]+/).filter(Boolean)[0]||'';
+}
+function parseStockPool(){
+  if(!stockPool || !stockPool.value.trim()) return [];
+  return stockPool.value.split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>{
+    const code=extractStockCode(line);
+    const symbol=normalizeSymbol(code);
+    const meta=demoStockMeta[symbol]||{name:symbol,el:''};
+    // If the user writes "贵州茅台｜600519.SH", keep the user-facing name before the delimiter
+    let userName='';
+    const namePart=line.split(/[,，\t\|｜]+/).map(x=>x.trim()).filter(Boolean).find(x=>!x.toUpperCase().includes(code.toUpperCase()) && !/^\d{5,6}(\.(SH|SZ|HK))?$/i.test(x));
+    if(namePart && !/^[A-Z]{1,5}(\.[A-Z])?$/i.test(namePart)) userName=namePart;
+    return {code:symbol,name:userName||meta.name||symbol,el:meta.el||'',market:inferMarket(symbol),raw:line,auto:false,needsData:true};
+  }).filter(x=>x.code);
+}
+function elementForStock(s, fallback){
+  return s.el || fallback || '金';
+}
+function norm(v,lo,hi){return Math.max(0,Math.min(100,Math.round((v-lo)/(hi-lo)*100)))}
+function stockOfflineMomentum(symbol){
+  let h=0; for(const ch of String(symbol||'')) h=(h*31+ch.charCodeAt(0))%997;
+  return {
+    trend:48 + (h%31),       // 48-78, used only when realtime is unavailable
+    active:45 + ((h*7)%28),  // 45-72
+    heat:(h*13)%18
+  };
+}
+function stockElementReason(el){
+  return {
+    木:'木类偏成长、生发和新题材，适合观察成长叙事能否被资金与信息流激活。',
+    火:'火类偏科技、AI、传媒、新能源和曝光热度，适合观察热度延续、换手承接与过热风险。',
+    土:'土类偏红利、基建、资源和防守承接，适合观察稳定性、现金流和低波动持有价值。',
+    金:'金类偏金融、制造、半导体硬件和规则交易，适合观察估值筛选、成交纪律和资金承接。',
+    水:'水类偏平台、物流、航运、贸易和流通，适合观察资金流、信息流和交易流动性。'
+  }[el]||'行业属性待识别，正式接口版会自动补全行业分类。';
+}
+function stockOfflineMomentum(symbol){
+  let h=0; for(const ch of String(symbol||'')) h=(h*31+ch.charCodeAt(0))%997;
+  return {
+    trend:48 + (h%31),
+    active:45 + ((h*7)%28),
+    heat:(h*13)%18
+  };
+}
+function stockElementReason(el){
+  return {
+    木:'木类偏成长、生发和新题材，适合观察成长叙事能否被资金与信息流激活。',
+    火:'火类偏科技、AI、传媒、新能源和曝光热度，适合观察热度延续、换手承接与过热风险。',
+    土:'土类偏红利、基建、资源和防守承接，适合观察稳定性、现金流和低波动持有价值。',
+    金:'金类偏金融、制造、半导体硬件和规则交易，适合观察估值筛选、成交纪律和资金承接。',
+    水:'水类偏平台、物流、航运、贸易和流通，适合观察资金流、信息流和交易流动性。'
+  }[el]||'行业属性待识别，正式接口版会自动补全行业分类。';
+}
+function scoreStockCandidate(s,t,sub,tr){
+  const it=investmentTendency(t,sub);
+  const es=investmentElementScores(t,sub);
+  const el=elementForStock(s,it.rank[0]);
+  const industry=es[el]||50;
+  const rank=it.rank.indexOf(el);
+  const relative=rank<0?45:clampScore(82-rank*9);
+  let transformFit=50;
+  if(tr&&tr.to===el) transformFit+=16;
+  if(tr&&tr.name&&tr.name.includes('化水') && (sub||'').includes('卖出')) transformFit+=10;
+  if(tr&&tr.name&&tr.name.includes('化木') && ['木','火'].includes(el)) transformFit+=8;
+  if(tr&&tr.name&&tr.name.includes('化火') && ['火','土'].includes(el)) transformFit+=6;
+
+  const d1=Number.isFinite(s.d1)?s.d1:0, d5=Number.isFinite(s.d5)?s.d5:0, d20=Number.isFinite(s.d20)?s.d20:0;
+  const amount=Number.isFinite(s.amount)?s.amount:0, ratio=Number.isFinite(s.ratio)?s.ratio:1, turnover=Number.isFinite(s.turnover)?s.turnover:0;
+  const offline=stockOfflineMomentum(s.code);
+  const intradayOk=!s.needsData && Number.isFinite(d1);
+  const intradayTrend=clampScore(Math.round(50 + d1*8)); // +2.9% -> about 73
+  const trend=s.needsData ? offline.trend : (Math.abs(d5)+Math.abs(d20)>0 ? clampScore(Math.round(norm(d1,-5,8)*.30 + norm(d5,-8,18)*.35 + norm(d20,-15,35)*.35)) : intradayTrend);
+  const active=s.needsData ? offline.active : clampScore(Math.round((amount>0?norm(amount,0,800000):55)*.70 + norm(ratio,.6,2.8)*.30));
+  const overheat=s.needsData ? offline.heat : (d1>5?8:0)+(d5>18?10:0)+(d20>38?10:0)+(ratio>3?7:0)+(turnover>12?6:0);
+  const marketScore=s.needsData ? 0 : clampScore(Math.round(trend*.70 + active*.30 - overheat*.25));
+  const maBoost=(s.maSignal&&Number.isFinite(s.maSignal.boost))?s.maSignal.boost:0;
+  const score=clampScore(Math.round(industry*.36 + trend*.16 + active*.10 + relative*.18 + transformFit*.14 + (s.needsData?0:marketScore*.06) - overheat*.30 + maBoost));
+
+  let tag=s.needsData?'模型候选｜待实时确认':'候选观察';
+  if(!s.needsData){
+    if(marketScore>=70 && industry<58) tag='行情强｜时机不匹配';
+    else if(score>=72 && marketScore>=65) tag='主候选观察';
+    else if(marketScore>=68) tag='盘中强势观察';
+    else if(overheat>=14 || ((tr&&tr.name||'').includes('化水') && d1>3)) tag='高热换手观察';
+    else if(d1>1.2) tag='低位/盘中启动观察';
+    else if(d1<0) tag='回踩确认观察';
+  }else{
+    if(rank===0 && score>=72) tag='首选行业候选｜待实时确认';
+    else if(rank===1 && score>=66) tag='备选行业候选｜待实时确认';
+  }
+  if(!s.needsData && s.maSignal && s.maSignal.status==='golden_cross') tag += '｜均线金叉';
+  else if(!s.needsData && s.maSignal && s.maSignal.status==='near') tag += '｜均线临界';
+  const mismatch = !s.needsData && marketScore>=70 && industry<58;
+  const reason=s.needsData
+    ? `五行分类：${el}类。${stockElementReason(el)} 当前洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。由于免费分时接口未确认，本项先作为模型候选，不冒充实时行情。`
+    : `五行分类：${el}类。${stockElementReason(el)} 当前行情强度 ${marketScore}，洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。${mismatch?'行情本身偏强，但当前时机场对该五行支持不足，所以综合候选分不会被拉得很高。':''}`;
+  const risk=s.needsData
+    ? '实时行情未确认前，只能作为观察池候选；正式版需用分时走势、成交额、换手率和行业成分验证。'
+    : (mismatch?'行情强不等于时机匹配，适合列入观察池，不宜直接视为追随信号。':(overheat>=14?'短线热度偏高，适合等待回踩或换手确认。':(active<45?'成交活跃度不足，信号容易失真。':'若后续缩量回落或跌破日内均线，观察信号减弱。')));
+  return {...s,el,score,tag,reason,risk,industry,trend,active,relative,transformFit,overheat,marketScore,maSignal:s.maSignal||null,maBoost};
+}
+
+function sparklineSVG(points){
+  if(!points||points.length<2) return '';
+  const vals=points.map(p=>p.close).filter(v=>Number.isFinite(v));
+  if(vals.length<2) return '';
+  const min=Math.min(...vals), max=Math.max(...vals), span=(max-min)||1;
+  const w=320,h=72,pad=8;
+  const d=vals.map((v,i)=>`${i?'L':'M'}${pad+i*(w-pad*2)/(vals.length-1)},${h-pad-(v-min)*((h-pad*2)/span)}`).join(' ');
+  return `<svg class="sparkSvg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="rgba(246,207,120,.95)" stroke-width="2"/><line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="rgba(255,255,255,.12)" stroke-width="1"/></svg>`;
+}
+function yahooSymbol(symbol){
+  if(symbol.endsWith('.SH')) return symbol.replace('.SH','.SS');
+  if(symbol.endsWith('.SZ')) return symbol.replace('.SZ','.SZ');
+  return symbol;
+}
+const MARKET_CACHE={};
+const MARKET_TTL_MS=60000;
+function tencentCode(symbol){
+  let s=String(symbol||'').trim().toUpperCase();
+  if(/^\d{6}$/.test(s)) return s.startsWith('6')?'sh'+s:'sz'+s;
+  if(/^\d{6}\.SH$/.test(s)) return 'sh'+s.slice(0,6);
+  if(/^\d{6}\.SZ$/.test(s)) return 'sz'+s.slice(0,6);
+  if(/^\d{5}\.HK$/.test(s)) return 'hk'+s.slice(0,5);
+  if(/^\d{5}$/.test(s)) return 'hk'+s;
+  if(/^[A-Z.]+$/.test(s)) return 'us'+s.replace('.','');
+  return s.toLowerCase();
+}
+function loadTencentScript(url, checkFn, timeout=5200){
+  return new Promise((resolve,reject)=>{
+    const sc=document.createElement('script');
+    let done=false;
+    const timer=setTimeout(()=>{if(done)return;done=true;sc.remove();reject(new Error('腾讯接口超时'));}, timeout);
+    sc.onload=()=>{setTimeout(()=>{if(done)return;try{const v=checkFn();done=true;clearTimeout(timer);sc.remove();resolve(v);}catch(e){done=true;clearTimeout(timer);sc.remove();reject(e);}},30)};
+    sc.onerror=()=>{if(done)return;done=true;clearTimeout(timer);sc.remove();reject(new Error('腾讯接口脚本加载失败'))};
+    sc.src=url + (url.includes('?')?'&':'?') + '_ts=' + Date.now();
+    document.head.appendChild(sc);
+  });
+}
+async function fetchTencentQuote(symbol){
+  const code=tencentCode(symbol);
+  const vname='v_'+code;
+  delete window[vname];
+  const data=await loadTencentScript(`https://qt.gtimg.cn/q=${code}`,()=>{
+    const raw=window[vname];
+    if(!raw) throw new Error('腾讯报价无返回');
+    return raw;
+  });
+  const a=String(data).split('~');
+  const name=a[1]||symbol, price=parseFloat(a[3]), prev=parseFloat(a[4]), open=parseFloat(a[5]);
+  const pct=Number.isFinite(parseFloat(a[32]))?parseFloat(a[32]):(Number.isFinite(price)&&Number.isFinite(prev)&&prev?((price-prev)/prev*100):0);
+  const high=parseFloat(a[33]), low=parseFloat(a[34]);
+  const amount=Number.isFinite(parseFloat(a[37]))?parseFloat(a[37]):0;
+  return {code,name,price,prev,open,pct:+(pct||0).toFixed(2),high,low,amount};
+}
+function parseTencentMinuteObject(obj,code,quote){
+  const root=obj&&obj.data&&(obj.data[code]||obj.data[code.toUpperCase()]||obj.data[code.toLowerCase()]);
+  let arr=null;
+  if(root){
+    if(root.data&&Array.isArray(root.data.data)) arr=root.data.data;
+    else if(root.data&&Array.isArray(root.data)) arr=root.data;
+    else if(Array.isArray(root)) arr=root;
+  }
+  if(!arr||!arr.length) throw new Error('腾讯分时无数据');
+  const pts=arr.map(x=>{
+    const p=String(x).trim().split(/\s+/);
+    const close=parseFloat(p[1]);
+    const vol=parseFloat(p[2]||0);
+    return {time:p[0],open:close,close,volume:Number.isFinite(vol)?vol:0};
+  }).filter(x=>Number.isFinite(x.close));
+  if(pts.length<2) throw new Error('腾讯分时点不足');
+  return pts;
+}
+function fallbackQuotePoints(q){
+  const base=Number.isFinite(q.open)&&q.open>0?q.open:(Number.isFinite(q.prev)?q.prev:q.price);
+  const cur=Number.isFinite(q.price)?q.price:base;
+  const hi=Number.isFinite(q.high)?q.high:Math.max(base,cur);
+  const lo=Number.isFinite(q.low)?q.low:Math.min(base,cur);
+  const mid=(base+cur)/2;
+  return [
+    {time:'0930',open:base,close:base,volume:0},
+    {time:'1000',open:base,close:(base+hi)/2,volume:0},
+    {time:'1100',open:base,close:mid,volume:0},
+    {time:'1330',open:base,close:(mid+lo)/2,volume:0},
+    {time:'1430',open:base,close:(cur+hi+lo)/3,volume:0},
+    {time:'now',open:base,close:cur,volume:0}
+  ];
+}
+
+function parseTencentDailyObject(obj,code){
+  const rows=[];
+  function looksDate(v){return /^\d{4}[-/]\d{2}[-/]\d{2}$/.test(String(v||''));}
+  function addRow(x){
+    if(Array.isArray(x)){
+      // Tencent kline row is usually [date, open, close, high, low, volume, ...]
+      if(x.length>=3 && looksDate(x[0])){
+        const close=parseFloat(x[2]);
+        if(Number.isFinite(close)) rows.push({date:String(x[0]).replace(/\//g,'-'),close});
+      }
+      return;
+    }
+    if(x && typeof x==='object'){
+      const date=x.date||x.time||x.day;
+      const close=parseFloat(x.close||x.c||x.price);
+      if(looksDate(date) && Number.isFinite(close)) rows.push({date:String(date).replace(/\//g,'-'),close});
+    }
+  }
+  function walk(v,depth=0){
+    if(depth>8 || v==null) return;
+    if(Array.isArray(v)){
+      // Array can be a list of rows or a single row
+      if(v.length && (Array.isArray(v[0]) || typeof v[0]==='object')){
+        v.forEach(item=>{ addRow(item); walk(item,depth+1); });
+      }else{
+        addRow(v);
+      }
+      return;
+    }
+    if(typeof v==='object'){
+      Object.keys(v).forEach(k=>walk(v[k],depth+1));
+    }
+  }
+  walk(obj);
+  const map=new Map();
+  rows.forEach(r=>{ if(r.date && Number.isFinite(r.close)) map.set(r.date,r.close); });
+  const pts=[...map.entries()].map(([date,close])=>({date,close})).sort((a,b)=>a.date.localeCompare(b.date));
+  if(pts.length<61) throw new Error(`腾讯日线点不足：仅解析到 ${pts.length} 个交易日`);
+  return pts;
+}
+function averageLast(vals,n,endExclusive){
+  const end=endExclusive==null?vals.length:endExclusive;
+  const start=end-n;
+  if(start<0) return NaN;
+  const slice=vals.slice(start,end);
+  if(slice.length<n) return NaN;
+  return slice.reduce((a,b)=>a+b,0)/n;
+}
+function calcMA3060Signal(points){
+  const closes=points.map(p=>p.close).filter(Number.isFinite);
+  if(closes.length<61) return {status:'unknown',label:'均线信号待确认',message:'日线数据不足，暂不能判断30/60均线状态。',ma30:null,ma60:null,boost:0};
+  const ma30=averageLast(closes,30);
+  const ma60=averageLast(closes,60);
+  const prevMa30=averageLast(closes,30,closes.length-1);
+  const prevMa60=averageLast(closes,60,closes.length-1);
+  const diff=ma30-ma60;
+  const prevDiff=prevMa30-prevMa60;
+  const rel=Math.abs(diff)/(ma60||1);
+  let status='below', label='均线弱势', boost=-2, message='30日均价仍在60日均价下方，中期趋势尚未转强。';
+  if(prevDiff<=0 && diff>0){
+    status='golden_cross'; label='30/60均线金叉'; boost=6;
+    message='30日均价刚刚上穿60日均价，中期趋势转强观察。';
+  }else if(diff>0){
+    status='above'; label='均线上方保持'; boost=3;
+    message='30日均价保持在60日均价上方，中期趋势仍有支撑。';
+  }else if(rel<0.006){
+    status='near'; label='均线临界观察'; boost=1;
+    message='30日均价接近60日均价，处在趋势临界区，需等待确认。';
+  }
+  return {
+    status,label,message,boost,
+    ma30:+ma30.toFixed(2),
+    ma60:+ma60.toFixed(2),
+    prevMa30:+prevMa30.toFixed(2),
+    prevMa60:+prevMa60.toFixed(2)
+  };
+}
+
+
+function yahooSymbol(symbol){
+  const s=String(symbol||'').trim().toUpperCase();
+  if(/^\d{6}\.SH$/.test(s)) return `${s.slice(0,6)}.SS`;
+  if(/^\d{6}\.SZ$/.test(s)) return `${s.slice(0,6)}.SZ`;
+  if(/^\d{6}$/.test(s)) return s.startsWith('6')?`${s}.SS`:`${s}.SZ`;
+  if(/^\d{5}\.HK$/.test(s)) return `${String(parseInt(s.slice(0,5),10)).padStart(4,'0')}.HK`;
+  if(/^\d{5}$/.test(s)) return `${String(parseInt(s,10)).padStart(4,'0')}.HK`;
+  return s.replace(/^US/,'');
+}
+function stooqSymbol(symbol){
+  const s=String(symbol||'').trim().toLowerCase();
+  if(/^\d{6}\.sh$/.test(s)) return `${s.slice(0,6)}.cn`;
+  if(/^\d{6}\.sz$/.test(s)) return `${s.slice(0,6)}.cn`;
+  if(/^\d{6}$/.test(s)) return `${s}.cn`;
+  if(/^\d{5}\.hk$/.test(s)) return `${String(parseInt(s.slice(0,5),10))}.hk`;
+  if(/^\d{5}$/.test(s)) return `${String(parseInt(s,10))}.hk`;
+  return `${s.replace(/^us/,'')}.us`;
+}
+async function fetchYahooMA3060(symbol){
+  const ys=yahooSymbol(symbol);
+  const url=`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ys)}?range=9mo&interval=1d`;
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok) throw new Error(`Yahoo HTTP ${res.status}`);
+  const obj=await res.json();
+  const r=obj&&obj.chart&&obj.chart.result&&obj.chart.result[0];
+  const closes=r&&r.indicators&&r.indicators.quote&&r.indicators.quote[0]&&r.indicators.quote[0].close;
+  const times=r&&r.timestamp;
+  if(!Array.isArray(closes)||closes.length<61) throw new Error(`Yahoo日线点不足：${closes?closes.length:0}`);
+  const pts=closes.map((c,i)=>({date:times&&times[i]?new Date(times[i]*1000).toISOString().slice(0,10):String(i),close:Number(c)})).filter(x=>Number.isFinite(x.close));
+  if(pts.length<61) throw new Error(`Yahoo可解析点不足：${pts.length}`);
+  const signal=calcMA3060Signal(pts);
+  signal.source=`Yahoo Chart(${ys})`;
+  return signal;
+}
+function parseCSVLines(csv){
+  const lines=String(csv||'').trim().split(/\r?\n/).filter(Boolean);
+  if(lines.length<62) throw new Error(`CSV行数不足：${lines.length}`);
+  const head=lines[0].toLowerCase().split(',');
+  const dateIdx=head.indexOf('date');
+  const closeIdx=head.indexOf('close');
+  if(dateIdx<0||closeIdx<0) throw new Error('CSV缺少Date/Close列');
+  const pts=lines.slice(1).map(line=>{
+    const p=line.split(',');
+    return {date:p[dateIdx],close:parseFloat(p[closeIdx])};
+  }).filter(x=>Number.isFinite(x.close));
+  if(pts.length<61) throw new Error(`CSV可解析点不足：${pts.length}`);
+  return pts.sort((a,b)=>a.date.localeCompare(b.date));
+}
+async function fetchStooqMA3060(symbol){
+  const ss=stooqSymbol(symbol);
+  const url=`https://stooq.com/q/d/l/?s=${encodeURIComponent(ss)}&i=d`;
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok) throw new Error(`Stooq HTTP ${res.status}`);
+  const csv=await res.text();
+  const pts=parseCSVLines(csv);
+  const signal=calcMA3060Signal(pts);
+  signal.source=`Stooq(${ss})`;
+  return signal;
+}
+function sourceProbeHTML(ma){
+  const attempts=(ma&&ma.attempts)||[];
+  if(!attempts.length) return '';
+  const items=attempts.map(a=>`<div class="probeItem"><b>${a.name}</b><br><span class="${a.ok?'probeOk':'probeFail'}">${a.ok?'可用':'失败'}</span>｜${a.msg}</div>`).join('');
+  return `<div class="sourceProbe"><b>日线数据源探测</b><div class="probeList">${items}</div></div>`;
+}
+function eastmoneySecid(symbol){
+  const s=String(symbol||'').trim().toUpperCase();
+  if(/^\d{6}\.SH$/.test(s)) return `1.${s.slice(0,6)}`;
+  if(/^\d{6}\.SZ$/.test(s)) return `0.${s.slice(0,6)}`;
+  if(/^\d{6}$/.test(s)) return `${s.startsWith('6')?'1':'0'}.${s}`;
+  if(/^\d{5}\.HK$/.test(s)) return `116.${s.slice(0,5)}`;
+  if(/^\d{5}$/.test(s)) return `116.${s}`;
+  return `105.${s.replace(/^US/,'')}`;
+}
+function parseEastmoneyKlines(obj){
+  const arr=obj&&obj.data&&obj.data.klines;
+  if(!Array.isArray(arr)||arr.length<61) throw new Error(`东方财富日线点不足：${arr?arr.length:0}`);
+  const pts=arr.map(line=>{
+    const p=String(line).split(',');
+    return {date:p[0],close:parseFloat(p[2])};
+  }).filter(x=>Number.isFinite(x.close));
+  if(pts.length<61) throw new Error(`东方财富日线可解析点不足：${pts.length}`);
+  return pts.sort((a,b)=>a.date.localeCompare(b.date));
+}
+async function fetchEastmoneyMA3060(symbol){
+  const secid=eastmoneySecid(symbol);
+  const cb='emk_'+String(secid).replace(/[^a-zA-Z0-9_]/g,'_')+'_'+Math.random().toString(36).slice(2,8);
+  const fields1='f1,f2,f3,f4,f5,f6';
+  const fields2='f51,f52,f53,f54,f55,f56,f57,f58,f59,f60,f61';
+  const url=`https://push2his.eastmoney.com/api/qt/stock/kline/get?secid=${encodeURIComponent(secid)}&fields1=${fields1}&fields2=${fields2}&klt=101&fqt=1&beg=0&end=20500101&lmt=160&cb=${cb}`;
+  const obj=await loadTencentScript(url,()=>{
+    const v=window[cb];
+    if(!v) throw new Error('东方财富日线接口无返回');
+    return v;
+  },8000);
+  const pts=parseEastmoneyKlines(obj);
+  const signal=calcMA3060Signal(pts);
+  signal.source='东方财富日线';
+  return signal;
+}
+
+async function fetchProxyMA3060(symbol){
+  const url=`/api/ma?symbol=${encodeURIComponent(symbol)}`;
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok) throw new Error(`代理接口 HTTP ${res.status}`);
+  const obj=await res.json();
+  if(!obj || obj.ok===false) throw new Error(obj&&obj.error?obj.error:'代理接口返回失败');
+  return {
+    status:obj.status||'unknown',
+    label:obj.label||'均线信号待确认',
+    message:obj.message||'K线代理已返回结果。',
+    boost:Number.isFinite(obj.boost)?obj.boost:0,
+    ma30:Number.isFinite(obj.ma30)?obj.ma30:null,
+    ma60:Number.isFinite(obj.ma60)?obj.ma60:null,
+    prevMa30:Number.isFinite(obj.prevMa30)?obj.prevMa30:null,
+    prevMa60:Number.isFinite(obj.prevMa60)?obj.prevMa60:null,
+    source:obj.source||'Vercel K线代理',
+    attempts:obj.attempts||[{name:'Vercel K线代理',ok:true,msg:obj.source||'成功'}]
+  };
+}
+async function fetchTencentMA3060(symbol){
+  const proxyAttempts=[];
+  try{
+    const proxySig=await fetchProxyMA3060(symbol);
+    return proxySig;
+  }catch(e){
+    proxyAttempts.push({name:'Vercel K线代理',ok:false,msg:e.message||String(e)});
+  }
+
+  const attemptsLog=proxyAttempts||[];
+  async function runAttempt(name,fn){
+    try{
+      const sig=await fn();
+      attemptsLog.push({name,ok:true,msg:sig.source||'成功'});
+      sig.attempts=attemptsLog;
+      return sig;
+    }catch(e){
+      attemptsLog.push({name,ok:false,msg:e.message||String(e)});
+      return null;
+    }
+  }
+
+  // 美股/全球优先 Yahoo/Stooq；A/H 优先腾讯/东方财富，然后再试 Yahoo/Stooq。
+  if(isUSSymbol(symbol)){
+    let sig=await runAttempt('Yahoo Chart',()=>fetchYahooMA3060(symbol)); if(sig) return sig;
+    sig=await runAttempt('Stooq CSV',()=>fetchStooqMA3060(symbol)); if(sig) return sig;
+  }
+
+  const code=tencentCode(symbol);
+  const attempts=[
+    `${code},day,,,180,qfq`,
+    `${code},day,,,180,`,
+    `${code},day,,,260,qfq`,
+    `${code},day,,,260,`
+  ];
+  let tencentSig=null;
+  for(const param of attempts){
+    const name=`腾讯日线 ${param.split(',').slice(-2).join('/')}`;
+    const sig=await runAttempt(name,async()=>{
+      const varName='kline_'+code.replace(/[^a-zA-Z0-9_]/g,'_')+'_'+Math.random().toString(36).slice(2,8);
+      const url=`https://web.ifzq.gtimg.cn/appstock/app/fqkline/get?param=${param}&_var=${varName}`;
+      const obj=await loadTencentScript(url,()=>{
+        const v=window[varName];
+        if(!v) throw new Error('腾讯日线接口无返回');
+        return v;
+      },6500);
+      const pts=parseTencentDailyObject(obj,code);
+      const signal=calcMA3060Signal(pts);
+      signal.source='腾讯日线';
+      return signal;
+    });
+    if(sig){ tencentSig=sig; break; }
+  }
+  if(tencentSig) return tencentSig;
+
+  let sig=await runAttempt('东方财富日线',()=>fetchEastmoneyMA3060(symbol)); if(sig) return sig;
+  sig=await runAttempt('Yahoo Chart',()=>fetchYahooMA3060(symbol)); if(sig) return sig;
+  sig=await runAttempt('Stooq CSV',()=>fetchStooqMA3060(symbol)); if(sig) return sig;
+
+  const final={status:'unknown',label:'均线信号待确认',message:'多个日线源均未获取到足够交易日数据。建议后续接入后端K线代理。',ma30:null,ma60:null,boost:0,source:'多源探测失败',attempts:attemptsLog};
+  return final;
+}
+function maSignalHTML(ma){
+  if(!ma) return `<div class="maSignal"><b>30/60均线：</b><span class="maTag">均线信号待确认</span><br>暂未获取到足够日线数据；A/H股通常可用，个别市场或网络环境可能需要刷新。</div>`;
+  const ma30=ma.ma30==null?'—':ma.ma30;
+  const ma60=ma.ma60==null?'—':ma.ma60;
+  return `<div class="maSignal"><b>30/60均线：</b><span class="maTag">${ma.label||'均线信号待确认'}</span><div class="quoteGrid"><div class="quoteCell">MA30：${ma30}</div><div class="quoteCell">MA60：${ma60}</div><div class="quoteCell">趋势修正：${ma.boost>0?'+':''}${ma.boost||0}</div><div class="quoteCell">状态：${ma.status||'unknown'}</div><div class="quoteCell">数据源：${ma.source||'日线接口'}</div></div><div style="margin-top:6px">${ma.message||'均线数据待确认。'}</div></div>${sourceProbeHTML(ma)}`;
+}
+async function fetchYahooChart(symbol){
+  const cacheKey=tencentCode(symbol);
+  const cached=MARKET_CACHE[cacheKey];
+  if(cached && Date.now()-cached.time<MARKET_TTL_MS) return cached.data;
+  const quote=await fetchTencentQuote(symbol);
+  let points=null, minuteOk=true, minuteError='';
+  const varName='min_'+cacheKey.replace(/[^a-zA-Z0-9_]/g,'_')+'_'+Date.now();
+  try{
+    const obj=await loadTencentScript(`https://web.ifzq.gtimg.cn/appstock/app/minute/query?code=${quote.code}&_var=${varName}`,()=>{
+      const v=window[varName];
+      if(!v) throw new Error('腾讯分时接口无返回');
+      return v;
+    },5500);
+    points=parseTencentMinuteObject(obj,quote.code,quote);
+  }catch(e){
+    minuteOk=false; minuteError=e.message||String(e); points=fallbackQuotePoints(quote);
+  }
+  let maSignal=null;
+  try{
+    maSignal=await fetchTencentMA3060(symbol);
+  }catch(e){
+    maSignal={status:'unknown',label:'均线信号待确认',message:`日线接口暂未获取成功：${e.message||e}`,ma30:null,ma60:null,boost:0,source:'日线接口',attempts:[{name:'多源日线',ok:false,msg:e.message||String(e)}]};
+  }
+  const data={d1:quote.pct,d5:0,d20:0,amount:+(quote.amount||0),ratio:1,turnover:0,points,needsData:false,quote,minuteOk,minuteError,source:minuteOk?'腾讯分时':'腾讯报价+示意',maSignal};
+  MARKET_CACHE[cacheKey]={time:Date.now(),data};
+  return data;
+}
+
+function stockIndustryLabel(el){
+  const m=investmentMap[el];
+  return m?`${el}类｜${m.name}`:`${el||'待识别'}类｜行业待识别`;
+}
+function quoteInfoHTML(s, merged, q, sourceLabel){
+  const el=merged.el || s.el || '待识别';
+  const industry=stockIndustryLabel(el);
+  const name=q.name || s.name || s.code;
+  const code=s.code;
+  const price=(q.price!==undefined&&q.price!==null)?q.price:'—';
+  const pct=(merged.d1!==undefined&&merged.d1!==null)?merged.d1:'—';
+  const amount=(q.amount!==undefined&&q.amount!==null)?q.amount:'—';
+  const hkNote=isHKSymbol(code)?'港股观察池已切换为腾讯分时/报价示意，避免 TradingView 弹窗或默认错显。':'';
+  return `<div class="quoteInfo"><b>${name}</b>｜${code}<span class="apiTag">${s.market||inferMarket(code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${industry}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px">观察类型：${merged.tag}。图表来源：${sourceLabel}；腾讯报价用于现价、涨跌幅和候选分重算。手机安全图不是 TradingView 实时图，只是防空白兜底。${hkNote}</div></div>${maSignalHTML(merged.maSignal)}`;
+}
+function stockCandidateHTML(t,sub,conv,label){
+  const userList=parseStockPool();
+  const list=userList.length?userList:defaultRecommendedStocks(t,sub);
+  const tr=transformDetail(conv.transform,'investment',sub);
+  const it=investmentTendency(t,sub);
+  const sourceText=userList.length?'代码观察池':'系统推荐候选';
+  const scored=list.map(s=>scoreStockCandidate(s,t,sub,tr)).sort((a,b)=>b.score-a.score);
+  const top=scored.slice(0,2);
+  const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">五行行业：${stockIndustryLabel(s.el)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
+  const rows=scored.map((s,i)=>`<div class="stockRow"><span>#${i+1}</span><b>${s.name}</b><span>${stockIndustryLabel(s.el)}</span><span>${s.score}</span><span>${i<2?'主候选观察':'对照/备选观察'}｜${s.tag}</span></div>`).join('');
+  setTimeout(()=>fetchAndRenderStocks(label,scored.slice(0,2),t,sub,conv),50);
+  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、腾讯报价信息与图表；A股优先使用腾讯分时图，港股/美股优先使用 TradingView 图表。支持“600519”或“贵州茅台｜600519.SH”这类写法。行情与图表仅作观察展示；手机安全图/本地示意图只用于防止空白，不代表 TradingView 实时分时；30/60均线为趋势提醒，不构成买卖建议。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
+}
+
+function tvSymbolFor(symbol){
+  const raw=String(symbol||'').trim().toUpperCase();
+  if(/^\d{6}\.SH$/.test(raw)) return `SSE:${raw.slice(0,6)}`;
+  if(/^\d{6}\.SZ$/.test(raw)) return `SZSE:${raw.slice(0,6)}`;
+  if(/^\d{6}$/.test(raw)) return raw.startsWith('6')?`SSE:${raw}`:`SZSE:${raw}`;
+  if(/^\d{5}\.HK$/.test(raw)) return `HKEX:${String(parseInt(raw.slice(0,5),10))}`;
+  if(/^\d{5}$/.test(raw)) return `HKEX:${String(parseInt(raw,10))}`;
+  const nasdaq=['AAPL','MSFT','NVDA','TSLA','GOOGL','GOOG','AMZN','META','NFLX','AMD','INTC','ADBE','AVGO','COST','PEP'];
+  const nyse=['BABA','NIO','XPEV','LI','KO','DIS','JPM','V','MA'];
+  if(nasdaq.includes(raw)) return `NASDAQ:${raw}`;
+  if(nyse.includes(raw)) return `NYSE:${raw}`;
+  return `NASDAQ:${raw}`;
+}
+
+function isAShareSymbol(symbol){
+  const s=String(symbol||'').toUpperCase();
+  return /^\d{6}(\.(SH|SZ))?$/.test(s);
+}
+function isHKSymbol(symbol){
+  const s=String(symbol||'').toUpperCase();
+  return /^\d{5}(\.HK)?$/.test(s);
+}
+function chartVisualHTML(symbol,data){
+  // 图表策略：
+  // 1. A股/港股：用腾讯/可解析行情图，避免 TradingView 弹窗、空白或错显。
+  // 2. 美股/全球股票：桌面端显示 TradingView；手机端隐藏 TradingView，显示本地安全图。
+  // 3. 无论哪种情况，都提供 guaranteedLocalChartHTML，保证“选股看图”区域不会空白。
+  if((isAShareSymbol(symbol)||isHKSymbol(symbol))){
+    return guaranteedLocalChartHTML(symbol,data);
+  }
+  return tradingViewIframe(symbol) + phoneSafeChartHTML(symbol,data);
+}
+function chartSourceLabel(symbol,data){
+  const real=data&&data.points&&data.points.length>1;
+  if(isAShareSymbol(symbol)) return real?'腾讯A股分时/报价图':'A股本地示意图';
+  if(isHKSymbol(symbol)) return real?'腾讯港股分时/报价图':'港股本地示意图';
+  return real?'TradingView桌面图表 / 手机行情安全图 + 腾讯报价':'TradingView桌面图表 / 手机本地安全图 + 腾讯报价';
+}
+function tradingViewURL(symbol){
+  return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSymbolFor(symbol))}`;
+}
+
+function syntheticPointsFromSymbol(symbol){
+  const s=String(symbol||'AAPL');
+  let h=0; for(const ch of s) h=(h*37+ch.charCodeAt(0))%1009;
+  const base=100+(h%40);
+  const pts=[];
+  for(let i=0;i<16;i++){
+    const wave=Math.sin((i+h%5)/2.2)*1.6 + Math.cos((i+h%7)/3.1)*1.1 + (i-7.5)*((h%9)-4)/45;
+    pts.push({time:String(i),open:base,close:base+wave,volume:0});
+  }
+  return pts;
+}
+function phoneSafeChartHTML(symbol,data){
+  const hasReal=data&&data.points&&data.points.length>1;
+  const pts=hasReal?data.points:syntheticPointsFromSymbol(symbol);
+  const note=hasReal
+    ? '手机端安全图：根据可解析行情数据绘制，不依赖 TradingView iframe。'
+    : '手机端安全图：当前未取到可解析行情，使用本地示意曲线，目的只是保证手机端不空白；不是 TradingView 实时图。';
+  return `<div class="phoneSafeChart"><div class="meta">${note}</div>${sparklineSVG(pts)}<a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开完整图表</a></div>`;
+}
+function guaranteedLocalChartHTML(symbol,data){
+  const hasReal=data&&data.points&&data.points.length>1;
+  const pts=hasReal?data.points:syntheticPointsFromSymbol(symbol);
+  const note=hasReal?'腾讯/可解析行情图':'本地示意图';
+  return `<div class="guaranteedChart"><div class="chartNote">${note}</div>${sparklineSVG(pts)}</div>`;
+}
+function mobileFallbackHTML(symbol,data){
+  if(data && data.points && data.points.length>1){
+    return `<div class="mobileChartFallback"><div class="meta">移动端兜底图：TradingView 在手机浏览器中可能被 iframe/隐私策略拦截，下方使用腾讯报价/分时绘制。</div>${sparklineSVG(data.points)}<a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开</a></div>`;
+  }
+  return `<div class="mobileChartFallback"><div class="meta">移动端未能加载 TradingView 图表；可点击下方按钮在 TradingView 打开。</div><a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开</a></div>`;
+}
+function tradingViewIframe(symbol){
+  const tvSymbol=encodeURIComponent(tvSymbolFor(symbol));
+  const id=String(symbol||'').replace(/[^A-Z0-9]/gi,'_');
+  const src=`https://s.tradingview.com/widgetembed/?frameElementId=tv_${id}&symbol=${tvSymbol}&interval=5&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=131722&studies=[]&theme=dark&style=1&timezone=Asia%2FShanghai&withdateranges=0&hideideas=1`;
+  return `<iframe class="tvFrame tvDesktopOnly" src="${src}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
+}
+function isUSSymbol(symbol){
+  const s=String(symbol||'').toUpperCase();
+  return /^[A-Z]{1,5}(\.[A-Z])?$/.test(s) && !s.endsWith('.HK') && !s.endsWith('.SH') && !s.endsWith('.SZ');
+}
+async function fetchAndRenderStocks(label,stocks,t,sub,conv){
+  const tr=transformDetail(conv.transform,'investment',sub);
+  for(const s of stocks){
+    const id=`chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}`;
+    const box=document.getElementById(id);
+    if(!box) continue;
+    box.innerHTML='<div class="meta">正在加载 TradingView 图表，并获取腾讯报价/名称/涨跌幅...</div>';
+    try{
+      const data=await fetchYahooChart(s.code);
+      const merged=scoreStockCandidate({...s,...data},t,sub,tr);
+      const q=data.quote||{};
+      box.innerHTML=`${chartVisualHTML(s.code,data)}${quoteInfoHTML(s,merged,q,chartSourceLabel(s.code,data))}`;
+    }catch(e){
+      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。候选解释暂以洛书模型、五行行业与后天合化为主。</div></div>${maSignalHTML(null)}`;
+    }
+  }
+}
+function investmentDecisionHTML(t,sub){
+  const it=investmentTendency(t,sub);
+  const selected=it.map.el||it.focusEl;
+  const rows=investmentRankRows(t,sub);
+  const selectedRow=rows.find(r=>r.el===selected)||rows[0];
+  const top=rows[0], second=rows[1];
+  const fl=focusLevel(selectedRow.score);
+  const rec = selectedRow.score>=58
+    ? `${investmentMap[selected].name}当前为${fl.label}，${fl.verb}。`
+    : `${investmentMap[selected].name}当前为${fl.label}，更建议优先观察${top.map.name}${second?`，其次观察${second.map.name}`:''}。`;
+  const rankHTML=rows.map(r=>`<div class="investRank"><b>${r.el}｜${r.score}</b><span>#${r.rank} ${r.level}</span><span>${r.map.name}</span></div>`).join('');
+  return `<div class="investDecision"><div class="headline">投资关注判断｜${investmentMap[selected].name}</div><div class="line">${rec}</div><div class="line"><b>当前首选：</b>${top.map.name}。<b>备选：</b>${second?second.map.name:'无'}。<b>不推荐时的替代逻辑：</b>若所选行业低于 58，则优先转向排名靠前且风险较低的行业方向。</div><div class="investRanks">${rankHTML}</div><div class="line" style="margin-top:8px"><b>具体观察：</b>${it.buyLine} <b>止盈检查：</b>${it.sellLine} <b>持有观察：</b>${it.holdLine}</div></div>`;
+}
+
+function investmentTendency(t,sub){
+  const m=investmentElement(sub);
+  const rows=investmentRankRows(t,sub);
+  const rank=rows.map(r=>r.el);
+  const focusEl=m.el || rank[0];
+  const focusRow=rows.find(r=>r.el===focusEl)||rows[0];
+  const secondEl=rank.find(e=>e!==focusEl) || rank[1];
+  const scores=investmentElementScores(t,sub);
+  const buy=clampScore(Math.round(scores[focusEl]*0.58 + (t.水*18+t.木*18+t.火*10) + ((sub||'').includes('买入')?8:0)));
+  const sell=clampScore(Math.round(42 + t.火*24 + t.金*24 + t.土*12 - t.水*8 + ((sub||'').includes('卖出')?12:0)));
+  const hold=clampScore(Math.round(42 + t.土*24 + t.金*18 + t.水*16 - t.火*8 + ((sub||'').includes('持有')?8:0)));
+  const risk=clampScore(Math.round(38 + t.火*24 + t.金*18 + t.土*12 - t.水*10 + (sell>buy?6:0)));
+  let mainMode='行业关注';
+  if(sub&&sub.includes('卖出')) mainMode='卖出/止盈观察';
+  else if(sub&&sub.includes('持有')) mainMode='持有观察';
+  else if(sub&&sub.includes('买入')) mainMode='买入观察';
+  else if(sub&&sub.includes('轮动')) mainMode='轮动观察';
+  const focusLevelText=focusLevel(focusRow.score);
+  let summary='';
+  if(m.el){
+    summary=`${investmentMap[focusEl].name}当前关注度为 ${focusRow.score}（${focusLevelText.label}）。${focusLevelText.verb}。`;
+    if(focusRow.score<58) summary+=` 当前不建议把它作为主线，更适合优先观察${investmentMap[rank[0]].name}${rank[1]?`，其次看${investmentMap[rank[1]].name}`:''}。`;
+    else if(focusRow.rank>1) summary+=` 但它不是当前第一序位，第一序位是${investmentMap[rank[0]].name}，需要比较两者的量能和位置。`;
+  }else if(mainMode==='买入观察'){
+    summary=buy>=sell+8?`买入观察信号相对更强，可优先看${investmentMap[focusEl].name}中的低位确认或回踩承接。`:`买入观察信号不算突出，更适合等价格、成交量和趋势确认；当前可优先观察${investmentMap[rank[0]].name}。`;
+  }else if(mainMode==='卖出/止盈观察'){
+    summary=sell>=buy?`卖出/止盈观察信号相对更强，可优先检查${investmentMap[rank[0]].name}与高热题材中的连续放量、短线获利盘。`:`卖出信号不算单边明确，可先观察冲高回落、跌破支撑或量能衰减。`;
+  }else if(mainMode==='持有观察'){
+    summary=hold>=risk?`持有/观望信号相对更稳，可优先看${investmentMap[rank[0]].name}中现金流、防守和低波动方向。`:`持有稳定性一般，建议先看风险暴露和仓位集中度。`;
+  }else if(mainMode==='轮动观察'){
+    summary=`轮动观察更适合从${investmentMap[rank[0]].name}主势，比较${investmentMap[rank[1]].name}与${investmentMap[rank[2]].name}是否出现补涨。`;
+  }else{
+    summary=`当前首选观察方向为${investmentMap[rank[0]].name}，备选为${investmentMap[rank[1]].name}。若所选行业不在前两位，应降低关注级别。`;
+  }
+  const buyLine=sectorLineFor(focusEl,'buy') + (secondEl?` 备选：${sectorLineFor(secondEl,'buy')}`:'');
+  const sellLine=sectorLineFor(rank.includes('火')?'火':rank[0],'sell');
+  const holdLine=sectorLineFor(rank.includes('土')?'土':rank[0],'hold');
+  const riskLine=`若风险指数高于买入观察，优先降低追涨冲动，等待回踩、缩量企稳或基本面确认。`;
+  return {summary,buy,sell,hold,risk,map:m,focusEl,secondEl,rank,rows,scores,mainMode,buyLine,sellLine,holdLine,riskLine,focusScore:focusRow.score,focusRank:focusRow.rank,focusLevel:focusLevelText.label};
+}
+
+
+const dirPalaces=[
+  {n:4,dir:'东南',key:'yinMetal',use:'边界、审视、规避暗线'},
+  {n:9,dir:'正南',key:'yangMetal',use:'规则、判断、交易秩序'},
+  {n:2,dir:'西南',key:'yinFire',use:'柔性表达、微热启动'},
+  {n:3,dir:'正东',key:'yangWood',use:'启动、联系、推进'},
+  {n:5,dir:'中心',key:'earth',use:'承载、整理、稳定'},
+  {n:7,dir:'正西',key:'yangFire',use:'表达、展示、发布'},
+  {n:8,dir:'东北',key:'yinWood',use:'沉淀、酝酿、修复'},
+  {n:1,dir:'正北',key:'yangWater',use:'沟通、信息、流动'},
+  {n:6,dir:'西北',key:'yinWater',use:'休息、缓冲、回收'}
+];
+function directionWeights(sub){
+  const w={1:1,2:1,3:1,4:1,5:1,6:1,7:1,8:1,9:1};
+  if(!sub) return w;
+  const add=(pairs)=>pairs.forEach(([n,v])=>w[n]=(w[n]||1)+v);
+  if(sub.includes('沟通')||sub.includes('会面')) add([[1,.45],[3,.34],[8,.22],[2,.18],[6,.16],[4,-.12],[9,-.08]]);
+  else if(sub.includes('财务')||sub.includes('交易')) add([[9,.42],[4,.36],[5,.24],[1,.18],[6,.12],[7,-.10]]);
+  else if(sub.includes('休息')||sub.includes('安静')) add([[6,.45],[8,.35],[5,.24],[1,.12],[7,-.22],[2,-.10]]);
+  else if(sub.includes('出门')) add([[3,.38],[1,.28],[7,.22],[9,.12],[6,-.08]]);
+  else if(sub.includes('整理')||sub.includes('避让')) add([[5,.42],[4,.26],[6,.22],[8,.18],[7,-.18]]);
+  else if(sub.includes('住宅')||sub.includes('办公')||sub.includes('店铺')) add([[5,.36],[3,.22],[1,.20],[9,.18],[8,.12]]);
+  else add([[3,.24],[1,.22],[5,.18],[9,.12]]);
+  Object.keys(w).forEach(k=>w[k]=Math.max(.55,w[k]));
+  return w;
+}
+function directionAnalysis(conv, sub){
+  const vals={yinMetal:conv.palaces[4],yangMetal:conv.palaces[9],yinFire:conv.palaces[2],yangWood:conv.palaces[3],earth:conv.palaces[5],yangFire:conv.palaces[7],yinWood:conv.palaces[8],yangWater:conv.palaces[1],yinWater:conv.palaces[6]};
+  const weights=directionWeights(sub);
+  const rows=dirPalaces.map(d=>{
+    const p=palaceDef.find(x=>x.n===d.n);
+    const raw=vals[d.key]||0;
+    const score=Math.round(Math.max(0,Math.min(100,42 + raw*38*weights[d.n])));
+    return {...d,name:p.name,beast:p.beast,glyph:p.glyph,el:p.el,raw,score,weighted:raw*weights[d.n]};
+  }).sort((a,b)=>b.weighted-a.weighted);
+  const best=rows[0], second=rows[1], cautious=rows.slice().sort((a,b)=>a.weighted-b.weighted)[0];
+  const purpose=sub||'当前位置取势';
+  let note='方位取势不是判断某个方向绝对吉凶，而是观察当下九宫场中，各方位更适合承担什么行动功能。';
+  if(purpose.includes('沟通')||purpose.includes('会面')) note='沟通与会面优先看水木流动，其次看柔性火；金势过强的位置更适合谈边界，不适合强求亲近。';
+  else if(purpose.includes('财务')||purpose.includes('交易')) note='财务与交易优先看金水土：金主规则与判断，水主流动与信息，土主承载与稳定。';
+  else if(purpose.includes('休息')||purpose.includes('安静')) note='休息与恢复优先看阴水、阴木与中宫土，避免火势过强的位置带来躁动。';
+  else if(purpose.includes('出门')) note='出门方向优先看木水火的顺势流动，适合轻启动、走动、连接与获取信息。';
+  else if(purpose.includes('整理')||purpose.includes('避让')) note='整理避让优先看中宫、阴金与阴水，适合收束、归档、降低外部扰动。';
+  return {rows,best,second,cautious,purpose,note};
+}
+function directionCompassHTML(conv, sub){
+  const da=directionAnalysis(conv,sub);
+  const sortedByGrid=dirPalaces.map(d=>da.rows.find(r=>r.n===d.n));
+  const cells=sortedByGrid.map(r=>`<div class="dirCell ${r.n===da.best.n?'best':''}" style="--c:${colors[r.el]}"><div class="dtop"><span>${r.dir}</span><span>${r.glyph}</span></div><div class="dname">${r.name}</div><div class="duse">${r.beast}｜${r.use}</div><div class="dscore">${r.score}</div></div>`).join('');
+  return `<div class="directionPanel"><div class="sectionTitle">当下方位场｜${da.purpose}</div><div class="directionSummary"><div class="ds"><span>主取势方位</span><b>${da.best.dir}｜${da.best.name}</b></div><div class="ds"><span>辅助方位</span><b>${da.second.dir}｜${da.second.name}</b></div><div class="ds"><span>慎用/低势方位</span><b>${da.cautious.dir}｜${da.cautious.name}</b></div></div><div class="dirCompass">${cells}</div><div class="notice" style="margin-top:12px">${da.note}</div></div>`;
+}
+
+function readingText(type,sub,t,tr,dm,spatial){
+  const top=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1]);
+  const weak=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>a[1]-b[1])[0];
+  let q='';
+  if(type==='investment') q=`投资类问题只作行业五行与买卖窗口的象意观察，不构成投资建议。${investmentElement(sub).text}`;
+  else if(type==='relationship') q='感情类问题主看水木生发，经济压力、现实条件与责任边界则落在金土。';
+  else if(type==='contract') q='签约类问题主看金土边界、承诺与规则是否清楚。';
+  else if(type==='business') q='商业类问题主看土金承载与交易，水为客流，火为曝光，木为增长。';
+  else if(type==='project') q='项目类问题主看木火显化，土为落地，金为边界，水为协同信息。';
+  else if(type==='site') q='地点类问题目前仅作时机结构参考，暂不替代真实地点对象分析。';
+  else if(type==='direction') q='方位/空间类问题以当前位置、住宅中心或行动中心为参照，观察当下九宫方位场中更适合取势、沟通、整理或避让的位置。';
+  else if(type==='weather') q='天气类问题仅作为水汽、晴热、阻滞与稳定性的象意观察，不替代真实天气预报。';
+  else q='对比类问题重点看 A/B 差分，而非单盘吉凶。';
+  if(type==='direction'){
+    return `方位/空间观察：${q} 本项不判断绝对吉凶，而是把九宫能量映射到东南、正南、西南、正东、中心、正西、东北、正北、西北九个方位，用于选择当下更适合的坐向、出门方向、会面位置或整理避让位置。${spatial.direction}`;
+  }
+  if(type==='weather'){
+    const tendency = weatherTendency(t);
+    return `天气象意观察：${tendency.summary} ${tendency.detail} ${spatial.direction} 这只是对水汽、晴热、阻滞和稳定性的象意描述，不代表真实天气预报；实际出行请以气象部门预报和雷达回波为准。`;
+  }
+  if(type==='investment'){
+    const it=investmentTendency(t,sub);
+    return `投资/行业观察：${it.summary} ${it.map.text} 当前五行行业排序：${it.rank.map(e=>e+'类'+investmentMap[e].name).join(' > ')}。具体观察方向：${it.buyLine} 卖出/止盈检查：${it.sellLine} 持有观察：${it.holdLine} 指数：所选/首选行业 ${it.focusScore}，买入观察 ${it.buy}，卖出/止盈 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。${spatial.direction} 本项只用于复盘观察，不构成任何买入、卖出或持有的个人化建议。`;
+  }
+  return `当前主势为 ${top[0][0]}，次势为 ${top[1][0]}，弱项为 ${weak[0]}。${q} ${relationForDM(dm,t)} ${spatial.direction} ${tr.name?`本盘出现 ${tr.name}（${tr.level}），提示事情可能从强弱判断进入“性质转化”。`:''}`;
+}
+function suggest(type,t){ if(type==='investment') return '可把输出当作行业轮动观察清单：先看对应细分行业，再用价格位置、成交量、基本面、仓位和止损条件复核；不构成个人化投资建议。'; if(type==='relationship') return t.金+t.土>t.水+t.木?'先谈节奏与边界，不要把现实条件变成资格审查。':'可以温和推进，先沟通感受，再视反馈加码。'; if(type==='contract') return t.金>t.水?'优先审条款、定边界，再做签署。':'可以推进谈判，但仍要写清责任。'; if(type==='business') return t.土+t.金>t.木+t.火?'适合轻量试运营，不宜一次性重投入。':'适合测试增长与曝光，但要留意承载。'; if(type==='project') return '先确认推进阻力来自节奏、边界还是协作，再选择动作。'; if(type==='site') return '把本盘当作选时参考，地点对象信息仍需补齐。'; if(type==='direction') return '以主取势方位做行动方向，以辅助方位做缓冲选择；慎用方位不代表不可用，而是更适合降低刺激、减少争执或避免高风险安排。'; if(type==='weather') return '请以气象部门、雷达回波和真实预报为准。本盘仅用于观察水汽、晴热、阻滞或稳定倾向，不建议据此安排高风险户外活动。'; return '优先看 A/B 差分，选择阻力更小的窗口。'; }
+function buildScores(type,t){
+  let base={推进:50,稳定:50,风险:50,沟通:50,落地:50};
+  if(type==='investment'){const it=investmentTendency(t,subType.value); base.推进=it.buy; base.稳定=it.hold; base.风险=it.risk; base.沟通=Math.round(Math.max(0,Math.min(100,42+t.水*24+t.金*12+t.木*8))); base.落地=it.sell;}
+  else if(type==='relationship'){base.推进=44+t.木*54+t.火*32-t.金*40; base.稳定=45+t.水*34+t.土*28-t.火*16; base.风险=44+t.金*52+t.土*34-t.水*26; base.沟通=40+t.水*68-t.金*24; base.落地=40+t.土*62+t.金*20-t.木*14;}
+  else if(type==='contract'){base.推进=44+t.金*45+t.土*34; base.稳定=44+t.土*45+t.金*35; base.风险=36+t.金*34+t.阴*18-t.水*18; base.沟通=38+t.水*42+t.火*18; base.落地=46+t.土*58+t.金*24;}
+  else if(type==='business'){base.推进=40+t.木*34+t.火*30+t.土*16; base.稳定=42+t.土*52+t.金*18; base.风险=42+t.土*26+t.金*20-t.水*20; base.沟通=38+t.水*42+t.火*18; base.落地=44+t.土*58+t.金*20;}
+  else if(type==='direction'){base.推进=42+t.木*30+t.水*22+t.火*12; base.稳定=43+t.土*34+t.金*18+t.水*10; base.风险=40+t.金*20+t.火*16-t.水*10; base.沟通=40+t.水*42+t.木*18-t.金*10; base.落地=42+t.土*32+t.金*22;}
+  else if(type==='weather'){const wt=weatherTendency(t); base.推进=wt.moisture; base.稳定=wt.stable; base.风险=wt.block; base.沟通=Math.round(Math.max(0,Math.min(100,42+t.水*34+t.木*12-t.土*14))); base.落地=wt.heat;}
+  else {base.推进=42+t.木*32+t.火*28; base.稳定=43+t.土*36+t.水*18; base.风险=41+t.金*32+t.土*18-t.水*14; base.沟通=39+t.水*46+t.木*14; base.落地=43+t.土*42+t.金*18;}
+  Object.keys(base).forEach(k=>base[k]=Math.max(0,Math.min(100,Math.round(base[k]))));
+  return base;
+}
+function verdict(type,t,tr){const sc=buildScores(type,t); let action='宜试探，不宜逼定', why='当前时空场更适合低风险推进，先看反馈再决定加码。';
+  if(type==='investment'){const it=investmentTendency(t,subType.value); action=it.summary; why=`重点方向：${it.buyLine} 卖出/止盈检查：${it.sellLine} 持有观察：${it.holdLine} 买入观察 ${it.buy}，卖出/止盈 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。本项只作复盘观察，不构成个人化投资建议。`; return {action,why,scores:sc};}
+  else if(type==='relationship'){ if(sc.风险>=70&&sc.沟通<58){action='宜缓谈现实条件'; why='金土压力高于水木生发，容易把关系谈成条件审查。';} else if(sc.推进>=64&&sc.沟通>=58){action='宜温和推进'; why='水木与表达信号尚可，适合轻柔沟通与适度升温。';} }
+  else if(type==='contract'){ if(sc.风险>=66){action='宜审条款，不宜急签'; why='边界信号强，但隐藏条件与风险暴露也高。';} else {action='宜谈边界，可推进'; why='规则与承载较清楚，适合把约定写实。';} }
+  else if(type==='business'){ if(sc.落地>=64&&sc.风险<70){action='宜轻量启动'; why='土金落地信号较强，适合先跑小闭环。';} else {action='宜先验证模型'; why='增长、客流或承载条件仍需验证。';} }
+  else if(type==='project'){ action=sc.推进>=60?'宜推进，但控节奏':'宜整合节奏，不宜硬推'; why='项目类问题更适合以节奏、协作与边界配合来理解。'; }
+  else if(type==='site'){ action='宜作选时参考'; why='当前仅判断时机结构，地点对象仍需单独分析。'; }
+  else if(type==='direction'){ action='宜看方位取势'; why='当前结果会在下方生成九宫方位场，优先看主取势方位、辅助方位与慎用方位。此处不是传统绝对吉位判断，而是当下空间行动功能的观察。'; }
+  else if(type==='weather'){
+    const wt=weatherTendency(t);
+    action=wt.summary;
+    why=`${wt.detail} 此处不使用“行动建议”语言，也不引入日主或合化判断。`;
+    return {action,why,scores:sc};
+  }
+  if(tr.name && tr.level!=='未触发') why+=` 合化信号为“${tr.name}”，提示事情可能出现性质转折。`;
+  return {action,why,scores:sc};
+}
+function actionGrid(type,t){
+  const top=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1]);
+  const weak=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>a[1]-b[1])[0];
+  let doAct='低风险试探', avoid='硬推结论';
+  if(type==='investment'){const it=investmentTendency(t,subType.value); return [
+    {icon:'◎',label:'重点行业',value:it.map.label||`${it.focusEl}类行业`},
+    {icon:'⟫',label:'买入观察',value:`${it.focusEl}类：${investmentMap[it.focusEl].sectors.slice(0,2).join('、')}`},
+    {icon:'↺',label:'卖出检查',value:`${it.sell>=it.buy?'高热题材/获利盘':'量能衰减方向'}`},
+    {icon:'⛨',label:'风险提示',value:`${it.risk} / 100`}
+  ];}
+  if(type==='direction'){return [
+    {icon:'⌖',label:'主模块',value:'方位取势'},
+    {icon:'◎',label:'参照中心',value:subType.value||'当前位置'},
+    {icon:'≈',label:'适合用途',value:'坐向/出门/会面'},
+    {icon:'⛨',label:'注意事项',value:'非绝对吉凶'}
+  ];}
+  if(type==='relationship'){doAct='柔性沟通'; avoid='资格审查';}
+  if(type==='contract'){doAct='厘清边界'; avoid='仓促签署';}
+  if(type==='business'){doAct='小步试运营'; avoid='一次性重投入';}
+  if(type==='project'){doAct='协调整体节奏'; avoid='单点突破硬推';}
+  if(type==='weather'){
+    return [
+      {icon:'≈',label:'主要象意',value:`${top[0][0]}势偏强`},
+      {icon:'◌',label:'薄弱象意',value:`${weak[0]}势不足`},
+      {icon:'☁',label:'参考方式',value:'查真实预报'},
+      {icon:'⛨',label:'避免动作',value:'高风险安排'}
+    ];
+  }
+  return [
+    {icon:'✧',label:'主导力量',value:`${top[0][0]}势偏强`},
+    {icon:'◌',label:'主要阻力',value:`${weak[0]}势不足`},
+    {icon:'⟫',label:'适合动作',value:doAct},
+    {icon:'⛨',label:'避免动作',value:avoid}
+  ];
+}
+
+function elementOfStem(stem){return stem?stem.slice(1):''}
+function clampScore(x){return Math.max(0,Math.min(100,Math.round(x)))}
+function displayScore(x){return clampScore(50+(x-50)*1.38)}
+function gradeLabel(v){if(v>=85)return '强信号'; if(v>=70)return '中强'; if(v>=55)return '中等'; if(v>=40)return '偏弱'; return '弱'}
+function gradeLetter(v,idx){if(idx===0||v>=86)return 'S'; if(idx===1||v>=74)return 'A'; if(idx===2||v>=62)return 'B'; if(idx===3||v>=50)return 'C'; return 'D'}
+function signalRole(role){return role==='risk'?'风险指标':(role==='core'?'核心指标':(role==='transform'?'转化指标':'辅助指标'))}
+function changeLabel(d){const a=Math.abs(d); if(a>=20)return '强变化'; if(a>=13)return '明显变化'; if(a>=6)return '可感变化'; return '轻微变化'}
+function sceneMainElements(type,sub){
+  if(type==='investment') return ['金','水','土'];
+  if(type==='contract') return ['金','土','水'];
+  if(type==='project') return ['木','火','土'];
+  if(type==='business') return ['土','金','水'];
+  if(type==='relationship') return ['水','木','火'];
+  if(type==='weather') return ['水','火','土'];
+  if(type==='direction'){
+    if((sub||'').includes('交易')) return ['金','水','土'];
+    if((sub||'').includes('休息')||(sub||'').includes('安静')) return ['水','木','土'];
+    if((sub||'').includes('沟通')||(sub||'').includes('会面')) return ['水','木','火'];
+    if((sub||'').includes('整理')||(sub||'').includes('避让')) return ['土','金','水'];
+    return ['木','水','土'];
+  }
+  return ['土','水','金'];
+}
+function elementPhrase(el,type){
+  const common={水:'信息流、沟通流、资金流与缓冲',木:'生发、启动、成长与关系推进',火:'热度、表达、曝光与情绪升温',土:'承载、资源、成本、责任与稳定',金:'规则、交易、边界、审查与决断'};
+  if(type==='investment') return {水:'资金流/信息流',木:'成长叙事/新题材',火:'热度/曝光',土:'防守/承接',金:'交易规则/估值筛选'}[el]||common[el];
+  if(type==='direction') return {水:'沟通与流动方位',木:'启动与出门方位',火:'展示与表达方位',土:'中心承载方位',金:'规则与交易方位'}[el]||common[el];
+  return common[el];
+}
+const houtianFixedOrders={
+  金:['水','火','木','土'],
+  水:['木','土','火','金'],
+  木:['火','金','土','水'],
+  火:['土','水','金','木'],
+  土:['金','木','水','火']
+};
+const houtianRelationLabels={
+  first:'我生者｜外泄成用',
+  second:'克我者｜压力成权',
+  third:'我克者｜可控对象',
+  fourth:'生我者｜来源被泄'
+};
+function houtianRelationOrder(host){return houtianFixedOrders[host]||['水','火','木','土'].filter(x=>x!==host)}
+function relationLabelByIndex(i){return [houtianRelationLabels.first,houtianRelationLabels.second,houtianRelationLabels.third,houtianRelationLabels.fourth][i-1]||'主用'}
+function houtianModel(p,t,conv,type,sub){
+  const main=sceneMainElements(type,sub);
+  const host=main[0]||'土';
+  const fixedOrder=houtianRelationOrder(host);
+  const order=[host,...fixedOrder];
+  const bg={水:0,木:0,火:0,土:0,金:0}; const ye=elementOfStem(p.year.stem), me=elementOfStem(p.month.stem); if(bg[ye]!==undefined) bg[ye]+=0.40; if(bg[me]!==undefined) bg[me]+=0.60;
+  const vals={水:t.水,木:t.木,火:t.火,土:t.土,金:t.金};
+  const relationWeight={0:.34,1:.26,2:.18,3:.10,4:.02};
+  const rows=order.map((el,i)=>{
+    const scene=main.includes(el)?(main[0]===el ? .34 : (main[1]===el ? .22 : .13)):-.04;
+    const bgBoost=(bg[el]||0)*.26;
+    const relBoost=relationWeight[i]||0;
+    const raw=vals[el]*(1+scene+bgBoost+relBoost);
+    const score=displayScore(clampScore(45+raw*38));
+    return {el,raw,score,bg:bg[el]||0,scene,relBoost,relation:i===0?'主用五行':relationLabelByIndex(i),phrase:elementPhrase(el,type)};
+  });
+  rows.forEach((r,i)=>{r.rank=i+1;r.grade=gradeLetter(r.score,i);r.level=gradeLabel(r.score)});
+  const tr=transformDetail(conv.transform,type,sub);
+  const inner=fixedOrder.join(' > ');
+  const summary=`当前为 ${host}局。${host}为主用；${host}局内部生克序列固定为 ${inner}。该序列来自“我生者 > 克我者 > 我克者 > 生我者”的后天排序规则。页面评级在固定排序上叠加年/月背景、中天场强与问事场景，用来表示当下信号强弱，但不改变生克顺序。`;
+  return {rows,main,host,fixedOrder,bg,transform:tr,summary};
+}
+const transformMechanisms={
+  '阳木 + 阴土 → 化土':{name:'生发落地型',from:'主动生发遇到现实承载',to:'成本、责任、稳定与落地',strategy:'宜落地、宜算账、宜定资源，不宜只谈愿景。'},
+  '阴木 + 阳金 → 化金':{name:'模糊定界型',from:'隐性生长遇到明确规则',to:'边界、筛选、条款与审查',strategy:'宜审边界、宜明确条件，不宜含糊推进。'},
+  '阳火 + 阴金 → 化水':{name:'热度冷却型',from:'外部热度遇到隐性规则',to:'冷却、换手、信息回流与重新沟通',strategy:'宜降温、宜复核信息，不宜追高、强推或硬表达。'},
+  '阴火 + 阳水 → 化木':{name:'暗火生机型',from:'内在意愿遇到流动信息',to:'新的生发、机会启动与关系萌芽',strategy:'宜轻启动、宜沟通试探、宜小步推进。'},
+  '阳土 + 阴水 → 化火':{name:'承载显化型',from:'现实承载遇到隐性流动',to:'显化、曝光、表达与升温',strategy:'宜表达、宜亮相、宜发布，但要控制节奏和热度。'}
+};
+function transformStatus(idx){if(idx>=85)return '强转化'; if(idx>=70)return '明显转化'; if(idx>=55)return '牵制转化'; if(idx>=40)return '弱转化'; return '未形成明显转化'}
+function transformSceneText(name,type,sub){
+  const map={
+    '阳木 + 阴土 → 化土':{investment:'成长想象转向业绩兑现、估值落地和财务验证。',relationship:'关系推进会遇到现实条件、经济压力或责任边界。',contract:'初步意向转为交付、付款、责任条款。',project:'创意推进转为资源、排期和团队承载。',business:'增长想法需要回到成本、场地和承载能力。',direction:'适合中心位、稳定位和整理位。',weather:'生发受土承接，变化趋向稳定或受阻。'},
+    '阴木 + 阳金 → 化金':{investment:'成长叙事被估值、财报、监管或资金纪律筛选。',relationship:'试探关系进入态度明确、条件确认或边界判断。',contract:'模糊意向进入条款审查。',project:'内部想法被流程、上级或制度筛选。',business:'商业想法需要通过规则、合同和交易边界筛选。',direction:'金位增强，适合审视、谈规则、规避模糊空间。',weather:'木势被金收，变化趋向收束和清晰。'},
+    '阳火 + 阴金 → 化水':{investment:'高热题材遇到隐性抛压、规则约束或资金分歧，可能进入换手。',relationship:'表达欲遇到对方边界，需要缓冲，不宜逼问。',contract:'强推进遇到隐藏条款，适合补信息。',project:'公开发布遇到反馈或审查，需要调整口径。',business:'曝光热度遇到规则边界，适合看客流、反馈和转化。',direction:'从火位转向水位，先看信息流、沟通流和资金流。',weather:'热象被金收，可能转为水汽或冷却象意。'},
+    '阴火 + 阳水 → 化木':{investment:'低调方向遇到资金流或消息流，可能出现新题材萌芽。',relationship:'内在好感被沟通激活，适合轻联系或轻见面。',contract:'暗中意向通过沟通变成新合作可能。',project:'内部想法经信息交换变成新方案。',business:'小热度被流量激活，适合轻量测试增长。',direction:'水木方向更适合启动、沟通和出门。',weather:'水火相激后转木，偏向云系生发或变化启动。'},
+    '阳土 + 阴水 → 化火':{investment:'防守/资源逻辑遇到资金流，可能出现补涨、曝光或估值重估。',relationship:'稳定基础遇到情绪流动，适合升温和表达。',contract:'基础条件成熟后，进入公开确认或签署动作。',project:'资源准备完成后，适合汇报、发布和展示。',business:'承载条件与流量相遇，适合上新、曝光或活动。',direction:'火位可用，适合亮相，但要避免过度刺激。',weather:'承载与隐性水流转火，可能表现为热度显化。'}
+  };
+  const row=map[name]||{}; return row[type]||row.investment||'当前转化会改变原有强弱逻辑，需要结合场景重新解释。';
+}
+function transformDetail(tr,type,sub){
+  if(!tr||!tr.name) return {index:0,status:'未形成明显转化',name:'未触发',mechanism:'无明显后天合化',scene:'当前以取用排序和中天场强为主。',strategy:'不宜过度解释转向信号，先看主导五行与场景指标。'};
+  const strengthTerm=clampScore(Math.round(((tr.strength||0)-0.08)/0.28*38));
+  const balanceTerm=clampScore(Math.round((tr.balance||0)*24));
+  const pairTerm=clampScore(Math.round((tr.pairSum||0)*16));
+  const main=sceneMainElements(type,sub);
+  const selected=type==='investment'?investmentElement(sub).el:'';
+  const sceneTerm=(main.includes(tr.to)?8:0) + (selected===tr.to?7:0) + ((sub||'').includes('卖出')&&tr.name.includes('化水')?5:0) + ((sub||'').includes('买入')&&['木','火'].includes(tr.to)?4:0);
+  const idx=clampScore(22 + strengthTerm + balanceTerm + pairTerm + sceneTerm);
+  const m=transformMechanisms[tr.name]||{name:'结构转化型',from:'两股力量相遇',to:`化${tr.to}`,strategy:'观察结构转向。'};
+  return {index:idx,status:transformStatus(idx),name:tr.name,mechanism:m.name,from:m.from,to:m.to,scene:transformSceneText(tr.name,type,sub),strategy:m.strategy,strength:tr.strength,balance:tr.balance,pairSum:tr.pairSum,rawLevel:tr.level};
+}
+function houtianPanelHTML(p,t,conv,type,sub){
+  const ht=houtianModel(p,t,conv,type,sub), tr=ht.transform;
+  const rows=ht.rows.map(r=>`<div class="sortRow"><div class="el" style="color:${colors[r.el]}">${r.el}</div><div class="rank">#${r.rank}｜${r.level}</div><div class="desc">${r.relation}｜${r.phrase}</div><div class="grade">${r.grade}</div></div>`).join('');
+  return `<div class="houtianPanel"><div class="sectionTitle">后天取用｜排序与转化</div><div class="noticeStrong">当前主局：${ht.host}局。先看固定序位与评级，再看合化是否改变事情性质。指数为相对强度显示，用于比较时机窗口，不代表概率。</div><div class="hSplit"><div class="hCard"><h4>后天五行评级</h4><div class="sortRows">${rows}</div></div><div class="hCard"><h4>后天合化｜转化信号</h4><div class="transIndex">${tr.index}</div><div class="transType">${tr.status}｜${tr.name}</div><p><b>转化机制：</b>${tr.mechanism}。${tr.from?`结构从“${tr.from}”转向“${tr.to}”。`:''}</p><p><b>场景译义：</b>${tr.scene}</p><p><b>行动策略：</b>${tr.strategy}</p></div></div></div>`;
+}
+function sceneMetricSet(type,sub,t,conv,p){
+  const sc=buildScores(type,t), tr=transformDetail(conv.transform,type,sub), arr=[];
+  const add=(label,val,role='core')=>arr.push({label,value:displayScore(val),raw:val,role,level:gradeLabel(displayScore(val))});
+  if(type==='investment'){
+    const it=investmentTendency(t,sub); add(it.map.el?'所选行业关注':'首选行业关注',it.focusScore||it.buy,'core'); add('高关注强度',it.buy,'core'); add('止盈压力',it.sell,'risk'); add('防守价值',it.hold,'assist'); add('追高风险',it.risk,'risk'); add('合化转向',tr.index,'transform');
+  }else if(type==='direction'){
+    const da=directionAnalysis(conv,sub); add('方位取势',da.best.score,'core'); add('辅助可用',da.second.score,'assist'); add('沟通方位',Math.max(...da.rows.filter(r=>[1,3,6,8].includes(r.n)).map(r=>r.score)),'core'); add('交易方位',Math.max(...da.rows.filter(r=>[9,4,5,1].includes(r.n)).map(r=>r.score)),'assist'); add('慎用提醒',100-da.cautious.score,'risk'); add('合化转向',tr.index,'transform');
+  }else if(type==='relationship'){
+    add('见面适配',Math.round((sc.推进+sc.沟通+sc.稳定-sc.风险/2)/2.5),'core'); add('沟通柔和',sc.沟通,'core'); add('现实压力',sc.风险,'risk'); add('推进阻力',Math.round(100-sc.推进+sc.风险*.35),'risk'); add('试探窗口',Math.round((sc.推进+sc.沟通)/2),'assist'); add('合化转向',tr.index,'transform');
+  }else if(type==='contract'){
+    add('条款清晰',Math.round(45+t.金*48+t.土*24),'core'); add('隐藏风险',sc.风险,'risk'); add('谈判弹性',Math.round(42+t.水*44+t.木*12-t.金*10),'assist'); add('落地承载',sc.落地,'core'); add('急签风险',Math.round(sc.风险*0.75+(100-sc.沟通)*0.25),'risk'); add('合化转向',tr.index,'transform');
+  }else if(type==='project'){
+    add('发布热度',Math.round(42+t.火*44+t.木*18),'core'); add('协同流动',sc.沟通,'core'); add('落地承载',sc.落地,'assist'); add('外部阻力',sc.风险,'risk'); add('反馈窗口',Math.round((sc.推进+sc.沟通)/2),'assist'); add('合化转向',tr.index,'transform');
+  }else if(type==='business'){
+    add('交易承接',sc.落地,'core'); add('客流流动',sc.沟通,'core'); add('曝光热度',Math.round(42+t.火*45+t.木*12),'assist'); add('成本压力',sc.风险,'risk'); add('小闭环适配',Math.round((sc.落地+sc.稳定-sc.风险/2)/1.5),'core'); add('合化转向',tr.index,'transform');
+  }else if(type==='weather'){
+    const wt=weatherTendency(t); add('水汽',wt.moisture,'core'); add('晴热',wt.heat,'core'); add('阻滞',wt.block,'risk'); add('稳定',wt.stable,'assist'); add('流动',sc.沟通,'assist'); add('合化转向',tr.index,'transform');
+  }else{
+    add('行动就绪',sc.推进,'core'); add('稳定承接',sc.稳定,'assist'); add('阻力结构',sc.风险,'risk'); add('沟通流动',sc.沟通,'core'); add('落地能力',sc.落地,'assist'); add('合化转向',tr.index,'transform');
+  }
+  return arr.map(x=>({...x,value:clampScore(x.value)}));
+}
+function sceneMetricsHTML(type,sub,t,conv,p){
+  const items=sceneMetricSet(type,sub,t,conv,p).map(m=>`<div class="sceneMetric"><div class="top"><span>${m.label}</span><span class="pill ${m.role==='risk'?'risk':(m.role==='core'?'hot':'')}">${signalRole(m.role)}</span></div><div class="val">${m.value}</div><div class="meta"><span class="pill">${m.level}</span><span class="pill">原始 ${Math.round(m.raw)}</span></div></div>`).join('');
+  return `<div class="scenePanel"><div class="sectionTitle">场景专属指标｜让数据更可读</div><div class="noticeStrong">本版不只输出通用推进/风险，而是按问事场景生成专属指标，并用“弱—中等—中强—强信号”标出重要性。</div><div class="sceneGrid">${items}</div></div>`;
+}
+
+function traceRows(type,sub,p,init,t,conv,dm){
+  const top=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1]);
+  const weak=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>a[1]-b[1])[0];
+  const qmap={investment:`投资看行业五行、窗口节奏和风险约束。${investmentElement(sub).text}` ,relationship:'感情看水木生发，金土往往对应现实条件、经济压力、责任与边界。',contract:'签约看金土规则与承载，水是沟通缓冲。',business:'商业看土金承载和交易规则，水是流量，火是曝光，木是增长。',project:'项目看木火显化，土为落地，金为边界，水为协作。',site:'地点问题当前先看时机，不替代对象盘。',direction:'方位/空间问题把九宫场映射为九个方向，用来观察取势、沟通、交易、休息或避让位置。',weather:'天气问题只作水汽、晴热、阻滞与稳定性的象意参考，不替代真实天气预报。',compare:'比较类问题重点看 A/B 差分。'};
+  return [
+    {tag:'先天定时',text:`当地时间生成四盘：年 <code>${p.year.stem}${p.year.branch}</code>、月 <code>${p.month.stem}${p.month.branch}</code>、日 <code>${p.day.stem}${p.day.branch}</code>、时 <code>${p.hour.stem}${p.hour.branch}</code>。四盘天干进入十态，地支只作承载与库位调制。`},
+    {tag:'中天成场',text:`十态落入洛书九宫，经同库互通、五行生克、空间加权与十五守恒后，形成以 <code>${top[0][0]}</code> 为主、<code>${top[1][0]}</code> 为辅的时空场。${init.spatial.direction}`},
+    {tag:'后天取用',text:`当前问事为 <code>${queryNames[type]} / ${sub}</code>。${qmap[type]||'当前问题域使用通用时机结构解释。'} 因此系统会优先用这个问题域去翻译盘象，而不是输出一条抽象吉凶。`},
+    type==='weather'
+      ? {tag:'天气象意拆解',text:`本项只看 <code>水汽</code>、<code>晴热</code>、<code>阻滞</code> 与 <code>稳定</code> 四类象意，不使用问主日主，也不使用合化断语。请以真实天气预报为准。`}
+      : type==='investment'
+        ? {tag:'投资观察拆解',text:`本项先将行业归入五行，再给出对应细分行业的 <code>买入观察</code>、<code>卖出/止盈检查</code>、<code>持有观察</code> 与 <code>风险提示</code>。它输出的是观察清单，不替代基本面、价格、成交量与仓位管理。`}
+        : {tag:'行动译文拆解',text:`主势为 <code>${top[0][0]}</code>，弱项为 <code>${weak[0]}</code>；${relationForDM(dm,t)} ${conv.transform.name?`检测到 <code>${conv.transform.name}</code>（${conv.transform.level}），表示结构可能发生性质转化。`:'未检测到显著合化。'}`}
+  ];
+}
+function scoreHTML(sc,type){const weatherLabels={推进:'水汽',稳定:'稳定',风险:'阻滞',沟通:'流动',落地:'晴热'};const investLabels={推进:'买入观察',稳定:'持有稳定',风险:'风险提示',沟通:'流动性',落地:'卖出/止盈'};const directionLabels={推进:'取势',稳定:'稳定',风险:'慎用',沟通:'沟通',落地:'落点'};return `<div class="scoreGrid">${Object.entries(sc).map(([k,v])=>{const label=type==='weather'?(weatherLabels[k]||k):(type==='investment'?(investLabels[k]||k):(type==='direction'?(directionLabels[k]||k):k));const ds=displayScore(v);return `<div class="score"><span>${label}指数<em>${gradeLabel(ds)}</em></span><b>${ds}</b><div class="meter" style="--s:${ds}"><i></i></div></div>`}).join('')}</div>`;}
+function shareCard(v,t){const top=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>b[1]-a[1])[0][0];const weak=Object.entries({水:t.水,木:t.木,火:t.火,土:t.土,金:t.金}).sort((a,b)=>a[1]-b[1])[0][0];return `<div class="shareCard"><div class="brand">洛书时机仪｜时机卡</div><div class="quote">${v.action}</div><div class="foot">主势：${top} ｜ 阻力：${weak} ｜ 不是问命，而是看势。</div></div>`}
+function glyphLegend(){return `<div class="glyphLegend">${palaceDef.map(p=>`<div class="glyphItem"><b>${p.glyph} ${p.name}</b><br>${p.cname}｜灵象：${p.beast}</div>`).join('')}</div>`;}
+function fullNarrative(type,sub,t,tr,dm,spatial){return `${readingText(type,sub,t,tr,dm,spatial)} <br><b>现实建议：</b>${suggest(type,t)}`}
+function miniBoardHTML(d, conv){
+  const vals={yinMetal:conv.palaces[4],yangMetal:conv.palaces[9],yinFire:conv.palaces[2],yangWood:conv.palaces[3],earth:conv.palaces[5],yangFire:conv.palaces[7],yinWood:conv.palaces[8],yangWater:conv.palaces[1],yinWater:conv.palaces[6]};
+  const maxVal=Math.max(...Object.values(vals),.01);
+  return palaceDef.map(p=>{const val=vals[p.key]||0; return `<div class="miniPal" style="--c:${colors[p.el]}"><div class="g">${p.glyph}</div><div class="n">${p.name}</div><div class="b">${p.beast}</div><div class="v">${val.toFixed(2)}</div></div>`}).join('');
+}
+function updateMiniBoard(which, d, conv){
+  document.getElementById(which==='A'?'miniATime':'miniBTime').textContent=d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+  document.getElementById(which==='A'?'miniBoardA':'miniBoardB').innerHTML=miniBoardHTML(d, conv);
+}
+function render(targetId,d,label){
+  const p=fourPillars(d), init=initialTen(p), conv=convolve(init), t=totals(conv.ten), dm=resolveDayMaster(dayMaster.value,p), vd=verdict(queryType.value,t,conv.transform);
+  const tokenHTML=Object.entries({年盘:p.year,月盘:p.month,日盘:p.day,时盘:p.hour}).map(([n,c])=>`<div class="token"><span>${n}</span><b>${c.stem}${c.branch}</b><span>天干=${c.stem}｜地支=${c.branch}</span></div>`).join('');
+  const vals={yinMetal:conv.palaces[4],yangMetal:conv.palaces[9],yinFire:conv.palaces[2],yangWood:conv.palaces[3],earth:conv.palaces[5],yangFire:conv.palaces[7],yinWood:conv.palaces[8],yangWater:conv.palaces[1],yinWater:conv.palaces[6]};
+  const maxVal=Math.max(...Object.values(vals),.01);
+  const palHTML=palaceDef.map(pal=>{const val=vals[pal.key]||0; return `<div class="palace" style="--c:${colors[pal.el]};--v:${Math.min(1,val/maxVal)}"><div class="pg">${pal.glyph}</div><div class="num"><span>${pal.n} 宫</span><span>${pal.el}</span></div><div class="name">${pal.name}</div><div class="cname">${pal.cname}</div><div class="beast">灵象：${pal.beast}</div><div class="val">${val.toFixed(2)}</div><div class="bar"><i></i></div></div>`}).join('');
+  const metrics=[['水势',t.水],['木势',t.木],['火势',t.火],['金势',t.金],['土势',t.土],['阳/阴',`${t.阳}/${t.阴}`]].map(([n,v])=>`<div class="metric"><span>${n}</span><b>${v}</b></div>`).join('');
+  const states=actionGrid(queryType.value,t).map(c=>`<div class="state"><div class="icon">${c.icon}</div><span>${c.label}</span><b>${c.value}</b></div>`).join('');
+  const directionPanel=queryType.value==='direction'?directionCompassHTML(conv,subType.value):'';
+  const scenePanel=sceneMetricsHTML(queryType.value,subType.value,t,conv,p);
+  const houtianPanel=houtianPanelHTML(p,t,conv,queryType.value,subType.value);
+  const investPanel=queryType.value==='investment'?investmentDecisionHTML(t,subType.value):'';
+  const stockCandidatePanel=queryType.value==='investment'?stockCandidateHTML(t,subType.value,conv,label):'';
+  const ht=houtianModel(p,t,conv,queryType.value,subType.value);
+  const trace=traceRows(queryType.value,subType.value,p,init,t,conv,dm).map(r=>`<div class="traceCard"><span class="tag">${r.tag}</span><p>${r.text}</p></div>`).join('');
+  document.getElementById(targetId).innerHTML=`
+    <div class="sectionTitle">${label}｜${d.toLocaleString('zh-CN',{hour12:false})}</div>
+    <div style="color:var(--muted);line-height:1.7;font-size:14px">${question.value?`问题：${question.value}`:'未填写问题'} ｜ 场景：${queryNames[queryType.value]} / ${subType.value || '未选'} ｜ 主体：${dm.value}${dm.auto?'（日盘临时）':''}</div>
+    <div class="verdict"><div class="label">后天行动译文</div><div class="headline">${vd.action}</div><div class="why">${vd.why}</div></div>
+    ${scenePanel}
+    ${investPanel}
+    ${stockCandidatePanel}
+    ${houtianPanel}
+    <div class="states">${states}</div>
+    ${directionPanel}
+    ${scoreHTML(vd.scores,queryType.value)}
+    ${shareCard(vd,t)}
+    <div class="sectionTitle" style="margin-top:18px">三界轨迹</div>
+    <div class="triadTrace">${trace}</div>
+    <details><summary>展开专业盘：四盘、九宫灵象、五行指标</summary><div class="inside"><div class="tokens">${tokenHTML}</div><div class="sectionTitle" style="margin-top:16px">中天九宫灵象场</div><div class="loshu">${palHTML}</div>${glyphLegend()}<div class="metrics">${metrics}</div></div></details>
+    <div class="reading"><b>完整行动译文</b><br>${fullNarrative(queryType.value,subType.value,t,conv.transform,dm,init.spatial)}<div class="disclaimer">本工具为人文数理与时机分析工具，不构成医学、法律、投资、婚恋、天气或商业决策的确定性建议。当前页面展示的是“结构化生成的行动译文”，不是事先写死的整段答案。</div></div>`;
+  return {p,init,conv,t,vd,ht};
+}
+function renderDiff(a,b){
+  const keys=['水','木','火','金','土','阳','阴'];
+  const rows=keys.map(k=>`${k}：${a.t[k]} → ${b.t[k]}（${(b.t[k]-a.t[k]).toFixed(2)}｜${changeLabel((b.t[k]-a.t[k])*100)}）`).join('<br>');
+  const diffs={水:b.t.水-a.t.水,木:b.t.木-a.t.木,火:b.t.火-a.t.火,金:b.t.金-a.t.金,土:b.t.土-a.t.土};
+  const main=Object.entries(diffs).sort((x,y)=>Math.abs(y[1])-Math.abs(x[1]))[0];
+  const scoreA=bundleScore(a), scoreB=bundleScore(b);
+  const recommend=scoreB>scoreA ? '推荐时刻 B' : '推荐时刻 A';
+  const transDelta=(b.ht.transform.index-a.ht.transform.index);
+  diffBox.innerHTML=`<div class="sectionTitle">A / B 时机差分</div><div style="line-height:1.85">${rows}</div><p><b>主变化：</b>${main[0]}势变化最明显（${main[1].toFixed(2)}）。${main[1]>0?'B 时刻该类信号增强。':'B 时刻该类信号减弱。'}</p><p><b>后天转化差分：</b>A 为 ${a.ht.transform.index}（${a.ht.transform.status}），B 为 ${b.ht.transform.index}（${b.ht.transform.status}），变化 ${transDelta>0?'+':''}${transDelta}｜${changeLabel(transDelta)}。</p><p><b>系统建议：</b>${recommend}。本建议综合场景指标、风险项与后天转化强度，而不是只看单一五行强弱。</p>`;
+}
+function bundleScore(x){const sc=x.vd.scores; return sc.推进+sc.稳定+sc.沟通+sc.落地-sc.风险 + (x.ht.transform.index>=70?4:0)}
+function run(){ if(!dtA.value) setNow(); const aDate=new Date(dtA.value); const a=render('resultA',aDate,'时刻 A'); updateMiniBoard('A', aDate, a.conv); if(dtB.value){ const bDate=new Date(dtB.value); const b=render('resultB',bDate,'时刻 B'); updateMiniBoard('B', bDate, b.conv); renderDiff(a,b);} else {document.getElementById('resultB').innerHTML='<div class="sectionTitle">时刻 B</div><div style="color:var(--muted)">未输入第二时刻。填写后可进行 A/B 结构对比。</div>'; document.getElementById('miniBTime').textContent='未输入'; document.getElementById('miniBoardB').innerHTML=''; diffBox.innerHTML='';}}
+
+queryType.addEventListener('change',()=>{updateSubTypes();run();});
+subType.addEventListener('change',run);
+dayMaster.addEventListener('change',run);
+latitude.addEventListener('change',run);
+spatialOn.addEventListener('change',run);
+dtA.addEventListener('change',run);
+dtB.addEventListener('change',run);
+question.addEventListener('change',run);
+context.addEventListener('change',run);
+if(stockPool) stockPool.addEventListener('change',run);
+cityPreset.addEventListener('change',()=>{const lat=cityLat(cityPreset.value); if(lat!==undefined) latitude.value=lat; run();});
+document.getElementById('runBtn').addEventListener('click',run);
+document.getElementById('nowBtn').addEventListener('click',()=>{setNow();run();});
+document.querySelectorAll('.qcard').forEach(btn=>btn.addEventListener('click',()=>{const [qt,st,q]=btn.dataset.q.split('|'); queryType.value=qt; updateSubTypes(); subType.value=st; question.value=q; run();}));
+
+
+function renderCaseLog(){
+  const box=document.getElementById('caseLog'); if(!box) return;
+  const items=JSON.parse(localStorage.getItem('loshu_case_log')||'[]');
+  if(!items.length){box.innerHTML='<div class="caseItem">暂无本地案例记录。建议在真实问事后记录结论与后续反馈，用于观察规则稳定性。本地案例只保存在当前浏览器。</div>';return;}
+  box.innerHTML=items.slice().reverse().map((it,idx)=>`<div class="caseItem"><b>${it.time}</b><br>摘要：${it.note||'未填写'}<br>反馈：${it.feedback||'待复盘'}</div>`).join('');
+}
+function saveCase(){
+  const items=JSON.parse(localStorage.getItem('loshu_case_log')||'[]');
+  items.push({time:new Date().toLocaleString('zh-CN',{hour12:false}),note:document.getElementById('caseNote').value.trim(),feedback:document.getElementById('caseFeedback').value.trim()});
+  localStorage.setItem('loshu_case_log',JSON.stringify(items.slice(-50)));
+  renderCaseLog();
+}
+function exportCases(){
+  const items=JSON.parse(localStorage.getItem('loshu_case_log')||'[]');
+  const payload={version:'v0.2++ public beta', exportedAt:new Date().toISOString(), cases:items};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='loshu-local-cases.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+function openFeedback(){
+  const title=encodeURIComponent('洛书时机仪复盘反馈');
+  const body=encodeURIComponent('反馈类型：\n问题场景：\n系统表达是否清楚：\n实际行动/后续结果：\n改进建议：\n是否允许匿名整理为精选案例：否/是\n');
+  window.open(`https://github.com/spotpan/luoshu-timing-lab/issues/new?title=${title}&body=${body}`,'_blank','noopener');
+}
+
+initUI(); setNow(); run(); renderCaseLog(); document.getElementById('saveCaseBtn').addEventListener('click',saveCase); document.getElementById('exportCaseBtn').addEventListener('click',exportCases); document.getElementById('feedbackBtn').addEventListener('click',openFeedback);
+
+// background particles
+(function(){
+  const cvs=document.getElementById('bgParticles'),ctx=cvs.getContext('2d'); let w,h,pts=[];
+  function resize(){w=cvs.width=window.innerWidth*devicePixelRatio; h=cvs.height=window.innerHeight*devicePixelRatio; cvs.style.width=window.innerWidth+'px'; cvs.style.height=window.innerHeight+'px'; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); pts=[...Array(70)].map(()=>({x:Math.random()*window.innerWidth,y:Math.random()*window.innerHeight,r:Math.random()*1.6+.4,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15,a:Math.random()*Math.PI*2}))}
+  function tick(){ctx.clearRect(0,0,window.innerWidth,window.innerHeight); pts.forEach(p=>{p.x+=p.vx; p.y+=p.vy; p.a+=.01; if(p.x<0)p.x=window.innerWidth; if(p.x>window.innerWidth)p.x=0; if(p.y<0)p.y=window.innerHeight; if(p.y>window.innerHeight)p.y=0; const alpha=.18+.12*Math.sin(p.a); ctx.beginPath(); ctx.fillStyle=`rgba(123,231,246,${alpha})`; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill();}); requestAnimationFrame(tick)}
+  window.addEventListener('resize',resize); resize(); tick();
+})();
+
+// hero triad particle flow
+(function(){
+  const canvas=document.getElementById('heroCanvas'); const ctx=canvas.getContext('2d'); let rect,w,h,dpr,particles=[];
+  const nodes={left:{x:.18,y:.52,r:34,label:'时轮'},mid:{x:.5,y:.5,r:56,label:'洛书场'},right:{x:.82,y:.48,r:34,label:'行印'}};
+  function resize(){rect=canvas.getBoundingClientRect(); dpr=window.devicePixelRatio||1; w=canvas.width=rect.width*dpr; h=canvas.height=rect.height*dpr; canvas.style.width=rect.width+'px'; canvas.style.height=rect.height+'px'; ctx.setTransform(dpr,0,0,dpr,0,0); particles=[]; for(let i=0;i<52;i++){particles.push({t:Math.random(),lane:Math.random()>.5?0:1,size:Math.random()*2+1,phase:Math.random()*Math.PI*2})}}
+  function interp(a,b,t){return a+(b-a)*t}
+  function drawNode(n,glow,color){ctx.beginPath(); ctx.fillStyle=color; ctx.globalAlpha=.16; ctx.arc(rect.width*n.x,rect.height*n.y,n.r+glow,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1; ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=1.3; ctx.arc(rect.width*n.x,rect.height*n.y,n.r,0,Math.PI*2); ctx.stroke();}
+  function label(n,text){ctx.fillStyle='#eef6ff'; ctx.font='700 14px ui-sans-serif'; ctx.textAlign='center'; ctx.fillText(text,rect.width*n.x,rect.height*n.y+4)}
+  function curvePoint(t,lane){const p0={x:rect.width*nodes.left.x+10,y:rect.height*nodes.left.y+(lane?18:-18)}, p1={x:rect.width*.34,y:rect.height*(lane?.26:.72)}, p2={x:rect.width*.66,y:rect.height*(lane?.72:.26)}, p3={x:rect.width*nodes.right.x-10,y:rect.height*nodes.right.y+(lane?-18:18)}; const u=1-t; const x=u*u*u*p0.x+3*u*u*t*p1.x+3*u*t*t*p2.x+t*t*t*p3.x; const y=u*u*u*p0.y+3*u*u*t*p1.y+3*u*t*t*p2.y+t*t*t*p3.y; return {x,y}; }
+  function line(){ctx.lineWidth=1.2; [0,1].forEach(l=>{ctx.beginPath(); for(let i=0;i<=80;i++){const p=curvePoint(i/80,l); if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);} ctx.strokeStyle=l?'rgba(123,231,246,.20)':'rgba(246,207,120,.20)'; ctx.stroke();});}
+  function triadTick(){ctx.clearRect(0,0,rect.width,rect.height); line(); drawNode(nodes.left,18,'rgba(123,231,246,.95)'); drawNode(nodes.mid,24,'rgba(246,207,120,.95)'); drawNode(nodes.right,18,'rgba(197,180,255,.95)'); label(nodes.left,'时轮'); label(nodes.mid,'洛书场'); label(nodes.right,'行印'); particles.forEach(p=>{p.t+=.003+(p.size*.0009); if(p.t>1) p.t=0; const pt=curvePoint(p.t,p.lane); ctx.beginPath(); ctx.fillStyle=p.lane?'rgba(123,231,246,.75)':'rgba(246,207,120,.75)'; ctx.arc(pt.x,pt.y,p.size,0,Math.PI*2); ctx.fill();}); requestAnimationFrame(triadTick);} window.addEventListener('resize',resize); resize(); triadTick();
+})();
+</script>
+</body>
+</html>
