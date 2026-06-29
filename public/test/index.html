@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.7.1 输入代码均线修正版</title>
+  <title>洛书时机仪 v0.7.2 股票卡片精修版</title>
   <style>
     :root{
       --bg:#071019;
@@ -303,7 +303,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.7.1 输入代码均线修正版</div>
+      <div class="badge">● 洛书时机仪 v0.7.2 股票卡片精修版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -1162,7 +1162,7 @@ async function fetchTencentMA3060(symbol){
   return final;
 }
 function maSignalHTML(ma){
-  if(!ma) return `<div class="maSignal"><b>30/60均线：</b><span class="maTag">均线信号待确认</span><br>暂未获取到足够日线数据；A/H股通常可用，个别市场或网络环境可能需要刷新。</div>`;
+  if(!ma) return `<div class="maSignal"><b>30/60均线：</b><span class="maTag">均线信号待确认</span><br>暂未获取到足够日线数据；可先检查代码格式，或等待后端数据源补全。</div>`;
   const ma30=ma.ma30==null?'—':ma.ma30;
   const ma60=ma.ma60==null?'—':ma.ma60;
   return `<div class="maSignal"><b>30/60均线：</b><span class="maTag">${ma.label||'均线信号待确认'}</span><div class="quoteGrid"><div class="quoteCell">MA30：${ma30}</div><div class="quoteCell">MA60：${ma60}</div><div class="quoteCell">趋势修正：${ma.boost>0?'+':''}${ma.boost||0}</div><div class="quoteCell">状态：${ma.status||'unknown'}</div><div class="quoteCell">数据源：${ma.source||'日线接口'}</div></div><div style="margin-top:6px">${ma.message||'均线数据待确认。'}</div></div>${sourceProbeHTML(ma)}`;
@@ -1199,16 +1199,64 @@ function stockIndustryLabel(el){
   const m=investmentMap[el];
   return m?`${el}类｜${m.name}`:`${el||'待识别'}类｜行业待识别`;
 }
+
+function marketText(code){
+  const m=inferMarket(code);
+  return m||'市场待识别';
+}
+function cleanIndustryLabel(el){
+  const map={
+    '木':'成长/医药/消费复苏',
+    '火':'科技/AI/新能源/高热度方向',
+    '土':'金融/地产/基建/稳定资产',
+    '金':'高端制造/半导体/装备',
+    '水':'平台经济/云服务/流动性资产'
+  };
+  return `${el||'待识别'}类｜${map[el]||'行业待识别'}`;
+}
+function maActionText(ma, merged){
+  const d1=Number(merged&&merged.d1);
+  if(!ma || ma.status==='unknown') return '趋势骨架待确认，先看量价与关键支撑，不宜只凭单日涨跌判断。';
+  if(ma.status==='golden_cross') return '中期趋势刚转强，可重点观察回踩不破与放量延续。';
+  if(ma.status==='above'){
+    if(Number.isFinite(d1) && d1>2.5) return '中期骨架仍在，短线已有热度，宜看承接，不宜盲目追高。';
+    return '中期骨架保持，适合继续观察趋势延续与量能配合。';
+  }
+  if(ma.status==='near') return '均线处在临界区，适合等待方向确认，重点看放量突破或回落失效。';
+  if(ma.status==='below'){
+    if(Number.isFinite(d1) && d1>2.5) return '短线火势已动，但中期骨架未立，宜看回踩承接，不宜直接追涨。';
+    return '中期趋势尚未转强，适合作为观察池，不宜提高到主线仓位判断。';
+  }
+  return '趋势状态待确认，先作为观察项处理。';
+}
+function observationText(merged, ma){
+  const d1=Number(merged&&merged.d1);
+  const score=Number(merged&&merged.score);
+  const maStatus=ma&&ma.status;
+  if(Number.isFinite(d1) && d1>2.2 && maStatus==='below') return '短线行情强，但中期趋势未转强，适合观察承接，不宜追高。';
+  if(Number.isFinite(d1) && d1>2.2 && (maStatus==='above'||maStatus==='golden_cross')) return '短线行情强，且中期趋势有支撑，适合观察延续与回踩确认。';
+  if(maStatus==='golden_cross') return '均线刚出现转强信号，可作为重点观察项，但仍需成交量确认。';
+  if(maStatus==='above') return '中期趋势保持，适合观察趋势延续。';
+  if(maStatus==='near') return '处在趋势临界区，等待突破或回落确认。';
+  if(score>=60) return '模型分较高，适合作为观察池候选。';
+  return merged&&merged.tag ? merged.tag : '观察池候选，等待行情和趋势确认。';
+}
+function formatStockTitle(name, code){
+  return `${name||code}｜${code}｜${marketText(code)}`;
+}
+
 function quoteInfoHTML(s, merged, q, sourceLabel){
   const el=merged.el || s.el || '待识别';
-  const industry=stockIndustryLabel(el);
+  const industry=cleanIndustryLabel(el);
   const name=q.name || s.name || s.code;
   const code=s.code;
+  const ma=merged.maSignal;
   const price=(q.price!==undefined&&q.price!==null)?q.price:'—';
   const pct=(merged.d1!==undefined&&merged.d1!==null)?merged.d1:'—';
-  const amount=(q.amount!==undefined&&q.amount!==null)?q.amount:'—';
-  const hkNote=isHKSymbol(code)?'港股观察池已切换为腾讯分时/报价示意，避免 TradingView 弹窗或默认错显。':'';
-  return `<div class="quoteInfo"><b>${name}</b>｜${code}<span class="apiTag">${s.market||inferMarket(code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${industry}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px">观察类型：${merged.tag}。图表来源：${sourceLabel}；腾讯报价用于现价、涨跌幅和候选分重算。手机安全图不是 TradingView 实时图，只是防空白兜底。${hkNote}</div></div>${maSignalHTML(merged.maSignal)}`;
+  const action=observationText(merged,ma);
+  const maAction=maActionText(ma,merged);
+  const hkNote=isHKSymbol(code)?'港股优先使用腾讯/本地图，避免 TradingView 弹窗或默认错显。':'';
+  return `<div class="quoteInfo"><b>${formatStockTitle(name,code)}</b><div class="quoteGrid"><div class="quoteCell">五行行业：${industry}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px"><b>观察译文：</b>${action}<br><b>趋势译文：</b>${maAction}<br><span class="meta">腾讯报价用于现价、涨跌幅和候选分重算；Vercel K线代理用于30/60均线。手机安全图只用于防空白，不代表 TradingView 实时图。${hkNote}</span></div></div>${maSignalHTML(ma)}`;
 }
 function stockCandidateHTML(t,sub,conv,label){
   const userList=parseStockPool();
@@ -1218,10 +1266,10 @@ function stockCandidateHTML(t,sub,conv,label){
   const sourceText=userList.length?'代码观察池':'系统推荐候选';
   const scored=list.map(s=>scoreStockCandidate(s,t,sub,tr)).sort((a,b)=>b.score-a.score);
   const top=scored.slice(0,2);
-  const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">五行行业：${stockIndustryLabel(s.el)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
+  const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">五行行业：${cleanIndustryLabel(s.el)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
   const rows=scored.map((s,i)=>`<div class="stockRow"><span>#${i+1}</span><b>${s.name}</b><span>${stockIndustryLabel(s.el)}</span><span>${s.score}</span><span>${i<2?'主候选观察':'对照/备选观察'}｜${s.tag}</span></div>`).join('');
   setTimeout(()=>fetchAndRenderStocks(label,scored.slice(0,2),t,sub,conv),50);
-  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、腾讯报价信息与图表；A股优先使用腾讯分时图，港股/美股优先使用 TradingView 图表。支持“600519”或“贵州茅台｜600519.SH”这类写法。行情与图表仅作观察展示；手机安全图/本地示意图只用于防止空白，不代表 TradingView 实时分时；30/60均线为趋势提醒，不构成买卖建议。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
+  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、行情状态、趋势译文与30/60均线。A股优先使用腾讯分时图，港股/美股按可用性使用 TradingView 或本地图。支持“600519”“300750.SZ”或“贵州茅台｜600519.SH”这类写法。行情、图表与均线仅作观察展示，不构成买卖建议。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
 }
 
 function tvSymbolFor(symbol){
@@ -1327,7 +1375,7 @@ async function fetchAndRenderStocks(label,stocks,t,sub,conv){
         fallbackMA={status:'unknown',label:'均线信号待确认',message:`Vercel K线代理也未获取成功：${maErr.message||maErr}`,ma30:null,ma60:null,boost:0,source:'Vercel K线代理',attempts:[{name:'Vercel K线代理',ok:false,msg:maErr.message||String(maErr)}]};
       }
       const mergedFallback={...s,maSignal:fallbackMA};
-      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。但30/60均线已改为独立请求 Vercel K线代理，因此即使现价/分时失败，也会继续尝试输出均线趋势。</div></div>${maSignalHTML(mergedFallback.maSignal)}`;
+      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${formatStockTitle(s.name||s.code,s.code)}</b><div class="quoteGrid"><div class="quoteCell">五行行业：${cleanIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'腾讯/本地图':'TradingView桌面图'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。但30/60均线会独立请求 Vercel K线代理；若均线可用，仍可判断中期趋势。</div></div>${maSignalHTML(mergedFallback.maSignal)}`;
     }
   }
 }
