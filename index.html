@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.2++ public beta</title>
+  <title>洛书时机仪 v0.3.1 投资决策增强版</title>
   <style>
     :root{
       --bg:#071019;
@@ -189,7 +189,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.2++ public beta</div>
+      <div class="badge">● 洛书时机仪 v0.3.1 投资决策增强版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -418,7 +418,27 @@ function palaceElement(n){return palaceByN(n).el}
 function spatialWeight(a,b){if(a===b)return 0;const A=palaceByN(a),B=palaceByN(b);const man=Math.abs(A.x-B.x)+Math.abs(A.y-B.y);const pair=([[1,6],[3,8],[7,2],[9,4]].some(([x,y])=>(a===x&&b===y)||(a===y&&b===x)));if(pair)return 1;if(man===1)return .8;if((A.x===1&&B.x===1)||(A.y===1&&B.y===1)||(a===5||b===5))return .65;return .4}
 function elementPass(p){let q={...p};const alpha=.11,beta=.13,nums=[1,2,3,4,5,6,7,8,9];nums.forEach(t=>{let delta=0;nums.forEach(s=>{if(s===t)return;const se=palaceElement(s),te=palaceElement(t),w=spatialWeight(s,t),val=p[s];if(gen[se]===te)delta+=alpha*w*val;if(ctrl[se]===te)delta-=beta*w*val});q[t]=clamp(p[t]+delta)});return q}
 function loshuBalance(p){let q={...p};const sums=eightLines.map(line=>line.reduce((a,n)=>a+p[n],0));const avg=sums.reduce((a,b)=>a+b,0)/sums.length;const theta=.12,gamma=.045;eightLines.forEach((line,idx)=>{const ex=sums[idx]-avg;if(Math.abs(ex)>theta){line.forEach(n=>{if(n!==5)q[n]=clamp(q[n]-Math.sign(ex)*gamma*Math.abs(ex)/3)});q[5]=clamp(q[5]+Math.sign(ex)*gamma*Math.abs(ex)/4)}});return q}
-function detectTransform(v){const pairs=[['阳木','阴土','土',v.yangWood,v.yinEarth],['阴木','阳金','金',v.yinWood,v.yangMetal],['阳火','阴金','水',v.yangFire,v.yinMetal],['阴火','阳水','木',v.yinFire,v.yangWater],['阳土','阴水','火',v.yangEarth,v.yinWater]];let best={name:'',to:'',strength:0,level:'未触发',balance:0};for(const [a,b,to,x,y] of pairs){const strength=Math.min(x,y);const bal=Math.max(x,y)>0?strength/Math.max(x,y):0;if(strength>.08&&strength>best.strength){best={name:`${a} + ${b} → 化${to}`,to,strength:+strength.toFixed(2),balance:+bal.toFixed(2),level:(strength>=.30&&bal>=.75)?'成化':(strength>=.20&&bal>=.45)?'弱合':'争合/牵制'}}}return best}
+function detectTransform(v){
+  const pairs=[
+    ['阳木','阴土','土',v.yangWood,v.yinEarth],
+    ['阴木','阳金','金',v.yinWood,v.yangMetal],
+    ['阳火','阴金','水',v.yangFire,v.yinMetal],
+    ['阴火','阳水','木',v.yinFire,v.yangWater],
+    ['阳土','阴水','火',v.yangEarth,v.yinWater]
+  ];
+  let best={name:'',to:'',strength:0,level:'未触发',balance:0,x:0,y:0,pairSum:0};
+  for(const [a,b,to,x,y] of pairs){
+    const strength=Math.min(x,y);
+    const pairSum=x+y;
+    const bal=Math.max(x,y)>0?strength/Math.max(x,y):0;
+    const priority=strength*0.62 + bal*0.23 + pairSum*0.15;
+    const bestPriority=best.strength*0.62 + best.balance*0.23 + best.pairSum*0.15;
+    if(strength>.08 && priority>bestPriority){
+      best={name:`${a} + ${b} → 化${to}`,to,strength:+strength.toFixed(3),balance:+bal.toFixed(3),x:+x.toFixed(3),y:+y.toFixed(3),pairSum:+pairSum.toFixed(3),level:(strength>=.30&&bal>=.75)?'成化':(strength>=.20&&bal>=.45)?'弱合':'争合/牵制'};
+    }
+  }
+  return best;
+}
 function convolve(v){const p0=tenToPalaces(v),p1=sameStore(p0),p2=elementPass(p1),p3=loshuBalance(p2);const ten=palacesToTen(p3,{yang:v.yangEarth,yin:v.yinEarth});const trans=detectTransform(ten);let final={...ten};if(trans.name){const add=.18*trans.strength;const map={土:['yangEarth','yinEarth'],金:['yangMetal','yinMetal'],水:['yangWater','yinWater'],木:['yangWood','yinWood'],火:['yangFire','yinFire']};map[trans.to].forEach(k=>final[k]+=add/2)}Object.keys(final).forEach(k=>final[k]=+clamp(final[k]).toFixed(2));return{initial:p0,afterStore:p1,afterElement:p2,afterBalance:p3,ten:final,palaces:tenToPalaces(final),transform:trans}}
 function totals(t){return{水:+(t.yangWater+t.yinWater).toFixed(2),木:+(t.yangWood+t.yinWood).toFixed(2),火:+(t.yangFire+t.yinFire).toFixed(2),金:+(t.yangMetal+t.yinMetal).toFixed(2),土:+(t.yangEarth+t.yinEarth).toFixed(2),阳:+(t.yangWater+t.yangWood+t.yangFire+t.yangMetal+t.yangEarth).toFixed(2),阴:+(t.yinWater+t.yinWood+t.yinFire+t.yinMetal+t.yinEarth).toFixed(2)}}
 function resolveDayMaster(v,p){if(!v||v==='auto'||String(v).startsWith('自动')) return {value:p.day.stem,auto:true}; return {value:v,auto:false}}
@@ -477,31 +497,92 @@ function sectorLineFor(el,mode){
   if(mode==='risk') return `${m.name}风险点：${pick}若缺少成交确认，容易只形成短线波动。`;
   return `${m.name}可重点观察：${pick}。`;
 }
+
+function investmentElementScores(t,sub){
+  const selected=investmentElement(sub).el;
+  const base={水:t.水,木:t.木,火:t.火,土:t.土,金:t.金};
+  const scores={};
+  for(const el of ['木','火','土','金','水']){
+    let s=45 + base[el]*42;
+    // investment-specific interpretation: flow + rules + support matter, excessive heat raises attention but also risk
+    if(el==='水') s += t.金*8 + t.木*4 - t.土*5;
+    if(el==='木') s += t.水*8 + t.火*4 - t.金*5;
+    if(el==='火') s += t.木*7 + t.金*4 - t.水*4;
+    if(el==='土') s += t.火*7 + t.金*5 - t.木*4;
+    if(el==='金') s += t.土*7 + t.水*5 - t.火*3;
+    if(selected===el) s += 6;
+    if(sub&&sub.includes('买入')) s += (el==='木'||el==='水'||el==='火')?5:-1;
+    if(sub&&sub.includes('卖出')) s += (el==='火'||el==='金')?6:0;
+    if(sub&&sub.includes('持有')) s += (el==='土'||el==='金'||el==='水')?5:0;
+    if(sub&&sub.includes('轮动')) s += (el==='木'||el==='火'||el==='水')?3:0;
+    scores[el]=displayScore(clampScore(Math.round(s)));
+  }
+  return scores;
+}
+function focusLevel(score){
+  if(score>=82) return {label:'高关注',verb:'可以列为主观察方向'};
+  if(score>=70) return {label:'可关注',verb:'可以观察，但要等待价格与量能确认'};
+  if(score>=58) return {label:'中性观察',verb:'可以放入备选，不宜作为主线'};
+  if(score>=45) return {label:'谨慎观察',verb:'暂不适合作为主观察方向'};
+  return {label:'低关注',verb:'不建议作为当前主观察方向'};
+}
+function investmentRankRows(t,sub){
+  const scores=investmentElementScores(t,sub);
+  return Object.entries(scores).sort((a,b)=>b[1]-a[1]).map(([el,score],i)=>({el,score,rank:i+1,level:focusLevel(score).label,map:investmentMap[el]}));
+}
+function investmentDecisionHTML(t,sub){
+  const it=investmentTendency(t,sub);
+  const selected=it.map.el||it.focusEl;
+  const rows=investmentRankRows(t,sub);
+  const selectedRow=rows.find(r=>r.el===selected)||rows[0];
+  const top=rows[0], second=rows[1];
+  const fl=focusLevel(selectedRow.score);
+  const rec = selectedRow.score>=58
+    ? `${investmentMap[selected].name}当前为${fl.label}，${fl.verb}。`
+    : `${investmentMap[selected].name}当前为${fl.label}，更建议优先观察${top.map.name}${second?`，其次观察${second.map.name}`:''}。`;
+  const rankHTML=rows.map(r=>`<div class="investRank"><b>${r.el}｜${r.score}</b><span>#${r.rank} ${r.level}</span><span>${r.map.name}</span></div>`).join('');
+  return `<div class="investDecision"><div class="headline">投资关注判断｜${investmentMap[selected].name}</div><div class="line">${rec}</div><div class="line"><b>当前首选：</b>${top.map.name}。<b>备选：</b>${second?second.map.name:'无'}。<b>不推荐时的替代逻辑：</b>若所选行业低于 58，则优先转向排名靠前且风险较低的行业方向。</div><div class="investRanks">${rankHTML}</div><div class="line" style="margin-top:8px"><b>具体观察：</b>${it.buyLine} <b>止盈检查：</b>${it.sellLine} <b>持有观察：</b>${it.holdLine}</div></div>`;
+}
+
 function investmentTendency(t,sub){
   const m=investmentElement(sub);
-  const rank=topInvestmentElements(t);
+  const rows=investmentRankRows(t,sub);
+  const rank=rows.map(r=>r.el);
   const focusEl=m.el || rank[0];
+  const focusRow=rows.find(r=>r.el===focusEl)||rows[0];
   const secondEl=rank.find(e=>e!==focusEl) || rank[1];
-  const elementScore=m.el? t[m.el] : Math.max(t.水,t.木,t.火,t.土,t.金);
-  const buy=Math.round(Math.max(0,Math.min(100,40 + t.木*24 + t.水*22 + t.火*12 - t.金*12 - t.土*8 + elementScore*10 + (sub&&sub.includes('买入')?8:0))));
-  const sell=Math.round(Math.max(0,Math.min(100,38 + t.金*28 + t.火*18 + t.土*12 - t.水*10 + (sub&&sub.includes('卖出')?12:0))));
-  const hold=Math.round(Math.max(0,Math.min(100,42 + t.土*28 + t.金*18 + t.水*10 - t.火*8 + (sub&&sub.includes('持有')?8:0))));
-  const risk=Math.round(Math.max(0,Math.min(100,40 + t.金*20 + t.火*18 + t.土*12 - t.水*10)));
-  let mainMode='观察';
+  const scores=investmentElementScores(t,sub);
+  const buy=clampScore(Math.round(scores[focusEl]*0.58 + (t.水*18+t.木*18+t.火*10) + ((sub||'').includes('买入')?8:0)));
+  const sell=clampScore(Math.round(42 + t.火*24 + t.金*24 + t.土*12 - t.水*8 + ((sub||'').includes('卖出')?12:0)));
+  const hold=clampScore(Math.round(42 + t.土*24 + t.金*18 + t.水*16 - t.火*8 + ((sub||'').includes('持有')?8:0)));
+  const risk=clampScore(Math.round(38 + t.火*24 + t.金*18 + t.土*12 - t.水*10 + (sell>buy?6:0)));
+  let mainMode='行业关注';
   if(sub&&sub.includes('卖出')) mainMode='卖出/止盈观察';
   else if(sub&&sub.includes('持有')) mainMode='持有观察';
   else if(sub&&sub.includes('买入')) mainMode='买入观察';
   else if(sub&&sub.includes('轮动')) mainMode='轮动观察';
-  let summary='以行业轮动观察为主，不宜把盘象直接当成交易指令。';
-  if(mainMode==='买入观察') summary=buy>=sell+8?`买入观察信号相对更强，可优先看${investmentMap[focusEl].name}中的低位确认或回踩承接。`:`买入观察信号不算突出，更适合等价格、成交量和趋势确认。`;
-  else if(mainMode==='卖出/止盈观察') summary=sell>=buy?`卖出/止盈观察信号相对更强，可优先检查高热度题材、连续放量和短线获利盘。`:`卖出信号不算单边明确，可先观察冲高回落、跌破支撑或量能衰减。`;
-  else if(mainMode==='持有观察') summary=hold>=risk?`持有/观望信号相对更稳，可优先看现金流、防守和低波动方向。`:`持有稳定性一般，建议先看风险暴露和仓位集中度。`;
-  else if(mainMode==='轮动观察') summary=`轮动观察更适合从${investmentMap[rank[0]].name}主势，比较${investmentMap[rank[1]].name}与${investmentMap[rank[2]].name}是否出现补涨。`;
+  const focusLevelText=focusLevel(focusRow.score);
+  let summary='';
+  if(m.el){
+    summary=`${investmentMap[focusEl].name}当前关注度为 ${focusRow.score}（${focusLevelText.label}）。${focusLevelText.verb}。`;
+    if(focusRow.score<58) summary+=` 当前不建议把它作为主线，更适合优先观察${investmentMap[rank[0]].name}${rank[1]?`，其次看${investmentMap[rank[1]].name}`:''}。`;
+    else if(focusRow.rank>1) summary+=` 但它不是当前第一序位，第一序位是${investmentMap[rank[0]].name}，需要比较两者的量能和位置。`;
+  }else if(mainMode==='买入观察'){
+    summary=buy>=sell+8?`买入观察信号相对更强，可优先看${investmentMap[focusEl].name}中的低位确认或回踩承接。`:`买入观察信号不算突出，更适合等价格、成交量和趋势确认；当前可优先观察${investmentMap[rank[0]].name}。`;
+  }else if(mainMode==='卖出/止盈观察'){
+    summary=sell>=buy?`卖出/止盈观察信号相对更强，可优先检查${investmentMap[rank[0]].name}与高热题材中的连续放量、短线获利盘。`:`卖出信号不算单边明确，可先观察冲高回落、跌破支撑或量能衰减。`;
+  }else if(mainMode==='持有观察'){
+    summary=hold>=risk?`持有/观望信号相对更稳，可优先看${investmentMap[rank[0]].name}中现金流、防守和低波动方向。`:`持有稳定性一般，建议先看风险暴露和仓位集中度。`;
+  }else if(mainMode==='轮动观察'){
+    summary=`轮动观察更适合从${investmentMap[rank[0]].name}主势，比较${investmentMap[rank[1]].name}与${investmentMap[rank[2]].name}是否出现补涨。`;
+  }else{
+    summary=`当前首选观察方向为${investmentMap[rank[0]].name}，备选为${investmentMap[rank[1]].name}。若所选行业不在前两位，应降低关注级别。`;
+  }
   const buyLine=sectorLineFor(focusEl,'buy') + (secondEl?` 备选：${sectorLineFor(secondEl,'buy')}`:'');
   const sellLine=sectorLineFor(rank.includes('火')?'火':rank[0],'sell');
   const holdLine=sectorLineFor(rank.includes('土')?'土':rank[0],'hold');
   const riskLine=`若风险指数高于买入观察，优先降低追涨冲动，等待回踩、缩量企稳或基本面确认。`;
-  return {summary,buy,sell,hold,risk,map:m,focusEl,secondEl,rank,mainMode,buyLine,sellLine,holdLine,riskLine};
+  return {summary,buy,sell,hold,risk,map:m,focusEl,secondEl,rank,rows,scores,mainMode,buyLine,sellLine,holdLine,riskLine,focusScore:focusRow.score,focusRank:focusRow.rank,focusLevel:focusLevelText.label};
 }
 
 
@@ -578,7 +659,7 @@ function readingText(type,sub,t,tr,dm,spatial){
   }
   if(type==='investment'){
     const it=investmentTendency(t,sub);
-    return `投资/行业观察：${it.summary} ${it.map.text} 具体观察方向：${it.buyLine} 卖出/止盈检查：${it.sellLine} 持有观察：${it.holdLine} 指数：买入观察 ${it.buy}，卖出/止盈 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。${spatial.direction} 本项只用于复盘观察，不构成任何买入、卖出或持有的个人化建议。`;
+    return `投资/行业观察：${it.summary} ${it.map.text} 当前五行行业排序：${it.rank.map(e=>e+'类'+investmentMap[e].name).join(' > ')}。具体观察方向：${it.buyLine} 卖出/止盈检查：${it.sellLine} 持有观察：${it.holdLine} 指数：所选/首选行业 ${it.focusScore}，买入观察 ${it.buy}，卖出/止盈 ${it.sell}，持有稳定 ${it.hold}，风险提示 ${it.risk}。${spatial.direction} 本项只用于复盘观察，不构成任何买入、卖出或持有的个人化建议。`;
   }
   return `当前主势为 ${top[0][0]}，次势为 ${top[1][0]}，弱项为 ${weak[0]}。${q} ${relationForDM(dm,t)} ${spatial.direction} ${tr.name?`本盘出现 ${tr.name}（${tr.level}），提示事情可能从强弱判断进入“性质转化”。`:''}`;
 }
@@ -734,20 +815,26 @@ function transformSceneText(name,type,sub){
 }
 function transformDetail(tr,type,sub){
   if(!tr||!tr.name) return {index:0,status:'未形成明显转化',name:'未触发',mechanism:'无明显后天合化',scene:'当前以取用排序和中天场强为主。',strategy:'不宜过度解释转向信号，先看主导五行与场景指标。'};
-  const idx=clampScore(24 + tr.strength*170 + tr.balance*32);
+  const strengthTerm=clampScore(Math.round(((tr.strength||0)-0.08)/0.28*38));
+  const balanceTerm=clampScore(Math.round((tr.balance||0)*24));
+  const pairTerm=clampScore(Math.round((tr.pairSum||0)*16));
+  const main=sceneMainElements(type,sub);
+  const selected=type==='investment'?investmentElement(sub).el:'';
+  const sceneTerm=(main.includes(tr.to)?8:0) + (selected===tr.to?7:0) + ((sub||'').includes('卖出')&&tr.name.includes('化水')?5:0) + ((sub||'').includes('买入')&&['木','火'].includes(tr.to)?4:0);
+  const idx=clampScore(22 + strengthTerm + balanceTerm + pairTerm + sceneTerm);
   const m=transformMechanisms[tr.name]||{name:'结构转化型',from:'两股力量相遇',to:`化${tr.to}`,strategy:'观察结构转向。'};
-  return {index:idx,status:transformStatus(idx),name:tr.name,mechanism:m.name,from:m.from,to:m.to,scene:transformSceneText(tr.name,type,sub),strategy:m.strategy,strength:tr.strength,balance:tr.balance,rawLevel:tr.level};
+  return {index:idx,status:transformStatus(idx),name:tr.name,mechanism:m.name,from:m.from,to:m.to,scene:transformSceneText(tr.name,type,sub),strategy:m.strategy,strength:tr.strength,balance:tr.balance,pairSum:tr.pairSum,rawLevel:tr.level};
 }
 function houtianPanelHTML(p,t,conv,type,sub){
   const ht=houtianModel(p,t,conv,type,sub), tr=ht.transform;
-  const rows=ht.rows.map(r=>`<div class="sortRow"><div class="el" style="color:${colors[r.el]}">${r.el}</div><div class="rank">#${r.rank}｜${r.level}</div><div class="desc">${r.relation}｜${r.phrase}｜背景权重 ${r.bg.toFixed(1)}，场景权重 ${r.scene>0?'+':''}${r.scene.toFixed(2)}</div><div class="grade">${r.grade}</div></div>`).join('');
-  return `<div class="houtianPanel"><div class="sectionTitle">后天取用｜排序定主次，合化定转向</div><div class="noticeStrong">${ht.summary} 指数为相对强度显示，用于比较时机窗口，不代表概率。</div><div class="hSplit"><div class="hCard"><h4>后天五行固定排序与评级</h4><div class="sortRows">${rows}</div></div><div class="hCard"><h4>后天合化｜结构转化信号</h4><div class="transIndex">${tr.index}</div><div class="transType">${tr.status}｜${tr.name}</div><p><b>转化机制：</b>${tr.mechanism}。${tr.from?`结构从“${tr.from}”转向“${tr.to}”。`:''}</p><p><b>场景译义：</b>${tr.scene}</p><p><b>行动策略：</b>${tr.strategy}</p></div></div></div>`;
+  const rows=ht.rows.map(r=>`<div class="sortRow"><div class="el" style="color:${colors[r.el]}">${r.el}</div><div class="rank">#${r.rank}｜${r.level}</div><div class="desc">${r.relation}｜${r.phrase}</div><div class="grade">${r.grade}</div></div>`).join('');
+  return `<div class="houtianPanel"><div class="sectionTitle">后天取用｜排序与转化</div><div class="noticeStrong">当前主局：${ht.host}局。先看固定序位与评级，再看合化是否改变事情性质。指数为相对强度显示，用于比较时机窗口，不代表概率。</div><div class="hSplit"><div class="hCard"><h4>后天五行评级</h4><div class="sortRows">${rows}</div></div><div class="hCard"><h4>后天合化｜转化信号</h4><div class="transIndex">${tr.index}</div><div class="transType">${tr.status}｜${tr.name}</div><p><b>转化机制：</b>${tr.mechanism}。${tr.from?`结构从“${tr.from}”转向“${tr.to}”。`:''}</p><p><b>场景译义：</b>${tr.scene}</p><p><b>行动策略：</b>${tr.strategy}</p></div></div></div>`;
 }
 function sceneMetricSet(type,sub,t,conv,p){
   const sc=buildScores(type,t), tr=transformDetail(conv.transform,type,sub), arr=[];
   const add=(label,val,role='core')=>arr.push({label,value:displayScore(val),raw:val,role,level:gradeLabel(displayScore(val))});
   if(type==='investment'){
-    const it=investmentTendency(t,sub); add('行业轮动',Math.round((it.buy+it.hold+100-it.risk)/3),'core'); add('高关注强度',it.buy,'core'); add('止盈压力',it.sell,'risk'); add('防守价值',it.hold,'assist'); add('追高风险',it.risk,'risk'); add('合化转向',tr.index,'transform');
+    const it=investmentTendency(t,sub); add(it.map.el?'所选行业关注':'首选行业关注',it.focusScore||it.buy,'core'); add('高关注强度',it.buy,'core'); add('止盈压力',it.sell,'risk'); add('防守价值',it.hold,'assist'); add('追高风险',it.risk,'risk'); add('合化转向',tr.index,'transform');
   }else if(type==='direction'){
     const da=directionAnalysis(conv,sub); add('方位取势',da.best.score,'core'); add('辅助可用',da.second.score,'assist'); add('沟通方位',Math.max(...da.rows.filter(r=>[1,3,6,8].includes(r.n)).map(r=>r.score)),'core'); add('交易方位',Math.max(...da.rows.filter(r=>[9,4,5,1].includes(r.n)).map(r=>r.score)),'assist'); add('慎用提醒',100-da.cautious.score,'risk'); add('合化转向',tr.index,'transform');
   }else if(type==='relationship'){
@@ -809,6 +896,7 @@ function render(targetId,d,label){
   const directionPanel=queryType.value==='direction'?directionCompassHTML(conv,subType.value):'';
   const scenePanel=sceneMetricsHTML(queryType.value,subType.value,t,conv,p);
   const houtianPanel=houtianPanelHTML(p,t,conv,queryType.value,subType.value);
+  const investPanel=queryType.value==='investment'?investmentDecisionHTML(t,subType.value):'';
   const ht=houtianModel(p,t,conv,queryType.value,subType.value);
   const trace=traceRows(queryType.value,subType.value,p,init,t,conv,dm).map(r=>`<div class="traceCard"><span class="tag">${r.tag}</span><p>${r.text}</p></div>`).join('');
   document.getElementById(targetId).innerHTML=`
@@ -816,6 +904,7 @@ function render(targetId,d,label){
     <div style="color:var(--muted);line-height:1.7;font-size:14px">${question.value?`问题：${question.value}`:'未填写问题'} ｜ 场景：${queryNames[queryType.value]} / ${subType.value || '未选'} ｜ 主体：${dm.value}${dm.auto?'（日盘临时）':''}</div>
     <div class="verdict"><div class="label">后天行动译文</div><div class="headline">${vd.action}</div><div class="why">${vd.why}</div></div>
     ${scenePanel}
+    ${investPanel}
     ${houtianPanel}
     <div class="states">${states}</div>
     ${directionPanel}
