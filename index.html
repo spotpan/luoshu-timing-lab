@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.3.1 投资决策增强版</title>
+  <title>洛书时机仪 v0.5.6 候选股图表统一版</title>
   <style>
     :root{
       --bg:#071019;
@@ -29,9 +29,48 @@
     #bgParticles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.8}
     .wrap{position:relative;z-index:1;width:min(1380px,calc(100% - 34px));margin:0 auto;padding:28px 0 50px}
     .panel{background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
-    .hero{display:grid;grid-template-columns:1.12fr .88fr;gap:22px;align-items:stretch}
-    .heroMain{padding:30px 30px 26px;position:relative;overflow:hidden;min-height:520px}
-    .heroAside{padding:22px}
+    .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:stretch}
+    .heroMain{padding:26px 26px 22px;position:relative;overflow:visible;min-height:760px;height:100%}
+    .heroAside{padding:20px;align-self:stretch;height:100%;overflow:visible}
+
+    .heroAside .modes{grid-template-columns:1fr;gap:8px;margin-bottom:12px}
+    .heroAside .mode{padding:11px 12px}
+    .heroAside .notice{margin:10px 0 12px;padding:12px 13px}
+    .quickCards{max-height:178px;overflow:auto;padding-right:2px}
+    .heroAside .sectionTitle{margin-top:12px}
+    .heroAside textarea{min-height:58px}
+    #stockPool{min-height:70px}
+    #marketApiField{font-size:12.5px;line-height:1.65}
+    .heroVisual{margin-top:16px}
+    .miniBoards{margin-top:14px}
+
+
+    .inputCore{display:grid;gap:10px}
+    .advancedBox{border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.04);padding:10px 12px;margin-top:10px}
+    .advancedBox summary{cursor:pointer;color:#fde68a;font-weight:850;font-size:13px}
+    .advancedBox .insideAdv{margin-top:10px;max-height:205px;overflow:auto;padding-right:4px}
+    .compactHint{font-size:12px;color:#9fb0c7;line-height:1.55;margin:6px 0 0}
+    .heroAside .quickCards{max-height:132px;overflow:auto}
+    .heroAside .sectionTitle{margin:10px 0 10px}
+    .heroAside .field{margin-bottom:9px}
+    .heroAside textarea{min-height:54px}
+    #stockPool{min-height:62px}
+    .heroAside .btns{margin-top:10px}
+
+
+    .heroAside .field{margin-bottom:10px}
+    .heroAside textarea{min-height:58px}
+    #question{min-height:64px}
+    #context{min-height:54px}
+    #stockPool{min-height:62px}
+    .quickCards{max-height:118px;overflow:auto;padding-right:2px}
+    .leftDisclaimer{margin-top:12px;padding:12px 13px;border-radius:16px;border:1px solid rgba(246,207,120,.20);background:rgba(246,207,120,.06);color:#cbd7ea;font-size:12.5px;line-height:1.65}
+    .rightMiniNote{margin-top:8px;padding:10px 12px;border-radius:14px;border:1px solid rgba(123,231,246,.18);background:rgba(123,231,246,.055);color:#bcd5e7;font-size:12px;line-height:1.55}
+
+
+    /* v0.4.5: right hero panel stretches to match the left panel height */
+    .hero > .panel{height:100%}
+
     .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid rgba(246,207,120,.33);background:rgba(246,207,120,.08);color:#ffe7b4;font-size:13px;margin-bottom:16px}
     h1{font-size:clamp(34px,5vw,68px);line-height:1.02;margin:0;letter-spacing:-2px}
     .subH{display:block;font-size:clamp(20px,2.2vw,32px);font-weight:620;color:#d8e7ff;letter-spacing:-.5px;margin-top:6px}
@@ -182,14 +221,51 @@
     footer{text-align:center;font-size:12px;color:#97a9c4;margin-top:24px}
     @media (max-width:1100px){.hero,.main{grid-template-columns:1fr}.philo{grid-template-columns:1fr;}.arrow{transform:rotate(90deg)}.quickCards,.scoreGrid,.states,.tokens,.metrics,.glyphLegend,.miniBoards,.methodGrid,.infoSections{grid-template-columns:1fr 1fr}.heroVisual{height:220px}}
     @media (max-width:700px){.quickCards,.scoreGrid,.states,.tokens,.metrics,.glyphLegend,.grid2,.grid3,.miniBoards,.methodGrid,.infoSections,.caseGrid{grid-template-columns:1fr}.philo{gap:8px}.wrap{width:min(100% - 20px,1380px)}.heroMain,.heroAside,.resultPanel{padding:18px}.heroVisual{height:190px}}
-  </style>
+  
+    .investDecision{margin-top:12px;padding:14px;border-radius:18px;border:1px solid rgba(246,207,120,.22);background:rgba(246,207,120,.055)}
+    .investDecision .headline{font-size:18px;font-weight:950;color:#fff;margin-bottom:6px}
+    .investDecision .line{color:#cbd7ea;line-height:1.7;font-size:14px}
+    .investRanks{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+    .investRank{border-radius:14px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);padding:10px}
+    .investRank b{display:block;font-size:18px;color:#fff}
+    .investRank span{display:block;font-size:12px;color:#9fb0c7;margin-top:2px}
+
+
+
+
+    .fallbackChart{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,.14)}
+    .fallbackChart .fallbackTitle{font-size:11px;color:#95a6bf;margin-bottom:5px}
+
+    .quoteInfo{margin-top:8px;padding:10px 11px;border-radius:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.10);font-size:12px;color:#cbd7ea;line-height:1.65}
+    .quoteInfo b{color:#fff}
+    .quoteGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
+    .quoteCell{padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.16)}
+
+    .tvFrame{width:100%;height:210px;border:0;border-radius:14px;background:rgba(0,0,0,.22);margin-top:8px}
+
+    .sparkSvg{width:100%;height:72px;margin-top:8px;border-radius:12px;background:rgba(0,0,0,.18);overflow:hidden}
+    .apiTag{display:inline-block;padding:3px 8px;border-radius:999px;background:rgba(123,231,246,.12);border:1px solid rgba(123,231,246,.24);font-size:11px;color:#bcefff;margin-left:6px}
+
+    .stockPanel{margin-top:12px;padding:14px;border-radius:18px;border:1px solid rgba(123,231,246,.20);background:rgba(123,231,246,.045)}
+    .stockPanel .headline{font-size:18px;font-weight:950;color:#fff;margin-bottom:6px}
+    .stockCards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+    .stockCard{border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);padding:12px}
+    .stockCard .name{font-size:17px;font-weight:950;color:#fff}
+    .stockCard .score{font-size:28px;font-weight:950;color:var(--gold);margin:6px 0}
+    .stockCard .meta{font-size:12px;color:#9fb0c7;line-height:1.5}
+    .stockCard .reason{font-size:13px;color:#cbd7ea;line-height:1.65;margin-top:6px}
+    .stockTable{margin-top:10px;display:grid;gap:6px}
+    .stockRow{display:grid;grid-template-columns:.35fr 1.1fr .8fr .55fr 1.6fr;gap:8px;padding:8px;border-radius:12px;background:rgba(255,255,255,.045);font-size:13px;color:#cbd7ea}
+    @media(max-width:900px){.investRanks,.stockCards{grid-template-columns:1fr}.stockRow{grid-template-columns:1fr}}
+
+</style>
 </head>
 <body>
 <canvas id="bgParticles"></canvas>
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.3.1 投资决策增强版</div>
+      <div class="badge">● 洛书时机仪 v0.5.6 候选股图表统一版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -218,6 +294,7 @@
         <div class="chip">结构：先天 → 中天 → 后天</div>
         <div class="chip">核心：可解释 A/B 时机比较</div>
       </div>
+      <div class="leftDisclaimer">声明：本工具是东方时空哲学的可解释行动系统原型，不提供确定性预测；投资与股票模块只作候选观察，不构成买入、卖出或持有建议。免费行情接口仅用于展示与复盘。</div>
     </div>
 
     <div class="panel heroAside">
@@ -255,6 +332,8 @@
         <div class="field"><label>一级问事</label><select id="queryType"></select></div>
         <div class="field"><label>二级场景</label><select id="subType"></select></div>
       </div>
+      <div class="field"><label>股票代码观察池（可选｜每行一个代码）</label><textarea id="stockPool" placeholder="不输入时，系统按当前首选行业自动给出候选。&#10;A股：300750 / 600519 / 000001&#10;港股：00700.HK / 03690.HK&#10;美股：AAPL / MSFT / NVDA"></textarea></div>
+      <div class="rightMiniNote" id="marketApiField"><b>免费行情接口：</b>GitHub Pages 版统一使用 TradingView Widget 显示图表；腾讯接口只负责报价与涨跌幅。查询频率写死为 60 秒缓存、每次只抓主候选 2 只。</div>
       <div class="field"><label>补充背景（可选）</label><textarea id="context" placeholder="例如：只做复盘观察，不作为直接交易依据；想比较上午和下午哪个窗口更适合关注行业轮动。"></textarea></div>
       <div class="grid2">
         <div class="field"><label>时刻 A</label><input id="dtA" type="datetime-local"></div>
@@ -276,7 +355,7 @@
         <button id="nowBtn">使用本机当前时间</button>
         <button class="secondary" id="runBtn">生成三界时机结构</button>
       </div>
-      <div class="disclaimer">本工具是“东方时空哲学的可解释行动系统”内测原型。它不复刻传统术数，也不提供确定性预测；当前版本以当地时间、地球纬度、九宫灵象与问事取用为核心，暂不引入星座与十六宫辅盘。</div>
+      <div class="disclaimer">右侧保留完整输入，并与左侧九宫视觉面板保持同高；左侧恢复完整 A/B 九宫小盘与原有视觉结构。</div>
     </div>
   </section>
 
@@ -379,6 +458,7 @@ const dtA=document.getElementById('dtA');
 const dtB=document.getElementById('dtB');
 const question=document.getElementById('question');
 const context=document.getElementById('context');
+const stockPool=document.getElementById('stockPool');
 const diffBox=document.getElementById('diffBox');
 
 function initUI(){
@@ -529,6 +609,368 @@ function focusLevel(score){
 function investmentRankRows(t,sub){
   const scores=investmentElementScores(t,sub);
   return Object.entries(scores).sort((a,b)=>b[1]-a[1]).map(([el,score],i)=>({el,score,rank:i+1,level:focusLevel(score).label,map:investmentMap[el]}));
+}
+
+function normalizeSymbol(code){
+  let c=String(code||'').trim().toUpperCase();
+  if(!c) return '';
+  if(/^\d{6}$/.test(c)){
+    if(c.startsWith('6')) return c+'.SH';
+    return c+'.SZ';
+  }
+  if(/^\d{5}$/.test(c)) return c+'.HK';
+  return c;
+}
+function inferMarket(symbol){
+  if(symbol.endsWith('.SH')||symbol.endsWith('.SZ')) return 'A股';
+  if(symbol.endsWith('.HK')) return '港股';
+  if(symbol.endsWith('.T')) return '日股';
+  if(symbol.endsWith('.L')) return '英股';
+  return '美股/全球';
+}
+const demoStockMeta={
+  '300750.SZ':{name:'宁德时代',el:'火'},'002415.SZ':{name:'海康威视',el:'金'},'600519.SH':{name:'贵州茅台',el:'木'},'000001.SZ':{name:'平安银行',el:'金'},'601318.SH':{name:'中国平安',el:'金'},
+  '00700.HK':{name:'腾讯控股',el:'火'},'03690.HK':{name:'美团',el:'水'},'09988.HK':{name:'阿里巴巴',el:'水'},
+  'AAPL':{name:'Apple',el:'金'},'MSFT':{name:'Microsoft',el:'火'},'NVDA':{name:'NVIDIA',el:'火'},'TSLA':{name:'Tesla',el:'火'},'GOOGL':{name:'Alphabet',el:'水'},'AMZN':{name:'Amazon',el:'水'}
+};
+
+const defaultIndustryStocks={
+  火:['NVDA','MSFT','300750.SZ','00700.HK'],
+  金:['AAPL','002415.SZ','000001.SZ','601318.SH'],
+  水:['GOOGL','AMZN','03690.HK','09988.HK'],
+  木:['600519.SH'],
+  土:['601318.SH','000001.SZ']
+};
+function defaultRecommendedStocks(t,sub){
+  const it=investmentTendency(t,sub);
+  const codes=[];
+  const add=(el,n)=>{
+    let k=0;
+    (defaultIndustryStocks[el]||[]).forEach(c=>{
+      if(!codes.includes(c)&&k<n){codes.push(c);k++;}
+    });
+  };
+  add(it.rank[0],2);
+  add(it.rank[1],2);
+  if(it.focusEl && ![it.rank[0],it.rank[1]].includes(it.focusEl)) add(it.focusEl,1);
+  add(it.rank[2],1);
+  return codes.slice(0,5).map(c=>{
+    const meta=demoStockMeta[c]||{name:c,el:it.rank[0]};
+    return {code:c,name:meta.name||c,el:meta.el||it.rank[0],market:inferMarket(c),raw:c,auto:true,needsData:true};
+  });
+}
+function extractStockCode(line){
+  const raw=String(line||'').trim().toUpperCase();
+  if(!raw) return '';
+  const patterns=[
+    /\b\d{6}\.(SH|SZ)\b/,
+    /\b\d{5}\.HK\b/,
+    /\b\d{6}\b/,
+    /\b\d{5}\b/,
+    /\b[A-Z]{1,5}(\.[A-Z])?\b/
+  ];
+  for(const p of patterns){
+    const m=raw.match(p);
+    if(m) return m[0];
+  }
+  return raw.split(/[,，\t \|｜]+/).filter(Boolean)[0]||'';
+}
+function parseStockPool(){
+  if(!stockPool || !stockPool.value.trim()) return [];
+  return stockPool.value.split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>{
+    const code=extractStockCode(line);
+    const symbol=normalizeSymbol(code);
+    const meta=demoStockMeta[symbol]||{name:symbol,el:''};
+    // If the user writes "贵州茅台｜600519.SH", keep the user-facing name before the delimiter
+    let userName='';
+    const namePart=line.split(/[,，\t\|｜]+/).map(x=>x.trim()).filter(Boolean).find(x=>!x.toUpperCase().includes(code.toUpperCase()) && !/^\d{5,6}(\.(SH|SZ|HK))?$/i.test(x));
+    if(namePart && !/^[A-Z]{1,5}(\.[A-Z])?$/i.test(namePart)) userName=namePart;
+    return {code:symbol,name:userName||meta.name||symbol,el:meta.el||'',market:inferMarket(symbol),raw:line,auto:false,needsData:true};
+  }).filter(x=>x.code);
+}
+function elementForStock(s, fallback){
+  return s.el || fallback || '金';
+}
+function norm(v,lo,hi){return Math.max(0,Math.min(100,Math.round((v-lo)/(hi-lo)*100)))}
+function stockOfflineMomentum(symbol){
+  let h=0; for(const ch of String(symbol||'')) h=(h*31+ch.charCodeAt(0))%997;
+  return {
+    trend:48 + (h%31),       // 48-78, used only when realtime is unavailable
+    active:45 + ((h*7)%28),  // 45-72
+    heat:(h*13)%18
+  };
+}
+function stockElementReason(el){
+  return {
+    木:'木类偏成长、生发和新题材，适合观察成长叙事能否被资金与信息流激活。',
+    火:'火类偏科技、AI、传媒、新能源和曝光热度，适合观察热度延续、换手承接与过热风险。',
+    土:'土类偏红利、基建、资源和防守承接，适合观察稳定性、现金流和低波动持有价值。',
+    金:'金类偏金融、制造、半导体硬件和规则交易，适合观察估值筛选、成交纪律和资金承接。',
+    水:'水类偏平台、物流、航运、贸易和流通，适合观察资金流、信息流和交易流动性。'
+  }[el]||'行业属性待识别，正式接口版会自动补全行业分类。';
+}
+function stockOfflineMomentum(symbol){
+  let h=0; for(const ch of String(symbol||'')) h=(h*31+ch.charCodeAt(0))%997;
+  return {
+    trend:48 + (h%31),
+    active:45 + ((h*7)%28),
+    heat:(h*13)%18
+  };
+}
+function stockElementReason(el){
+  return {
+    木:'木类偏成长、生发和新题材，适合观察成长叙事能否被资金与信息流激活。',
+    火:'火类偏科技、AI、传媒、新能源和曝光热度，适合观察热度延续、换手承接与过热风险。',
+    土:'土类偏红利、基建、资源和防守承接，适合观察稳定性、现金流和低波动持有价值。',
+    金:'金类偏金融、制造、半导体硬件和规则交易，适合观察估值筛选、成交纪律和资金承接。',
+    水:'水类偏平台、物流、航运、贸易和流通，适合观察资金流、信息流和交易流动性。'
+  }[el]||'行业属性待识别，正式接口版会自动补全行业分类。';
+}
+function scoreStockCandidate(s,t,sub,tr){
+  const it=investmentTendency(t,sub);
+  const es=investmentElementScores(t,sub);
+  const el=elementForStock(s,it.rank[0]);
+  const industry=es[el]||50;
+  const rank=it.rank.indexOf(el);
+  const relative=rank<0?45:clampScore(82-rank*9);
+  let transformFit=50;
+  if(tr&&tr.to===el) transformFit+=16;
+  if(tr&&tr.name&&tr.name.includes('化水') && (sub||'').includes('卖出')) transformFit+=10;
+  if(tr&&tr.name&&tr.name.includes('化木') && ['木','火'].includes(el)) transformFit+=8;
+  if(tr&&tr.name&&tr.name.includes('化火') && ['火','土'].includes(el)) transformFit+=6;
+
+  const d1=Number.isFinite(s.d1)?s.d1:0, d5=Number.isFinite(s.d5)?s.d5:0, d20=Number.isFinite(s.d20)?s.d20:0;
+  const amount=Number.isFinite(s.amount)?s.amount:0, ratio=Number.isFinite(s.ratio)?s.ratio:1, turnover=Number.isFinite(s.turnover)?s.turnover:0;
+  const offline=stockOfflineMomentum(s.code);
+  const intradayOk=!s.needsData && Number.isFinite(d1);
+  const intradayTrend=clampScore(Math.round(50 + d1*8)); // +2.9% -> about 73
+  const trend=s.needsData ? offline.trend : (Math.abs(d5)+Math.abs(d20)>0 ? clampScore(Math.round(norm(d1,-5,8)*.30 + norm(d5,-8,18)*.35 + norm(d20,-15,35)*.35)) : intradayTrend);
+  const active=s.needsData ? offline.active : clampScore(Math.round((amount>0?norm(amount,0,800000):55)*.70 + norm(ratio,.6,2.8)*.30));
+  const overheat=s.needsData ? offline.heat : (d1>5?8:0)+(d5>18?10:0)+(d20>38?10:0)+(ratio>3?7:0)+(turnover>12?6:0);
+  const marketScore=s.needsData ? 0 : clampScore(Math.round(trend*.70 + active*.30 - overheat*.25));
+  const score=clampScore(Math.round(industry*.36 + trend*.16 + active*.10 + relative*.18 + transformFit*.14 + (s.needsData?0:marketScore*.06) - overheat*.30));
+
+  let tag=s.needsData?'模型候选｜待实时确认':'候选观察';
+  if(!s.needsData){
+    if(marketScore>=70 && industry<58) tag='行情强｜时机不匹配';
+    else if(score>=72 && marketScore>=65) tag='主候选观察';
+    else if(marketScore>=68) tag='盘中强势观察';
+    else if(overheat>=14 || ((tr&&tr.name||'').includes('化水') && d1>3)) tag='高热换手观察';
+    else if(d1>1.2) tag='低位/盘中启动观察';
+    else if(d1<0) tag='回踩确认观察';
+  }else{
+    if(rank===0 && score>=72) tag='首选行业候选｜待实时确认';
+    else if(rank===1 && score>=66) tag='备选行业候选｜待实时确认';
+  }
+  const mismatch = !s.needsData && marketScore>=70 && industry<58;
+  const reason=s.needsData
+    ? `五行分类：${el}类。${stockElementReason(el)} 当前洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。由于免费分时接口未确认，本项先作为模型候选，不冒充实时行情。`
+    : `五行分类：${el}类。${stockElementReason(el)} 当前行情强度 ${marketScore}，洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。${mismatch?'行情本身偏强，但当前时机场对该五行支持不足，所以综合候选分不会被拉得很高。':''}`;
+  const risk=s.needsData
+    ? '实时行情未确认前，只能作为观察池候选；正式版需用分时走势、成交额、换手率和行业成分验证。'
+    : (mismatch?'行情强不等于时机匹配，适合列入观察池，不宜直接视为追随信号。':(overheat>=14?'短线热度偏高，适合等待回踩或换手确认。':(active<45?'成交活跃度不足，信号容易失真。':'若后续缩量回落或跌破日内均线，观察信号减弱。')));
+  return {...s,el,score,tag,reason,risk,industry,trend,active,relative,transformFit,overheat,marketScore};
+}
+
+function sparklineSVG(points){
+  if(!points||points.length<2) return '';
+  const vals=points.map(p=>p.close).filter(v=>Number.isFinite(v));
+  if(vals.length<2) return '';
+  const min=Math.min(...vals), max=Math.max(...vals), span=(max-min)||1;
+  const w=320,h=72,pad=8;
+  const d=vals.map((v,i)=>`${i?'L':'M'}${pad+i*(w-pad*2)/(vals.length-1)},${h-pad-(v-min)*((h-pad*2)/span)}`).join(' ');
+  return `<svg class="sparkSvg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${d}" fill="none" stroke="rgba(246,207,120,.95)" stroke-width="2"/><line x1="${pad}" y1="${h-pad}" x2="${w-pad}" y2="${h-pad}" stroke="rgba(255,255,255,.12)" stroke-width="1"/></svg>`;
+}
+function yahooSymbol(symbol){
+  if(symbol.endsWith('.SH')) return symbol.replace('.SH','.SS');
+  if(symbol.endsWith('.SZ')) return symbol.replace('.SZ','.SZ');
+  return symbol;
+}
+const MARKET_CACHE={};
+const MARKET_TTL_MS=60000;
+function tencentCode(symbol){
+  let s=String(symbol||'').trim().toUpperCase();
+  if(/^\d{6}$/.test(s)) return s.startsWith('6')?'sh'+s:'sz'+s;
+  if(/^\d{6}\.SH$/.test(s)) return 'sh'+s.slice(0,6);
+  if(/^\d{6}\.SZ$/.test(s)) return 'sz'+s.slice(0,6);
+  if(/^\d{5}\.HK$/.test(s)) return 'hk'+s.slice(0,5);
+  if(/^\d{5}$/.test(s)) return 'hk'+s;
+  if(/^[A-Z.]+$/.test(s)) return 'us'+s.replace('.','');
+  return s.toLowerCase();
+}
+function loadTencentScript(url, checkFn, timeout=5200){
+  return new Promise((resolve,reject)=>{
+    const sc=document.createElement('script');
+    let done=false;
+    const timer=setTimeout(()=>{if(done)return;done=true;sc.remove();reject(new Error('腾讯接口超时'));}, timeout);
+    sc.onload=()=>{setTimeout(()=>{if(done)return;try{const v=checkFn();done=true;clearTimeout(timer);sc.remove();resolve(v);}catch(e){done=true;clearTimeout(timer);sc.remove();reject(e);}},30)};
+    sc.onerror=()=>{if(done)return;done=true;clearTimeout(timer);sc.remove();reject(new Error('腾讯接口脚本加载失败'))};
+    sc.src=url + (url.includes('?')?'&':'?') + '_ts=' + Date.now();
+    document.head.appendChild(sc);
+  });
+}
+async function fetchTencentQuote(symbol){
+  const code=tencentCode(symbol);
+  const vname='v_'+code;
+  delete window[vname];
+  const data=await loadTencentScript(`https://qt.gtimg.cn/q=${code}`,()=>{
+    const raw=window[vname];
+    if(!raw) throw new Error('腾讯报价无返回');
+    return raw;
+  });
+  const a=String(data).split('~');
+  const name=a[1]||symbol, price=parseFloat(a[3]), prev=parseFloat(a[4]), open=parseFloat(a[5]);
+  const pct=Number.isFinite(parseFloat(a[32]))?parseFloat(a[32]):(Number.isFinite(price)&&Number.isFinite(prev)&&prev?((price-prev)/prev*100):0);
+  const high=parseFloat(a[33]), low=parseFloat(a[34]);
+  const amount=Number.isFinite(parseFloat(a[37]))?parseFloat(a[37]):0;
+  return {code,name,price,prev,open,pct:+(pct||0).toFixed(2),high,low,amount};
+}
+function parseTencentMinuteObject(obj,code,quote){
+  const root=obj&&obj.data&&(obj.data[code]||obj.data[code.toUpperCase()]||obj.data[code.toLowerCase()]);
+  let arr=null;
+  if(root){
+    if(root.data&&Array.isArray(root.data.data)) arr=root.data.data;
+    else if(root.data&&Array.isArray(root.data)) arr=root.data;
+    else if(Array.isArray(root)) arr=root;
+  }
+  if(!arr||!arr.length) throw new Error('腾讯分时无数据');
+  const pts=arr.map(x=>{
+    const p=String(x).trim().split(/\s+/);
+    const close=parseFloat(p[1]);
+    const vol=parseFloat(p[2]||0);
+    return {time:p[0],open:close,close,volume:Number.isFinite(vol)?vol:0};
+  }).filter(x=>Number.isFinite(x.close));
+  if(pts.length<2) throw new Error('腾讯分时点不足');
+  return pts;
+}
+function fallbackQuotePoints(q){
+  const base=Number.isFinite(q.open)&&q.open>0?q.open:(Number.isFinite(q.prev)?q.prev:q.price);
+  const cur=Number.isFinite(q.price)?q.price:base;
+  const hi=Number.isFinite(q.high)?q.high:Math.max(base,cur);
+  const lo=Number.isFinite(q.low)?q.low:Math.min(base,cur);
+  const mid=(base+cur)/2;
+  return [
+    {time:'0930',open:base,close:base,volume:0},
+    {time:'1000',open:base,close:(base+hi)/2,volume:0},
+    {time:'1100',open:base,close:mid,volume:0},
+    {time:'1330',open:base,close:(mid+lo)/2,volume:0},
+    {time:'1430',open:base,close:(cur+hi+lo)/3,volume:0},
+    {time:'now',open:base,close:cur,volume:0}
+  ];
+}
+async function fetchYahooChart(symbol){
+  const cacheKey=tencentCode(symbol);
+  const cached=MARKET_CACHE[cacheKey];
+  if(cached && Date.now()-cached.time<MARKET_TTL_MS) return cached.data;
+  const quote=await fetchTencentQuote(symbol);
+  let points=null, minuteOk=true, minuteError='';
+  const varName='min_'+cacheKey.replace(/[^a-zA-Z0-9_]/g,'_')+'_'+Date.now();
+  try{
+    const obj=await loadTencentScript(`https://web.ifzq.gtimg.cn/appstock/app/minute/query?code=${quote.code}&_var=${varName}`,()=>{
+      const v=window[varName];
+      if(!v) throw new Error('腾讯分时接口无返回');
+      return v;
+    },5500);
+    points=parseTencentMinuteObject(obj,quote.code,quote);
+  }catch(e){
+    minuteOk=false; minuteError=e.message||String(e); points=fallbackQuotePoints(quote);
+  }
+  const data={d1:quote.pct,d5:0,d20:0,amount:+(quote.amount||0),ratio:1,turnover:0,points,needsData:false,quote,minuteOk,minuteError,source:minuteOk?'腾讯分时':'腾讯报价+示意'};
+  MARKET_CACHE[cacheKey]={time:Date.now(),data};
+  return data;
+}
+
+function stockIndustryLabel(el){
+  const m=investmentMap[el];
+  return m?`${el}类｜${m.name}`:`${el||'待识别'}类｜行业待识别`;
+}
+function quoteInfoHTML(s, merged, q, sourceLabel){
+  const el=merged.el || s.el || '待识别';
+  const industry=stockIndustryLabel(el);
+  const name=q.name || s.name || s.code;
+  const code=s.code;
+  const price=(q.price!==undefined&&q.price!==null)?q.price:'—';
+  const pct=(merged.d1!==undefined&&merged.d1!==null)?merged.d1:'—';
+  const amount=(q.amount!==undefined&&q.amount!==null)?q.amount:'—';
+  const hkNote=isHKSymbol(code)?'港股观察池已切换为腾讯分时/报价示意，避免 TradingView 弹窗或默认错显。':'';
+  return `<div class="quoteInfo"><b>${name}</b>｜${code}<span class="apiTag">${s.market||inferMarket(code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${industry}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px">观察类型：${merged.tag}。图表来源：${sourceLabel}；腾讯报价用于现价、涨跌幅和候选分重算。${hkNote}</div></div>`;
+}
+function stockCandidateHTML(t,sub,conv,label){
+  const userList=parseStockPool();
+  const list=userList.length?userList:defaultRecommendedStocks(t,sub);
+  const tr=transformDetail(conv.transform,'investment',sub);
+  const it=investmentTendency(t,sub);
+  const sourceText=userList.length?'代码观察池':'系统推荐候选';
+  const scored=list.map(s=>scoreStockCandidate(s,t,sub,tr)).sort((a,b)=>b.score-a.score);
+  const top=scored.slice(0,2);
+  const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">五行行业：${stockIndustryLabel(s.el)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
+  const rows=scored.map((s,i)=>`<div class="stockRow"><span>#${i+1}</span><b>${s.name}</b><span>${stockIndustryLabel(s.el)}</span><span>${s.score}</span><span>${i<2?'主候选观察':'对照/备选观察'}｜${s.tag}</span></div>`).join('');
+  setTimeout(()=>fetchAndRenderStocks(label,scored.slice(0,2),t,sub,conv),50);
+  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、腾讯报价信息与图表；A股优先使用腾讯分时图，港股/美股优先使用 TradingView 图表。支持“600519”或“贵州茅台｜600519.SH”这类写法。行情与图表仅作观察展示。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
+}
+
+function tvSymbolFor(symbol){
+  const raw=String(symbol||'').trim().toUpperCase();
+  if(/^\d{6}\.SH$/.test(raw)) return `SSE:${raw.slice(0,6)}`;
+  if(/^\d{6}\.SZ$/.test(raw)) return `SZSE:${raw.slice(0,6)}`;
+  if(/^\d{6}$/.test(raw)) return raw.startsWith('6')?`SSE:${raw}`:`SZSE:${raw}`;
+  if(/^\d{5}\.HK$/.test(raw)) return `HKEX:${String(parseInt(raw.slice(0,5),10))}`;
+  if(/^\d{5}$/.test(raw)) return `HKEX:${String(parseInt(raw,10))}`;
+  const nasdaq=['AAPL','MSFT','NVDA','TSLA','GOOGL','GOOG','AMZN','META','NFLX','AMD','INTC','ADBE','AVGO','COST','PEP'];
+  const nyse=['BABA','NIO','XPEV','LI','KO','DIS','JPM','V','MA'];
+  if(nasdaq.includes(raw)) return `NASDAQ:${raw}`;
+  if(nyse.includes(raw)) return `NYSE:${raw}`;
+  return `NASDAQ:${raw}`;
+}
+
+function isAShareSymbol(symbol){
+  const s=String(symbol||'').toUpperCase();
+  return /^\d{6}(\.(SH|SZ))?$/.test(s);
+}
+function isHKSymbol(symbol){
+  const s=String(symbol||'').toUpperCase();
+  return /^\d{5}(\.HK)?$/.test(s);
+}
+function chartVisualHTML(symbol,data){
+  // 候选股稳定策略：
+  // 无论是系统推荐的两支，还是用户输入的观察池，美股/全球股票用 TradingView；A股和港股用腾讯分时/报价示意。
+  // 这样避免 A/H 股 TradingView 弹窗、空白，或默认只显示 Apple Inc. 的问题。
+  if((isAShareSymbol(symbol)||isHKSymbol(symbol)) && data && data.points && data.points.length>1){
+    return sparklineSVG(data.points);
+  }
+  return tradingViewIframe(symbol);
+}
+function chartSourceLabel(symbol,data){
+  if(isAShareSymbol(symbol)) return data&&data.minuteOk?'腾讯A股分时图':'腾讯A股报价示意图';
+  if(isHKSymbol(symbol)) return data&&data.minuteOk?'腾讯港股分时图':'腾讯港股报价示意图';
+  return 'TradingView 图表 + 腾讯报价';
+}
+function tradingViewIframe(symbol){
+  const tvSymbol=encodeURIComponent(tvSymbolFor(symbol));
+  const id=String(symbol||'').replace(/[^A-Z0-9]/gi,'_');
+  const src=`https://s.tradingview.com/widgetembed/?frameElementId=tv_${id}&symbol=${tvSymbol}&interval=5&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=131722&studies=[]&theme=dark&style=1&timezone=Asia%2FShanghai&withdateranges=0&hideideas=1`;
+  return `<iframe class="tvFrame" src="${src}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+}
+function isUSSymbol(symbol){
+  const s=String(symbol||'').toUpperCase();
+  return /^[A-Z]{1,5}(\.[A-Z])?$/.test(s) && !s.endsWith('.HK') && !s.endsWith('.SH') && !s.endsWith('.SZ');
+}
+async function fetchAndRenderStocks(label,stocks,t,sub,conv){
+  const tr=transformDetail(conv.transform,'investment',sub);
+  for(const s of stocks){
+    const id=`chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}`;
+    const box=document.getElementById(id);
+    if(!box) continue;
+    box.innerHTML='<div class="meta">正在加载 TradingView 图表，并获取腾讯报价/名称/涨跌幅...</div>';
+    try{
+      const data=await fetchYahooChart(s.code);
+      const merged=scoreStockCandidate({...s,...data},t,sub,tr);
+      const q=data.quote||{};
+      box.innerHTML=`${chartVisualHTML(s.code,data)}${quoteInfoHTML(s,merged,q,chartSourceLabel(s.code,data))}`;
+    }catch(e){
+      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'<div class="meta">腾讯行情暂未接通，A/H 股不再强制加载 TradingView，以避免弹窗或错显。</div>':tradingViewIframe(s.code)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。候选解释暂以洛书模型、五行行业与后天合化为主。</div></div>`;
+    }
+  }
 }
 function investmentDecisionHTML(t,sub){
   const it=investmentTendency(t,sub);
@@ -897,6 +1339,7 @@ function render(targetId,d,label){
   const scenePanel=sceneMetricsHTML(queryType.value,subType.value,t,conv,p);
   const houtianPanel=houtianPanelHTML(p,t,conv,queryType.value,subType.value);
   const investPanel=queryType.value==='investment'?investmentDecisionHTML(t,subType.value):'';
+  const stockCandidatePanel=queryType.value==='investment'?stockCandidateHTML(t,subType.value,conv,label):'';
   const ht=houtianModel(p,t,conv,queryType.value,subType.value);
   const trace=traceRows(queryType.value,subType.value,p,init,t,conv,dm).map(r=>`<div class="traceCard"><span class="tag">${r.tag}</span><p>${r.text}</p></div>`).join('');
   document.getElementById(targetId).innerHTML=`
@@ -905,6 +1348,7 @@ function render(targetId,d,label){
     <div class="verdict"><div class="label">后天行动译文</div><div class="headline">${vd.action}</div><div class="why">${vd.why}</div></div>
     ${scenePanel}
     ${investPanel}
+    ${stockCandidatePanel}
     ${houtianPanel}
     <div class="states">${states}</div>
     ${directionPanel}
@@ -938,6 +1382,7 @@ dtA.addEventListener('change',run);
 dtB.addEventListener('change',run);
 question.addEventListener('change',run);
 context.addEventListener('change',run);
+if(stockPool) stockPool.addEventListener('change',run);
 cityPreset.addEventListener('change',()=>{const lat=cityLat(cityPreset.value); if(lat!==undefined) latitude.value=lat; run();});
 document.getElementById('runBtn').addEventListener('click',run);
 document.getElementById('nowBtn').addEventListener('click',()=>{setNow();run();});
