@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.5.9 本地稳定图表版</title>
+  <title>洛书时机仪 v0.6.0 手机图表兜底版</title>
   <style>
     :root{
       --bg:#071019;
@@ -241,6 +241,15 @@
     .quoteGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:6px}
     .quoteCell{padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.16)}
 
+
+    .mobileChartFallback{display:none;margin-top:8px}
+    .tvOpenBtn{display:inline-block;margin-top:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#dfe9f7;text-decoration:none;font-size:12px}
+    @media (max-width: 760px){
+      .tvDesktopOnly{display:none!important}
+      .mobileChartFallback{display:block}
+      .tvFrame{height:220px}
+    }
+
     .tvFrame{width:100%;height:240px;border:0;border-radius:14px;background:rgba(0,0,0,.22);margin-top:8px}
 
     .sparkSvg{width:100%;height:72px;margin-top:8px;border-radius:12px;background:rgba(0,0,0,.18);overflow:hidden}
@@ -265,7 +274,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.5.9 本地稳定图表版</div>
+      <div class="badge">● 洛书时机仪 v0.6.0 手机图表兜底版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -932,24 +941,34 @@ function isHKSymbol(symbol){
   return /^\d{5}(\.HK)?$/.test(s);
 }
 function chartVisualHTML(symbol,data){
-  // 稳定版策略：
-  // 美股/全球股票使用此前本地可见的 TradingView 直连 iframe；
-  // A股/港股使用腾讯分时或报价示意图，避免 TradingView 弹窗、空白或错显。
+  // 桌面端：美股/全球股票使用本地可见的 TradingView 直连 iframe。
+  // 手机端：很多手机浏览器会拦截第三方 iframe，所以自动切换到腾讯/SVG兜底图，并保留 TradingView 外链。
+  // A股/港股：始终使用腾讯分时或报价示意图，避免 TradingView 弹窗、空白或错显。
   if((isAShareSymbol(symbol)||isHKSymbol(symbol)) && data && data.points && data.points.length>1){
     return sparklineSVG(data.points);
   }
-  return tradingViewIframe(symbol);
+  return tradingViewIframe(symbol) + mobileFallbackHTML(symbol,data);
 }
 function chartSourceLabel(symbol,data){
   if(isAShareSymbol(symbol)) return data&&data.minuteOk?'腾讯A股分时图':'腾讯A股报价示意图';
   if(isHKSymbol(symbol)) return data&&data.minuteOk?'腾讯港股分时图':'腾讯港股报价示意图';
-  return 'TradingView直连图表 + 腾讯报价';
+  return 'TradingView桌面图表 / 手机兜底图 + 腾讯报价';
+}
+
+function tradingViewURL(symbol){
+  return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSymbolFor(symbol))}`;
+}
+function mobileFallbackHTML(symbol,data){
+  if(data && data.points && data.points.length>1){
+    return `<div class="mobileChartFallback"><div class="meta">移动端兜底图：TradingView 在手机浏览器中可能被 iframe/隐私策略拦截，下方使用腾讯报价/分时绘制。</div>${sparklineSVG(data.points)}<a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开</a></div>`;
+  }
+  return `<div class="mobileChartFallback"><div class="meta">移动端未能加载 TradingView 图表；可点击下方按钮在 TradingView 打开。</div><a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开</a></div>`;
 }
 function tradingViewIframe(symbol){
   const tvSymbol=encodeURIComponent(tvSymbolFor(symbol));
   const id=String(symbol||'').replace(/[^A-Z0-9]/gi,'_');
   const src=`https://s.tradingview.com/widgetembed/?frameElementId=tv_${id}&symbol=${tvSymbol}&interval=5&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=131722&studies=[]&theme=dark&style=1&timezone=Asia%2FShanghai&withdateranges=0&hideideas=1`;
-  return `<iframe class="tvFrame" src="${src}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
+  return `<iframe class="tvFrame tvDesktopOnly" src="${src}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>`;
 }
 function isUSSymbol(symbol){
   const s=String(symbol||'').toUpperCase();
