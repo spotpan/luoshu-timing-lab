@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.7.0 Vercel K线代理版</title>
+  <title>洛书时机仪 v0.7.1 输入代码均线修正版</title>
   <style>
     :root{
       --bg:#071019;
@@ -303,7 +303,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.7.0 Vercel K线代理版</div>
+      <div class="badge">● 洛书时机仪 v0.7.1 输入代码均线修正版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -1320,7 +1320,14 @@ async function fetchAndRenderStocks(label,stocks,t,sub,conv){
       const q=data.quote||{};
       box.innerHTML=`${chartVisualHTML(s.code,data)}${quoteInfoHTML(s,merged,q,chartSourceLabel(s.code,data))}`;
     }catch(e){
-      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。候选解释暂以洛书模型、五行行业与后天合化为主。</div></div>${maSignalHTML(null)}`;
+      let fallbackMA=null;
+      try{
+        fallbackMA=await fetchTencentMA3060(s.code);
+      }catch(maErr){
+        fallbackMA={status:'unknown',label:'均线信号待确认',message:`Vercel K线代理也未获取成功：${maErr.message||maErr}`,ma30:null,ma60:null,boost:0,source:'Vercel K线代理',attempts:[{name:'Vercel K线代理',ok:false,msg:maErr.message||String(maErr)}]};
+      }
+      const mergedFallback={...s,maSignal:fallbackMA};
+      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。但30/60均线已改为独立请求 Vercel K线代理，因此即使现价/分时失败，也会继续尝试输出均线趋势。</div></div>${maSignalHTML(mergedFallback.maSignal)}`;
     }
   }
 }
