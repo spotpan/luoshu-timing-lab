@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.7.2 股票卡片精修版</title>
+  <title>洛书时机仪 v0.7.4 手机桌面版 TradingView 补丁</title>
   <style>
     :root{
       --bg:#071019;
@@ -296,14 +296,74 @@
     .stockRow{display:grid;grid-template-columns:.35fr 1.1fr .8fr .55fr 1.6fr;gap:8px;padding:8px;border-radius:12px;background:rgba(255,255,255,.045);font-size:13px;color:#cbd7ea}
     @media(max-width:900px){.investRanks,.stockCards{grid-template-columns:1fr}.stockRow{grid-template-columns:1fr}}
 
+
+.wechatNotice{
+  margin:10px 0;
+  padding:10px 12px;
+  border:1px solid rgba(245,158,11,.35);
+  background:rgba(245,158,11,.10);
+  border-radius:14px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.65;
+}
+.wechatNotice b{color:#fbbf24}
+
+
+.tvMobileDesktopWrap{
+  display:none;
+  width:100%;
+  overflow:hidden;
+  border-radius:16px;
+  border:1px solid rgba(148,163,184,.18);
+  background:rgba(15,23,42,.72);
+  margin-bottom:10px;
+}
+.tvMobileDesktopInner{
+  width:980px;
+  height:430px;
+  transform-origin:top left;
+}
+.tvMobileDesktopInner iframe{
+  width:980px;
+  height:430px;
+  border:0;
+  display:block;
+}
+.tvMobileHint{
+  padding:8px 10px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+  border-top:1px solid rgba(148,163,184,.12);
+}
+@media(max-width:760px){
+  .tvDesktopOnly{display:none!important}
+  .tvMobileDesktopWrap{display:block}
+}
+@media(min-width:761px){
+  .tvMobileDesktopWrap{display:none!important}
+}
+
 </style>
 </head>
 <body>
+
+<script>
+(function(){
+  try{
+    if(/MicroMessenger/i.test(navigator.userAgent||'')){
+      document.documentElement.classList.add('wechat-browser');
+    }
+  }catch(e){}
+})();
+</script>
+
 <canvas id="bgParticles"></canvas>
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.7.2 股票卡片精修版</div>
+      <div class="badge">● 洛书时机仪 v0.7.4 手机桌面版 TradingView 补丁</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -1269,7 +1329,7 @@ function stockCandidateHTML(t,sub,conv,label){
   const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">五行行业：${cleanIndustryLabel(s.el)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
   const rows=scored.map((s,i)=>`<div class="stockRow"><span>#${i+1}</span><b>${s.name}</b><span>${stockIndustryLabel(s.el)}</span><span>${s.score}</span><span>${i<2?'主候选观察':'对照/备选观察'}｜${s.tag}</span></div>`).join('');
   setTimeout(()=>fetchAndRenderStocks(label,scored.slice(0,2),t,sub,conv),50);
-  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、行情状态、趋势译文与30/60均线。A股优先使用腾讯分时图，港股/美股按可用性使用 TradingView 或本地图。支持“600519”“300750.SZ”或“贵州茅台｜600519.SH”这类写法。行情、图表与均线仅作观察展示，不构成买卖建议。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
+  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、行情状态、趋势译文与30/60均线。A股优先使用腾讯分时图，港股/美股按可用性使用 TradingView 或本地图；普通手机浏览器会尝试显示桌面版 TradingView 缩放图；微信内置浏览器自动进入安全模式，不加载 TradingView iframe。支持“600519”“300750.SZ”或“贵州茅台｜600519.SH”这类写法。行情、图表与均线仅作观察展示，不构成买卖建议。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
 }
 
 function tvSymbolFor(symbol){
@@ -1294,21 +1354,35 @@ function isHKSymbol(symbol){
   const s=String(symbol||'').toUpperCase();
   return /^\d{5}(\.HK)?$/.test(s);
 }
+
+function isWeChatBrowser(){
+  return /MicroMessenger/i.test(navigator.userAgent||'');
+}
+function wechatNoticeHTML(symbol){
+  if(!isWeChatBrowser()) return '';
+  return `<div class="wechatNotice"><b>微信安全模式：</b>已关闭 TradingView iframe，改用本地安全图 + Vercel K线代理。若页面仍无法打开，请点右上角“在浏览器打开”。</div>`;
+}
+
 function chartVisualHTML(symbol,data){
   // 图表策略：
   // 1. A股/港股：用腾讯/可解析行情图，避免 TradingView 弹窗、空白或错显。
-  // 2. 美股/全球股票：桌面端显示 TradingView；手机端隐藏 TradingView，显示本地安全图。
-  // 3. 无论哪种情况，都提供 guaranteedLocalChartHTML，保证“选股看图”区域不会空白。
+  // 2. 美股/全球股票：桌面端显示普通 TradingView；手机浏览器显示“桌面版 TradingView 缩放补丁”。
+  // 3. 微信内置浏览器仍进入安全模式，不插入 TradingView iframe。
+  if(isWeChatBrowser()){
+    return wechatNoticeHTML(symbol) + guaranteedLocalChartHTML(symbol,data) + phoneSafeChartHTML(symbol,data);
+  }
   if((isAShareSymbol(symbol)||isHKSymbol(symbol))){
     return guaranteedLocalChartHTML(symbol,data);
   }
-  return tradingViewIframe(symbol) + phoneSafeChartHTML(symbol,data);
+  setTimeout(resizeMobileDesktopTV,80);
+  return tradingViewIframe(symbol) + mobileDesktopTradingViewHTML(symbol) + phoneSafeChartHTML(symbol,data);
 }
 function chartSourceLabel(symbol,data){
   const real=data&&data.points&&data.points.length>1;
+  if(isWeChatBrowser()) return real?'微信安全图 / 腾讯报价 / Vercel均线':'微信本地安全图 / Vercel均线';
   if(isAShareSymbol(symbol)) return real?'腾讯A股分时/报价图':'A股本地示意图';
   if(isHKSymbol(symbol)) return real?'腾讯港股分时/报价图':'港股本地示意图';
-  return real?'TradingView桌面图表 / 手机行情安全图 + 腾讯报价':'TradingView桌面图表 / 手机本地安全图 + 腾讯报价';
+  return real?'TradingView桌面图表 / 手机桌面版TV补丁 + 腾讯报价':'TradingView桌面图表 / 手机桌面版TV补丁 + 本地安全图';
 }
 function tradingViewURL(symbol){
   return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSymbolFor(symbol))}`;
@@ -1345,7 +1419,33 @@ function mobileFallbackHTML(symbol,data){
   }
   return `<div class="mobileChartFallback"><div class="meta">移动端未能加载 TradingView 图表；可点击下方按钮在 TradingView 打开。</div><a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开</a></div>`;
 }
+
+function mobileDesktopTradingViewHTML(symbol){
+  if(isWeChatBrowser()) return '';
+  const tvSymbol=encodeURIComponent(tvSymbolFor(symbol));
+  const id=String(symbol||'').replace(/[^A-Z0-9]/gi,'_');
+  const src=`https://s.tradingview.com/widgetembed/?frameElementId=tv_mobile_${id}&symbol=${tvSymbol}&interval=5&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=131722&studies=[]&theme=dark&style=1&timezone=Asia%2FShanghai&withdateranges=0&hideideas=1`;
+  return `<div class="tvMobileDesktopWrap" data-mobile-tv-wrap><div class="tvMobileDesktopInner" data-mobile-tv-inner><iframe src="${src}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div><div class="tvMobileHint">手机端以桌面版 TradingView 缩放显示；若微信或浏览器拦截，可点击下方按钮在 TradingView 打开。</div></div>`;
+}
+function resizeMobileDesktopTV(){
+  try{
+    document.querySelectorAll('[data-mobile-tv-wrap]').forEach(wrap=>{
+      const inner=wrap.querySelector('[data-mobile-tv-inner]');
+      if(!inner) return;
+      const baseW=980, baseH=430;
+      const available=wrap.clientWidth||window.innerWidth||360;
+      const scale=Math.max(0.32, Math.min(1, available/baseW));
+      inner.style.transform=`scale(${scale})`;
+      wrap.style.height=`${Math.ceil(baseH*scale)+44}px`;
+    });
+  }catch(e){}
+}
+window.addEventListener('resize',resizeMobileDesktopTV);
+window.addEventListener('orientationchange',()=>setTimeout(resizeMobileDesktopTV,260));
+setTimeout(resizeMobileDesktopTV,120);
+
 function tradingViewIframe(symbol){
+  if(isWeChatBrowser()) return wechatNoticeHTML(symbol) + phoneSafeChartHTML(symbol,null);
   const tvSymbol=encodeURIComponent(tvSymbolFor(symbol));
   const id=String(symbol||'').replace(/[^A-Z0-9]/gi,'_');
   const src=`https://s.tradingview.com/widgetembed/?frameElementId=tv_${id}&symbol=${tvSymbol}&interval=5&hidesidetoolbar=1&symboledit=0&saveimage=0&toolbarbg=131722&studies=[]&theme=dark&style=1&timezone=Asia%2FShanghai&withdateranges=0&hideideas=1`;
@@ -1366,7 +1466,7 @@ async function fetchAndRenderStocks(label,stocks,t,sub,conv){
       const data=await fetchYahooChart(s.code);
       const merged=scoreStockCandidate({...s,...data},t,sub,tr);
       const q=data.quote||{};
-      box.innerHTML=`${chartVisualHTML(s.code,data)}${quoteInfoHTML(s,merged,q,chartSourceLabel(s.code,data))}`;
+      box.innerHTML=`${chartVisualHTML(s.code,data)}${quoteInfoHTML(s,merged,q,chartSourceLabel(s.code,data))}`; setTimeout(resizeMobileDesktopTV,80);
     }catch(e){
       let fallbackMA=null;
       try{
@@ -1375,7 +1475,7 @@ async function fetchAndRenderStocks(label,stocks,t,sub,conv){
         fallbackMA={status:'unknown',label:'均线信号待确认',message:`Vercel K线代理也未获取成功：${maErr.message||maErr}`,ma30:null,ma60:null,boost:0,source:'Vercel K线代理',attempts:[{name:'Vercel K线代理',ok:false,msg:maErr.message||String(maErr)}]};
       }
       const mergedFallback={...s,maSignal:fallbackMA};
-      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${formatStockTitle(s.name||s.code,s.code)}</b><div class="quoteGrid"><div class="quoteCell">五行行业：${cleanIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'腾讯/本地图':'TradingView桌面图'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。但30/60均线会独立请求 Vercel K线代理；若均线可用，仍可判断中期趋势。</div></div>${maSignalHTML(mergedFallback.maSignal)}`;
+      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+mobileDesktopTradingViewHTML(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${formatStockTitle(s.name||s.code,s.code)}</b><div class="quoteGrid"><div class="quoteCell">五行行业：${cleanIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'腾讯/本地图':'TradingView桌面图'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。但30/60均线会独立请求 Vercel K线代理；若均线可用，仍可判断中期趋势。</div></div>${maSignalHTML(mergedFallback.maSignal)}`; setTimeout(resizeMobileDesktopTV,80);
     }
   }
 }
