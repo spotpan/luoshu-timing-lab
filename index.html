@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.6.0 手机图表兜底版</title>
+  <title>洛书时机仪 v0.6.1 手机安全图版</title>
   <style>
     :root{
       --bg:#071019;
@@ -242,6 +242,14 @@
     .quoteCell{padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.16)}
 
 
+
+    .phoneSafeChart{display:none;margin-top:8px}
+    @media (max-width: 760px){
+      .phoneSafeChart{display:block}
+      .mobileChartFallback{display:none!important}
+      .tvDesktopOnly{display:none!important}
+    }
+
     .mobileChartFallback{display:none;margin-top:8px}
     .tvOpenBtn{display:inline-block;margin-top:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#dfe9f7;text-decoration:none;font-size:12px}
     @media (max-width: 760px){
@@ -274,7 +282,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.6.0 手机图表兜底版</div>
+      <div class="badge">● 洛书时机仪 v0.6.1 手机安全图版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -941,13 +949,13 @@ function isHKSymbol(symbol){
   return /^\d{5}(\.HK)?$/.test(s);
 }
 function chartVisualHTML(symbol,data){
-  // 桌面端：美股/全球股票使用本地可见的 TradingView 直连 iframe。
-  // 手机端：很多手机浏览器会拦截第三方 iframe，所以自动切换到腾讯/SVG兜底图，并保留 TradingView 外链。
+  // 桌面端：美股/全球股票使用 TradingView 直连 iframe。
+  // 手机端：彻底不依赖 TradingView iframe，直接显示 phoneSafeChart，保证不空白。
   // A股/港股：始终使用腾讯分时或报价示意图，避免 TradingView 弹窗、空白或错显。
   if((isAShareSymbol(symbol)||isHKSymbol(symbol)) && data && data.points && data.points.length>1){
     return sparklineSVG(data.points);
   }
-  return tradingViewIframe(symbol) + mobileFallbackHTML(symbol,data);
+  return tradingViewIframe(symbol) + phoneSafeChartHTML(symbol,data);
 }
 function chartSourceLabel(symbol,data){
   if(isAShareSymbol(symbol)) return data&&data.minuteOk?'腾讯A股分时图':'腾讯A股报价示意图';
@@ -957,6 +965,23 @@ function chartSourceLabel(symbol,data){
 
 function tradingViewURL(symbol){
   return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSymbolFor(symbol))}`;
+}
+
+function syntheticPointsFromSymbol(symbol){
+  const s=String(symbol||'AAPL');
+  let h=0; for(const ch of s) h=(h*37+ch.charCodeAt(0))%1009;
+  const base=100+(h%40);
+  const pts=[];
+  for(let i=0;i<16;i++){
+    const wave=Math.sin((i+h%5)/2.2)*1.6 + Math.cos((i+h%7)/3.1)*1.1 + (i-7.5)*((h%9)-4)/45;
+    pts.push({time:String(i),open:base,close:base+wave,volume:0});
+  }
+  return pts;
+}
+function phoneSafeChartHTML(symbol,data){
+  const pts=(data&&data.points&&data.points.length>1)?data.points:syntheticPointsFromSymbol(symbol);
+  const note=(data&&data.points&&data.points.length>1)?'手机端安全图：使用可解析行情数据绘制。':'手机端安全图：外部图表被拦截时使用本地示意曲线，保证不空白。';
+  return `<div class="phoneSafeChart"><div class="meta">${note}</div>${sparklineSVG(pts)}<a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开完整图表</a></div>`;
 }
 function mobileFallbackHTML(symbol,data){
   if(data && data.points && data.points.length>1){
@@ -987,7 +1012,7 @@ async function fetchAndRenderStocks(label,stocks,t,sub,conv){
       const q=data.quote||{};
       box.innerHTML=`${chartVisualHTML(s.code,data)}${quoteInfoHTML(s,merged,q,chartSourceLabel(s.code,data))}`;
     }catch(e){
-      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'<div class="meta">腾讯行情暂未接通，A/H 股不再强制加载 TradingView，以避免弹窗或错显。</div>':tradingViewIframe(s.code)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。候选解释暂以洛书模型、五行行业与后天合化为主。</div></div>`;
+      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'<div class="meta">腾讯行情暂未接通，A/H 股不再强制加载 TradingView，以避免弹窗或错显。</div>':tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。候选解释暂以洛书模型、五行行业与后天合化为主。</div></div>`;
     }
   }
 }
