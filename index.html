@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.6.1 手机安全图版</title>
+  <title>洛书时机仪 v0.6.2 选股看图修正版</title>
   <style>
     :root{
       --bg:#071019;
@@ -243,6 +243,13 @@
 
 
 
+
+    .guaranteedChart{margin-top:8px}
+    .chartNote{font-size:11px;color:#95a6bf;margin:6px 0 4px;line-height:1.45}
+    @media (max-width: 760px){
+      .guaranteedChart{display:block}
+    }
+
     .phoneSafeChart{display:none;margin-top:8px}
     @media (max-width: 760px){
       .phoneSafeChart{display:block}
@@ -282,7 +289,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.6.1 手机安全图版</div>
+      <div class="badge">● 洛书时机仪 v0.6.2 选股看图修正版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -910,7 +917,7 @@ function quoteInfoHTML(s, merged, q, sourceLabel){
   const pct=(merged.d1!==undefined&&merged.d1!==null)?merged.d1:'—';
   const amount=(q.amount!==undefined&&q.amount!==null)?q.amount:'—';
   const hkNote=isHKSymbol(code)?'港股观察池已切换为腾讯分时/报价示意，避免 TradingView 弹窗或默认错显。':'';
-  return `<div class="quoteInfo"><b>${name}</b>｜${code}<span class="apiTag">${s.market||inferMarket(code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${industry}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px">观察类型：${merged.tag}。图表来源：${sourceLabel}；腾讯报价用于现价、涨跌幅和候选分重算。${hkNote}</div></div>`;
+  return `<div class="quoteInfo"><b>${name}</b>｜${code}<span class="apiTag">${s.market||inferMarket(code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${industry}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px">观察类型：${merged.tag}。图表来源：${sourceLabel}；腾讯报价用于现价、涨跌幅和候选分重算。手机安全图不是 TradingView 实时图，只是防空白兜底。${hkNote}</div></div>`;
 }
 function stockCandidateHTML(t,sub,conv,label){
   const userList=parseStockPool();
@@ -923,7 +930,7 @@ function stockCandidateHTML(t,sub,conv,label){
   const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">五行行业：${stockIndustryLabel(s.el)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
   const rows=scored.map((s,i)=>`<div class="stockRow"><span>#${i+1}</span><b>${s.name}</b><span>${stockIndustryLabel(s.el)}</span><span>${s.score}</span><span>${i<2?'主候选观察':'对照/备选观察'}｜${s.tag}</span></div>`).join('');
   setTimeout(()=>fetchAndRenderStocks(label,scored.slice(0,2),t,sub,conv),50);
-  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、腾讯报价信息与图表；A股优先使用腾讯分时图，港股/美股优先使用 TradingView 图表。支持“600519”或“贵州茅台｜600519.SH”这类写法。行情与图表仅作观察展示。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
+  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、腾讯报价信息与图表；A股优先使用腾讯分时图，港股/美股优先使用 TradingView 图表。支持“600519”或“贵州茅台｜600519.SH”这类写法。行情与图表仅作观察展示；手机安全图/本地示意图只用于防止空白，不代表 TradingView 实时分时。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
 }
 
 function tvSymbolFor(symbol){
@@ -949,20 +956,21 @@ function isHKSymbol(symbol){
   return /^\d{5}(\.HK)?$/.test(s);
 }
 function chartVisualHTML(symbol,data){
-  // 桌面端：美股/全球股票使用 TradingView 直连 iframe。
-  // 手机端：彻底不依赖 TradingView iframe，直接显示 phoneSafeChart，保证不空白。
-  // A股/港股：始终使用腾讯分时或报价示意图，避免 TradingView 弹窗、空白或错显。
-  if((isAShareSymbol(symbol)||isHKSymbol(symbol)) && data && data.points && data.points.length>1){
-    return sparklineSVG(data.points);
+  // 图表策略：
+  // 1. A股/港股：用腾讯/可解析行情图，避免 TradingView 弹窗、空白或错显。
+  // 2. 美股/全球股票：桌面端显示 TradingView；手机端隐藏 TradingView，显示本地安全图。
+  // 3. 无论哪种情况，都提供 guaranteedLocalChartHTML，保证“选股看图”区域不会空白。
+  if((isAShareSymbol(symbol)||isHKSymbol(symbol))){
+    return guaranteedLocalChartHTML(symbol,data);
   }
   return tradingViewIframe(symbol) + phoneSafeChartHTML(symbol,data);
 }
 function chartSourceLabel(symbol,data){
-  if(isAShareSymbol(symbol)) return data&&data.minuteOk?'腾讯A股分时图':'腾讯A股报价示意图';
-  if(isHKSymbol(symbol)) return data&&data.minuteOk?'腾讯港股分时图':'腾讯港股报价示意图';
-  return 'TradingView桌面图表 / 手机兜底图 + 腾讯报价';
+  const real=data&&data.points&&data.points.length>1;
+  if(isAShareSymbol(symbol)) return real?'腾讯A股分时/报价图':'A股本地示意图';
+  if(isHKSymbol(symbol)) return real?'腾讯港股分时/报价图':'港股本地示意图';
+  return real?'TradingView桌面图表 / 手机行情安全图 + 腾讯报价':'TradingView桌面图表 / 手机本地安全图 + 腾讯报价';
 }
-
 function tradingViewURL(symbol){
   return `https://www.tradingview.com/chart/?symbol=${encodeURIComponent(tvSymbolFor(symbol))}`;
 }
@@ -979,9 +987,18 @@ function syntheticPointsFromSymbol(symbol){
   return pts;
 }
 function phoneSafeChartHTML(symbol,data){
-  const pts=(data&&data.points&&data.points.length>1)?data.points:syntheticPointsFromSymbol(symbol);
-  const note=(data&&data.points&&data.points.length>1)?'手机端安全图：使用可解析行情数据绘制。':'手机端安全图：外部图表被拦截时使用本地示意曲线，保证不空白。';
+  const hasReal=data&&data.points&&data.points.length>1;
+  const pts=hasReal?data.points:syntheticPointsFromSymbol(symbol);
+  const note=hasReal
+    ? '手机端安全图：根据可解析行情数据绘制，不依赖 TradingView iframe。'
+    : '手机端安全图：当前未取到可解析行情，使用本地示意曲线，目的只是保证手机端不空白；不是 TradingView 实时图。';
   return `<div class="phoneSafeChart"><div class="meta">${note}</div>${sparklineSVG(pts)}<a class="tvOpenBtn" href="${tradingViewURL(symbol)}" target="_blank" rel="noopener">在 TradingView 打开完整图表</a></div>`;
+}
+function guaranteedLocalChartHTML(symbol,data){
+  const hasReal=data&&data.points&&data.points.length>1;
+  const pts=hasReal?data.points:syntheticPointsFromSymbol(symbol);
+  const note=hasReal?'腾讯/可解析行情图':'本地示意图';
+  return `<div class="guaranteedChart"><div class="chartNote">${note}</div>${sparklineSVG(pts)}</div>`;
 }
 function mobileFallbackHTML(symbol,data){
   if(data && data.points && data.points.length>1){
@@ -1012,7 +1029,7 @@ async function fetchAndRenderStocks(label,stocks,t,sub,conv){
       const q=data.quote||{};
       box.innerHTML=`${chartVisualHTML(s.code,data)}${quoteInfoHTML(s,merged,q,chartSourceLabel(s.code,data))}`;
     }catch(e){
-      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'<div class="meta">腾讯行情暂未接通，A/H 股不再强制加载 TradingView，以避免弹窗或错显。</div>':tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。候选解释暂以洛书模型、五行行业与后天合化为主。</div></div>`;
+      box.innerHTML=`${(isAShareSymbol(s.code)||isHKSymbol(s.code))?guaranteedLocalChartHTML(s.code,null):tradingViewIframe(s.code)+phoneSafeChartHTML(s.code,null)}<div class="quoteInfo"><b>${s.name||s.code}</b>｜${s.code}<span class="apiTag">${s.market||inferMarket(s.code)}</span><div class="quoteGrid"><div class="quoteCell">五行行业：${stockIndustryLabel(s.el)}</div><div class="quoteCell">行情源：腾讯报价未接通</div><div class="quoteCell">现价：—</div><div class="quoteCell">今日涨跌：—</div><div class="quoteCell">模型候选分：${s.score}</div><div class="quoteCell">图表策略：${(isAShareSymbol(s.code)||isHKSymbol(s.code))?'等待腾讯图表':'TradingView'}</div></div><div style="margin-top:6px">腾讯报价未获取成功：${e.message||e}。候选解释暂以洛书模型、五行行业与后天合化为主。</div></div>`;
     }
   }
 }
