@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.7.4 手机桌面版 TradingView 补丁</title>
+  <title>洛书时机仪 v0.9.2 大运主应阶段版</title>
   <style>
     :root{
       --bg:#071019;
@@ -345,6 +345,303 @@
   .tvMobileDesktopWrap{display:none!important}
 }
 
+
+.birthPanel{
+  margin:16px 0;
+  padding:14px;
+  border:1px solid rgba(246,207,120,.18);
+  border-radius:20px;
+  background:linear-gradient(135deg,rgba(246,207,120,.08),rgba(123,231,246,.04));
+}
+.birthGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}
+.birthMetric{
+  padding:10px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+}
+.birthMetric span{display:block;color:var(--muted);font-size:12px;margin-bottom:4px}
+.birthMetric b{font-size:16px;color:var(--text)}
+.lifeTable{display:grid;gap:8px;margin-top:10px}
+.lifeRow{
+  display:grid;
+  grid-template-columns:86px 1fr 64px 64px 64px;
+  gap:8px;
+  align-items:center;
+  padding:9px 10px;
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+  font-size:13px;
+}
+.lifeRow.header{color:var(--muted);background:rgba(255,255,255,.03)}
+.windowCards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+.windowCard{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  padding:11px;
+  background:rgba(7,16,25,.42);
+  line-height:1.65;
+}
+.windowCard b{color:var(--gold)}
+.lifeNote{color:var(--muted);font-size:12px;line-height:1.7;margin-top:8px}
+@media(max-width:760px){
+  .birthGrid{grid-template-columns:repeat(2,1fr)}
+  .windowCards{grid-template-columns:1fr}
+  .lifeRow{grid-template-columns:72px 1fr 44px 44px 44px;font-size:12px;padding:8px}
+}
+
+
+/* v0.8.1: right homepage panel scrolls independently to keep left/right balanced */
+@media(min-width:961px){
+  .heroAside{
+    max-height:calc(100vh - 96px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding-right:16px!important;
+    scrollbar-width:thin;
+  }
+  .heroAside::-webkit-scrollbar{width:7px}
+  .heroAside::-webkit-scrollbar-thumb{background:rgba(148,163,184,.35);border-radius:999px}
+  .heroAside::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+}
+.birthEmpty{
+  border:1px dashed rgba(246,207,120,.28);
+  background:rgba(246,207,120,.045);
+}
+
+
+/* v0.8.2: keep homepage left/right panels visually equal height */
+@media(min-width:961px){
+  .hero{
+    align-items:stretch!important;
+    grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr)!important;
+  }
+  .hero > .panel{
+    height:min(86vh, 860px)!important;
+    min-height:720px!important;
+    align-self:stretch!important;
+  }
+  .heroMain{
+    height:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  .heroMain .heroVisual{
+    flex:1 1 auto!important;
+    min-height:260px!important;
+  }
+  .heroAside{
+    height:min(86vh, 860px)!important;
+    min-height:720px!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding-right:16px!important;
+    align-self:stretch!important;
+    scrollbar-width:thin;
+  }
+  .heroAside::-webkit-scrollbar{width:7px}
+  .heroAside::-webkit-scrollbar-thumb{background:rgba(148,163,184,.35);border-radius:999px}
+  .heroAside::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+}
+@media(max-width:960px){
+  .hero > .panel,
+  .heroMain,
+  .heroAside{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+}
+
+
+/* v0.8.3: standalone personal Dayun module */
+.dayunStandalone{
+  margin-top:18px;
+  border:1px solid rgba(246,207,120,.22)!important;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(246,207,120,.10),transparent 32%),
+    radial-gradient(circle at 88% 20%,rgba(123,231,246,.08),transparent 30%),
+    rgba(255,255,255,.065)!important;
+}
+.dayunStandalone .birthPanel{
+  margin:0;
+  border:0;
+  background:transparent;
+  padding:0;
+}
+.dayunStandaloneHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  margin-bottom:10px;
+}
+.dayunStandaloneHead .hint{
+  color:var(--muted);
+  font-size:12.5px;
+  line-height:1.65;
+  max-width:620px;
+}
+.dayunBtn{
+  width:100%;
+  margin-top:8px;
+}
+
+
+/* v0.8.4: richer Dayun interpretation display */
+.dayunPhase{
+  display:block;
+  color:#eef6ff;
+  font-weight:850;
+  margin-bottom:3px;
+}
+.dayunUse{
+  display:block;
+  color:#d7e5f7;
+  line-height:1.55;
+}
+.dayunCaution{
+  display:block;
+  color:#f8cbd2;
+  line-height:1.55;
+  margin-top:2px;
+}
+.dayunTags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:6px;
+}
+.dayunTags i{
+  font-style:normal;
+  font-size:11px;
+  padding:2px 7px;
+  border-radius:999px;
+  border:1px solid rgba(123,231,246,.16);
+  color:#bdeeff;
+  background:rgba(123,231,246,.055);
+}
+
+
+/* v0.8.5: Dayun life-event judgment block */
+.dayunEvent{
+  display:block;
+  margin:7px 0 5px;
+  padding:8px 10px;
+  border-left:3px solid rgba(246,207,120,.72);
+  border-radius:10px;
+  background:rgba(246,207,120,.065);
+  color:#fff3cf;
+  line-height:1.65;
+}
+.dayunEvent b{color:#ffe2a0}
+.dayunResult{
+  display:block;
+  margin-top:3px;
+  color:#d9ecff;
+}
+
+
+/* v0.8.6: concise Dayun judgment wording */
+.dayunJudge{
+  display:block;
+  margin:7px 0 5px;
+  padding:9px 11px;
+  border-left:3px solid rgba(246,207,120,.78);
+  border-radius:10px;
+  background:rgba(246,207,120,.07);
+  color:#fff1c7;
+  line-height:1.7;
+  font-weight:760;
+}
+.dayunJudge small{
+  display:block;
+  color:#c8d8ea;
+  font-weight:520;
+  margin-top:3px;
+}
+
+
+/* v0.8.8: clearer Dayun peak-age display */
+.dayunPeaks{
+  display:block;
+  margin-top:6px;
+  color:#b9cbe1;
+  font-size:12px;
+  line-height:1.55;
+}
+.dayunPeaks b{color:#dcecff}
+
+
+/* v0.9.2: polished report export */
+.reportActions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  align-items:center;
+}
+.reportActions button{min-width:142px}
+.reportTip{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+  margin-top:7px;
+}
+
+
+/* v0.9.2: Fuxiang and kinship projection inside Dayun judgments */
+.fuxiangBlock{
+  display:block;
+  margin:7px 0 5px;
+  padding:8px 10px;
+  border-left:3px solid rgba(123,231,246,.64);
+  border-radius:10px;
+  background:rgba(123,231,246,.055);
+  color:#dff7ff;
+  line-height:1.65;
+  font-weight:600;
+}
+.fuxiangBlock b{color:#fff2bf}
+.fuxiangTags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin:5px 0 3px;
+}
+.fuxiangTags i{
+  font-style:normal;
+  font-size:11px;
+  padding:2px 7px;
+  border-radius:999px;
+  border:1px solid rgba(123,231,246,.24);
+  color:#c9f6ff;
+  background:rgba(123,231,246,.08);
+}
+.kinshipLine{
+  display:block;
+  color:#cbd7ea;
+  font-size:12px;
+  margin-top:3px;
+}
+
+
+/* v0.9.2: event-specific Dayun phase labels */
+.dayunPhase{
+  color:#ffe3a3!important;
+  letter-spacing:.02em;
+}
+.dayunPhase .ageHint{
+  color:#b9cbe1;
+  font-weight:560;
+  font-size:12px;
+  margin-left:6px;
+}
+
 </style>
 </head>
 <body>
@@ -363,7 +660,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.7.4 手机桌面版 TradingView 补丁</div>
+      <div class="badge">● 洛书时机仪 v0.9.2 大运主应阶段版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -431,6 +728,17 @@
         <div class="field"><label>二级场景</label><select id="subType"></select></div>
       </div>
       <div class="field"><label>股票代码观察池（可选｜每行一个代码）</label><textarea id="stockPool" placeholder="不输入时，系统按当前首选行业自动给出候选。&#10;A股：300750 / 600519 / 000001&#10;港股：00700.HK / 03690.HK&#10;美股：AAPL / MSFT / NVDA"></textarea></div>
+      <div class="field">
+        <label>个人大运时序盘（独立模块）</label>
+        <div class="grid3">
+          <div class="field"><label>公历生日</label><input id="birthDate" type="date" placeholder="默认 2000-01-01"></div>
+          <div class="field"><label>出生时间</label><input id="birthTime" type="time" value="12:00"></div>
+          <div class="field"><label>性别路径</label><select id="birthGender"><option value="male">男｜阳动阴补</option><option value="female">女｜阴成阳引</option></select></div>
+        </div>
+        <button class="secondary dayunBtn" id="birthRunBtn" type="button">生成个人大运时序盘</button>
+        <button class="dayunBtn" id="birthPdfBtn" type="button">生成/打印PDF报告</button>
+        <div class="rightMiniNote"><b>说明：</b>此模块单独显示，不与三界 A/B 结果混排。未填写生日时使用默认样例：2000-01-01 12:00。</div>
+      </div>
       <div class="rightMiniNote" id="marketApiField"><b>免费行情接口：</b>GitHub Pages 版统一使用 TradingView Widget 显示图表；腾讯接口只负责报价与涨跌幅。查询频率写死为 60 秒缓存、每次只抓主候选 2 只。</div>
       <div class="field"><label>补充背景（可选）</label><textarea id="context" placeholder="例如：只做复盘观察，不作为直接交易依据；想比较上午和下午哪个窗口更适合关注行业轮动。"></textarea></div>
       <div class="grid2">
@@ -462,6 +770,15 @@
     <div class="panel resultPanel" id="resultB"></div>
   </section>
   <section class="panel resultPanel diff" id="diffBox"></section>
+
+  <section class="panel resultPanel dayunStandalone" id="birthStandalone">
+    <div class="dayunStandaloneHead">
+      <div>
+        <div class="sectionTitle">个人大运时序盘</div>
+        <div class="hint">独立生日模块。默认使用 2000-01-01 12:00；填写生日后点击右侧按钮单独刷新本模块。</div>
+      </div>
+    </div>
+  </section>
 
   <section class="infoSections">
     <div class="panel infoPanel">
@@ -557,6 +874,11 @@ const dtB=document.getElementById('dtB');
 const question=document.getElementById('question');
 const context=document.getElementById('context');
 const stockPool=document.getElementById('stockPool');
+const birthDate=document.getElementById('birthDate');
+const birthTime=document.getElementById('birthTime');
+const birthGender=document.getElementById('birthGender');
+const birthRunBtn=document.getElementById('birthRunBtn');
+const birthPdfBtn=document.getElementById('birthPdfBtn');
 const diffBox=document.getElementById('diffBox');
 
 function initUI(){
@@ -1834,6 +2156,384 @@ function updateMiniBoard(which, d, conv){
   document.getElementById(which==='A'?'miniATime':'miniBTime').textContent=d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
   document.getElementById(which==='A'?'miniBoardA':'miniBoardB').innerHTML=miniBoardHTML(d, conv);
 }
+
+function stemElement(stem){return String(stem||'').slice(1)||'土'}
+function stemYinYang(stem){return String(stem||'').slice(0,1)==='阴'?'阴':'阳'}
+function stemPalace(stem){
+  const key=stemKey[stem];
+  const map={yangWater:1,yinWater:6,yangWood:3,yinWood:8,yangFire:7,yinFire:2,yangMetal:9,yinMetal:4,yangEarth:5,yinEarth:5};
+  return map[key]||5;
+}
+function positiveMod(n,m){return ((n%m)+m)%m}
+function birthInputDate(){
+  let y=2000, m=1, d=1;
+  if(birthDate && birthDate.value){
+    const parts=birthDate.value.split('-').map(Number);
+    if(Number.isFinite(parts[0])) y=parts[0];
+    if(Number.isFinite(parts[1])) m=parts[1];
+    if(Number.isFinite(parts[2])) d=parts[2];
+  }
+  let hh=12, mm=0;
+  if(birthTime && birthTime.value){
+    const parts=birthTime.value.split(':').map(Number);
+    if(Number.isFinite(parts[0])) hh=parts[0];
+    if(Number.isFinite(parts[1])) mm=parts[1];
+  }
+  return new Date(y,m-1,d,hh,mm,0);
+}
+function mean(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0}
+function std(arr){const mu=mean(arr);return Math.sqrt(mean(arr.map(x=>(x-mu)*(x-mu))))||0}
+function relScore(a,b){
+  if(!a||!b) return 50;
+  if(a===b) return 68;
+  if(gen[b]===a) return 74;      // 生我：资源补偿
+  if(gen[a]===b) return 58;      // 我生：输出消耗
+  if(ctrl[b]===a) return 46;     // 克我：压力约束
+  if(ctrl[a]===b) return 62;     // 我克：控制转化
+  return 52;
+}
+function fieldSimilarity(t1,t2){
+  const els=['水','木','火','金','土'];
+  let s=0;
+  els.forEach(e=>s+=1-Math.min(1,Math.abs((t1[e]||0)-(t2[e]||0))));
+  return s/els.length;
+}
+function lifeAnnualRecord(birth, age, birthProfile, qiyunAgeGuess){
+  const target=new Date(birth.getFullYear()+age,birth.getMonth(),birth.getDate(),birth.getHours(),birth.getMinutes(),0);
+  const p=fourPillars(target);
+  const init=initialTen(p), conv=convolve(init), t=totals(conv.ten);
+  const yearNo=positiveMod(target.getFullYear()-2024,60);
+  const annualEl=stemElement(p.year.stem);
+  const personEl=birthProfile.personEl;
+  const relation=relScore(personEl,annualEl);
+  const sim=fieldSimilarity(birthProfile.birthTotals,t);
+  const transformStrength=(conv.transform&&conv.transform.strength?conv.transform.strength:0);
+  const yinYangComp=(birthProfile.personYY===stemYinYang(p.year.stem))?48:68;
+  const palaceDist=stemPalace(p.year.stem)===birthProfile.personPalace?68:56;
+  const hehua=Math.round(30 + relation*.28 + sim*24 + transformStrength*55 + yinYangComp*.12 + palaceDist*.10);
+  const peak=Math.max(t.水,t.木,t.火,t.金,t.土);
+  const yyGap=Math.abs((t.阳||0)-(t.阴||0));
+  const overload=Math.round(30 + peak*32 + yyGap*24 + Math.max(0,transformStrength-.18)*70);
+  const career=Math.round(hehua*.42 + relScore(personEl,'火')*.12 + relScore(personEl,'金')*.10 + (t.木+t.火)*20 + (t.金+t.土)*12 - Math.max(0,overload-75)*.28);
+  const relationScore=Math.round(hehua*.36 + yinYangComp*.24 + (t.水+t.木+t.土)*14 - Math.max(0,overload-72)*.35);
+  const wealth=Math.round(hehua*.34 + (t.金+t.土+t.水)*18 + relScore(personEl,'土')*.10 - Math.max(0,overload-78)*.22);
+  const health=Math.round(overload*.70 + Math.max(0,peak-.62)*45 + yyGap*16);
+  return {
+    age,year:target.getFullYear(),date:target,yearNo,p,conv,t,
+    stem:p.year.stem,branch:p.year.branch,annualEl,
+    hehua:Math.max(0,Math.min(100,hehua)),
+    overload:Math.max(0,Math.min(100,overload)),
+    career:Math.max(0,Math.min(100,career)),
+    relation:Math.max(0,Math.min(100,relationScore)),
+    wealth:Math.max(0,Math.min(100,wealth)),
+    health:Math.max(0,Math.min(100,health)),
+    stage:age<qiyunAgeGuess?'先天沉潜':'起运后'
+  };
+}
+function topWindows(records,key,minAge,maxAge,count=3){
+  const candidates=records.filter(r=>r.age>=minAge&&r.age<=maxAge).slice().sort((a,b)=>b[key]-a[key]);
+  const picked=[];
+  for(const r of candidates){
+    if(picked.some(p=>Math.abs(p.age-r.age)<=2)) continue;
+    picked.push(r);
+    if(picked.length>=count) break;
+  }
+  return picked.map(r=>({start:Math.max(minAge,r.age-1),end:Math.min(maxAge,r.age+1),peak:r.age,score:r[key],year:r.year}));
+}
+function windowText(ws, label='窗口强度'){
+  if(!ws.length) return '暂无明显窗口';
+  return ws.map(w=>`${w.start}–${w.end}岁（峰值${w.peak}岁，${label}${w.score}）`).join('；');
+}
+function dominantAnnualElement(seg){
+  const sums={水:0,木:0,火:0,金:0,土:0};
+  seg.forEach(r=>Object.keys(sums).forEach(k=>sums[k]+=(r.t[k]||0)));
+  return Object.entries(sums).sort((a,b)=>b[1]-a[1])[0][0];
+}
+function ageAllowed(event,age){
+  const ranges={
+    study:[0,28], career:[22,70], relation:[18,55], wealth:[25,75],
+    health:[0,90], migration:[16,70], family:[24,65], transition:[16,80]
+  };
+  const r=ranges[event]||[0,90];
+  return age>=r[0]&&age<=r[1];
+}
+function lifeEventCandidates(seg,birthProfile){
+  const best={
+    career:seg.slice().filter(r=>ageAllowed('career',r.age)).sort((a,b)=>b.career-a.career)[0],
+    relation:seg.slice().filter(r=>ageAllowed('relation',r.age)).sort((a,b)=>b.relation-a.relation)[0],
+    wealth:seg.slice().filter(r=>ageAllowed('wealth',r.age)).sort((a,b)=>b.wealth-a.wealth)[0],
+    health:seg.slice().filter(r=>ageAllowed('health',r.age)).sort((a,b)=>b.health-a.health)[0],
+    hehua:seg.slice().sort((a,b)=>b.hehua-a.hehua)[0],
+    overload:seg.slice().sort((a,b)=>b.overload-a.overload)[0]
+  };
+  const start=seg[0].age, end=seg[seg.length-1].age;
+  const early=end<22;
+  const el=dominantAnnualElement(seg);
+  const score=(r,k)=>r?Number(r[k]||0):0;
+  const items=[];
+  if(early){
+    const r=best.hehua;
+    items.push({
+      kind:'学业/性格底盘成形',
+      age:r.age,
+      score:r.hehua,
+      judge:`这一段仍偏早年，${el}势牵动明显，主要不是婚恋或事业定局，而是学习路径、性格反应和家庭环境对个人底盘的塑形。`,
+      result:`可能表现为学习方向变化、兴趣能力被看见、家庭规则改变，或第一次形成比较稳定的自我偏好。`
+    });
+  }
+  if(best.career && score(best.career,'career')>=62){
+    const r=best.career;
+    const name=r.age<28?'学业/入行转向':(r.age<45?'事业跃迁/项目成形':'职位结构/事业收束升级');
+    items.push({
+      kind:name,
+      age:r.age,
+      score:r.career,
+      judge:`事业分在 ${r.age} 岁附近抬升，说明这一年更像“身份位置被重新定义”的触发点。`,
+      result:r.age<28?'可能对应升学、专业转换、入行、拿到关键资格或遇到重要导师/平台。':`可能对应换岗升职、项目落地、作品发布、创业节点、团队扩大，或从执行者转向负责人。`
+    });
+  }
+  if(best.relation && score(best.relation,'relation')>=62){
+    const r=best.relation;
+    items.push({
+      kind:r.age<25?'重要关系出现':'关系定型/婚恋推进',
+      age:r.age,
+      score:r.relation,
+      judge:`关系分在 ${r.age} 岁附近形成峰值，且处在可解释年龄段，说明关系、合作或亲密绑定容易成为阶段主事件。`,
+      result:r.age<25?'可能对应重要恋爱、核心朋友/合作伙伴出现，或关系观发生明显变化。':`可能对应确定关系、订婚结婚、同居买房、重要合作绑定，或一段关系进入取舍定局。`
+    });
+  }
+  if(best.wealth && score(best.wealth,'wealth')>=62){
+    const r=best.wealth;
+    items.push({
+      kind:'财富/资产结构成形',
+      age:r.age,
+      score:r.wealth,
+      judge:`资产分在 ${r.age} 岁附近较强，说明资源、资金、房产、股权或长期现金流更容易成为现实议题。`,
+      result:`可能对应买房置业、长期投资定投、收入结构变化、股权/分红/副业成形，或一次较重要的财务决策。`
+    });
+  }
+  if(best.hehua && best.overload && best.hehua.hehua>=70 && best.overload.overload>=72){
+    const r=best.hehua.hehua>=best.overload.overload?best.hehua:best.overload;
+    if(ageAllowed('transition',r.age)){
+      items.push({
+        kind:'人生转折/结构重组',
+        age:r.age,
+        score:Math.round((best.hehua.hehua+best.overload.overload)/2),
+        judge:`合化与过载在本段同时偏高，说明不是单纯顺利推进，而是“机会与代价一起出现”。`,
+        result:`可能对应换城市、换行业、离职创业、重大合作拆分、家庭责任变化，或一次把旧结构推倒重来的选择。`
+      });
+    }
+  }
+  if(best.health && score(best.health,'health')>=72){
+    const r=best.health;
+    items.push({
+      kind:'身体/压力高消耗',
+      age:r.age,
+      score:r.health,
+      judge:`身体消耗分在 ${r.age} 岁附近偏高，说明该年更像压力集中释放点。`,
+      result:`不解释为具体疾病；更可能表现为长期疲劳、作息失衡、焦虑压力、恢复变慢，或需要通过体检、运动和休息重建节律。`
+    });
+  }
+  if(!items.length){
+    const r=best.hehua;
+    items.push({
+      kind:'积累蓄势/方向微调',
+      age:r.age,
+      score:r.hehua,
+      judge:`本段没有特别尖锐的单一事件峰值，更像稳态积累期。`,
+      result:`可能表现为慢慢换圈层、补技能、整理资产与关系边界，为下一阶段的大事件做铺垫。`
+    });
+  }
+  return items.sort((a,b)=>b.score-a.score).slice(0,2);
+}
+function eventTags(kind){
+  if(kind.includes('事业')||kind.includes('项目')||kind.includes('职位')) return ['事业','身份','项目'];
+  if(kind.includes('关系')||kind.includes('婚恋')) return ['关系','绑定','取舍'];
+  if(kind.includes('财富')||kind.includes('资产')) return ['资产','现金流','结构'];
+  if(kind.includes('学业')||kind.includes('入行')) return ['学业','入行','方向'];
+  if(kind.includes('转折')||kind.includes('重组')) return ['转折','迁移','重组'];
+  if(kind.includes('身体')||kind.includes('压力')) return ['消耗','恢复','养护'];
+  return ['积累','蓄势','微调'];
+}
+function eventPhaseTitle(ev, avgH, avgO){
+  const k=ev.kind || '';
+  const a=ev.age;
+  if(k.includes('学业/性格')) return `早年底盘成形｜${a}岁应学习与性格塑形`;
+  if(k.includes('学业')||k.includes('入行')) return `入行转向运｜${a}岁应学业、资格或入门平台`;
+  if(k.includes('事业跃迁')||k.includes('项目')) return `事业跃迁运｜${a}岁应项目成形与身份抬升`;
+  if(k.includes('职位结构')) return `职位结构运｜${a}岁应责任升级与事业定型`;
+  if(k.includes('重要关系')) return `关系显化运｜${a}岁应重要关系出现`;
+  if(k.includes('关系定型')||k.includes('婚恋')) return `婚恋定型运｜${a}岁应关系绑定与取舍`;
+  if(k.includes('财富')||k.includes('资产')) return `资产成形运｜${a}岁应置业、现金流或资源结构`;
+  if(k.includes('转折')||k.includes('重组')) return `结构重组运｜${a}岁应迁移、换轨或旧局重排`;
+  if(k.includes('身体')||k.includes('压力')) return `暗耗调养运｜${a}岁应身体节律与压力修复`;
+  if(avgO>=78) return `伏象警戒运｜${a}岁应减法、防守与留余地`;
+  if(avgH>=62) return `渐进蓄势运｜${a}岁应连续积累与方向微调`;
+  return `平稳积累运｜${a}岁应蓄势、补课与关系边界`;
+}
+
+function elByRelation(personEl, rel){
+  const els=['水','木','火','土','金'];
+  if(rel==='same') return personEl;
+  if(rel==='shengMe') return Object.entries(gen).find(([a,b])=>b===personEl)?.[0] || '金';
+  if(rel==='iSheng') return gen[personEl] || '木';
+  if(rel==='iControl') return ctrl[personEl] || '火';
+  if(rel==='controlMe') return Object.entries(ctrl).find(([a,b])=>b===personEl)?.[0] || '土';
+  return personEl;
+}
+function kinshipProjection(seg,birthProfile){
+  const pEl=birthProfile.personEl;
+  const isFemale=birthProfile.gender==='female';
+  const spouseRole = isFemale
+    ? {rel:'controlMe', label:'伴侣/夫星/关系责任线', note:'伴侣对象、婚姻责任、身份绑定与现实约束容易牵动'}
+    : {rel:'iControl', label:'伴侣/妻财/关系经营线', note:'伴侣对象、关系经营、婚姻资产与投入取舍容易牵动'};
+  const nonSpouseControl = isFemale
+    ? {rel:'iControl', label:'财富/资产/经营对象线', note:'资产、现金流、投资、置业或可经营资源容易浮现'}
+    : {rel:'controlMe', label:'规则/职位/外部责任线', note:'职位责任、制度约束、外部规则与边界压力较强'};
+  const roles=[
+    {rel:'shengMe', label:'父母/长辈/资源线', note:'长辈、家宅、资助、照护与原生责任容易牵动'},
+    {rel:'same', label:'同辈/朋友/竞争线', note:'兄弟、朋友、合伙人、同业竞争或同辈关系容易成为变量'},
+    {rel:'iSheng', label:'子女/作品/输出线', note:'子女、学生、作品、项目输出、表达消耗容易被放大'},
+    spouseRole,
+    nonSpouseControl
+  ];
+  const scores=roles.map(r=>{
+    const el=elByRelation(pEl,r.rel);
+    const avg=mean(seg.map(x=>x.t[el]||0));
+    const ov=mean(seg.map(x=>x.overload||0));
+    const spouseBoost = r===spouseRole ? 8 : 0;
+    return {...r, el, score:Math.round(avg*70 + ov*.25 + spouseBoost)};
+  }).sort((a,b)=>b.score-a.score);
+  return scores[0];
+}
+function fuxiangAnalysis(seg,birthProfile,mainEvent){
+  const kin=kinshipProjection(seg,birthProfile);
+  const peakO=seg.slice().sort((a,b)=>b.overload-a.overload)[0];
+  const peakHealth=seg.slice().sort((a,b)=>b.health-a.health)[0];
+  const peakWealth=seg.slice().sort((a,b)=>b.wealth-a.wealth)[0];
+  const avgO=Math.round(mean(seg.map(r=>r.overload)));
+  const tags=[];
+  const hints=[];
+  if((peakHealth&&peakHealth.health>=70) || avgO>=72){
+    tags.push('身伏');
+    hints.push(`${peakHealth.age}岁前后身体节律与恢复力承压，宜少透支、多留恢复窗口。`);
+  }
+  if((peakWealth&&peakWealth.wealth>=68 && peakO.overload>=68) || mainEvent.kind.includes('财富') || mainEvent.kind.includes('资产')){
+    tags.push('财伏');
+    hints.push(`${peakWealth.age}岁前后资产、现金流或财务绑定事项较动，宜保守估算，避免高杠杆。`);
+  }
+  if(kin.score>=46 || ['shengMe','same','iSheng'].includes(kin.rel)){
+    tags.push('亲伏');
+    hints.push(`${kin.label}偏动，${kin.note}。`);
+  }
+  if(mainEvent.kind.includes('事业') || mainEvent.kind.includes('职位') || mainEvent.kind.includes('项目') || peakO.overload>=75){
+    tags.push('事伏');
+    hints.push(`事业、规则或项目责任容易形成暗压，宜先立边界，再谈扩张。`);
+  }
+  if(mainEvent.kind.includes('转折') || mainEvent.kind.includes('重组')){
+    tags.push('行伏');
+    hints.push(`迁移、环境变化或外部变量较多，重要选择宜预留机动空间。`);
+  }
+  if(!tags.length){
+    tags.push('微伏');
+    hints.push('伏象不重，但仍宜保留复盘、体检、财务边界和关系缓冲。');
+  }
+  const uniqTags=[...new Set(tags)].slice(0,3);
+  const uniqHints=[...new Set(hints)].slice(0,2);
+  const tagHTML=uniqTags.map(x=>`<i>${x}</i>`).join('');
+  return {
+    tags:uniqTags,
+    kin,
+    html:`<span class="fuxiangBlock"><b>伏象标记：</b><span class="fuxiangTags">${tagHTML}</span><b>隐患提示：</b>${uniqHints.join(' ')}<span class="kinshipLine"><b>亲缘投影：</b>${kin.label}｜${kin.note}</span></span>`
+  };
+}
+function dayunInterpretation(seg, birthProfile){
+  const avgH=Math.round(mean(seg.map(r=>r.hehua))), avgO=Math.round(mean(seg.map(r=>r.overload)));
+  const rel=relScore(birthProfile.personEl,dominantAnnualElement(seg));
+  const events=lifeEventCandidates(seg,birthProfile);
+  const mainEvent=events[0];
+  const secondEvent=events[1];
+
+  const phase=eventPhaseTitle(mainEvent,avgH,avgO);
+  const support = rel>=70 ? '此事多带外部助力，可顺势承接。' : (rel<=48 ? '此事多带压力约束，成事前需先立边界。' : '此事以个人选择和持续推进为主。');
+  const result = mainEvent.result.replace(/^可能对应/, '可能完成').replace(/^可能表现为/, '可能形成');
+  const second = secondEvent ? `<small>次判：${secondEvent.age}岁前后，${secondEvent.kind}；${secondEvent.result}</small>` : '';
+  const tags=eventTags(mainEvent.kind);
+  const tagHTML=tags.map(x=>`<i>${x}</i>`).join('');
+  const fuxiang=fuxiangAnalysis(seg,birthProfile,mainEvent);
+
+  const sentence = `${mainEvent.age}岁前后，主应“${mainEvent.kind}”：${result} ${support}`;
+  return {
+    phase,
+    tags,
+    mainEvent,
+    fuxiang,
+    html:`<span class="dayunPhase">${phase}<span class="ageHint">合化均值${avgH}｜过载均值${avgO}</span></span><span class="dayunJudge">判词：${sentence}${second}</span>${fuxiang.html}<span class="dayunTags">${tagHTML}</span>`
+  };
+}
+function birthLifePanelHTML(currentDate){
+  const birth=birthInputDate();
+  const gender=(birthGender&&birthGender.value)||'male';
+  const qStart=gender==='female'?7:8;
+  const qEnd=gender==='female'?14:16;
+  const birthP=fourPillars(birth), birthInit=initialTen(birthP), birthConv=convolve(birthInit), birthTotals=totals(birthConv.ten);
+  const personStem=birthP.day.stem, personEl=stemElement(personStem), personYY=stemYinYang(personStem), personPalace=stemPalace(personStem), palace=palaceByN(personPalace);
+  const profile={personStem,personEl,personYY,personPalace,birthTotals,gender};
+  const preRecords=[];
+  for(let age=qStart;age<=qEnd;age++) preRecords.push(lifeAnnualRecord(birth,age,profile,999));
+  const hs=preRecords.map(r=>r.hehua), th=mean(hs)+0.3*std(hs);
+  let qiyun=preRecords.find(r=>r.hehua>=th);
+  if(!qiyun) qiyun=preRecords.slice().sort((a,b)=>b.hehua-a.hehua)[0];
+  const records=[];
+  for(let age=0;age<=90;age++) records.push(lifeAnnualRecord(birth,age,profile,qiyun.age));
+  const pre=records.filter(r=>r.age<qiyun.age);
+  const preElements=['水','木','火','金','土'].map(el=>[el,pre.reduce((s,r)=>s+(r.t[el]||0),0)/(pre.length||1)]).sort((a,b)=>b[1]-a[1]);
+  const currentAge=Math.max(0,Math.floor((currentDate-birth)/(365.2425*86400000)));
+  const dayunRows=[];
+  for(let start=qiyun.age;start<=90;start+=10){
+    const seg=records.filter(r=>r.age>=start&&r.age<=Math.min(90,start+9));
+    if(!seg.length) continue;
+    const avgH=Math.round(mean(seg.map(r=>r.hehua))), avgO=Math.round(mean(seg.map(r=>r.overload)));
+    const best=seg.slice().sort((a,b)=>b.hehua-a.hehua)[0];
+    const hot=['事业','关系','资产','身体'].map((name,i)=>{
+      const keys=['career','relation','wealth','health'];
+      const rr=seg.slice().sort((a,b)=>b[keys[i]]-a[keys[i]])[0];
+      return `${name}峰值${rr.age}岁`;
+    }).join(' / ');
+    const interp=dayunInterpretation(seg,profile);
+    dayunRows.push({range:`${start}–${Math.min(90,start+9)}`,avgH,avgO,bestAge:best.age,hot,line:interp.html,phase:interp.phase});
+  }
+  const marriage=topWindows(records,'relation',18,55,3);
+  const career=topWindows(records,'career',22,70,3);
+  const wealth=topWindows(records,'wealth',25,75,3);
+  const health=topWindows(records,'health',0,90,3);
+  const old=topWindows(records,'health',80,90,1);
+  const cur=records[Math.min(90,Math.max(0,currentAge))]||records[0];
+  const qiyunLine=`${gender==='female'?'女命':'男命'} ${qStart}–${qEnd} 岁寻起运：阈值 ${th.toFixed(1)}，起运点为 ${qiyun.age} 岁（${qiyun.year}年｜合化${qiyun.hehua}）。`;
+  const activeRow=dayunRows.find(x=>cur.age>=parseInt(x.range)&&cur.age<=parseInt(x.range.split('–')[1]));
+  const curLine=cur.age<qiyun.age?'当前仍按先天沉潜期看，以日干主体与流年天干位响应为主。':`当前位于 ${activeRow?.range||'大运'} 岁段（${activeRow?.phase||'主应阶段'}），年度合化 ${cur.hehua}，过载 ${cur.overload}。下方大运段以“判词”直接给出主应人生事件；年度峰值参考表示本十年中事业、关系、资产、身体四类分数各自最高的年龄。`;
+  const dayunHTML=dayunRows.slice(0,8).map(r=>`<div class="lifeRow"><b>${r.range}</b><span>${r.line}<span class="dayunPeaks"><b>年度峰值参考：</b>${r.hot}；合化峰值${r.bestAge}岁</span></span><span>${r.avgH}</span><span>${r.avgO}</span><span>${r.bestAge}</span></div>`).join('');
+  return `<div class="birthPanel">
+    <div class="sectionTitle">个人大运时序盘｜生日时间 embedding</div>
+    <div class="birthGrid">
+      <div class="birthMetric"><span>本人日时间天干</span><b>${personStem}</b></div>
+      <div class="birthMetric"><span>主体落宫</span><b>${personPalace}宫｜${palace.name}</b></div>
+      <div class="birthMetric"><span>主体五行</span><b>${personYY}${personEl}</b></div>
+      <div class="birthMetric"><span>早年沉潜底色</span><b>${preElements[0][0]} / ${preElements[1][0]}</b></div>
+    </div>
+    <div class="line"><b>起运：</b>${qiyunLine}</div>
+    <div class="line"><b>当前阶段：</b>${curLine}</div>
+    <div class="lifeTable"><div class="lifeRow header"><b>大运段</b><span>十年聚合译文</span><span>合化</span><span>过载</span><span>峰值</span></div>${dayunHTML}</div>
+    <div class="windowCards">
+      <div class="windowCard"><b>关系/婚恋推进窗口</b><br>${windowText(marriage,'关系分')}</div>
+      <div class="windowCard"><b>事业突破窗口</b><br>${windowText(career,'事业分')}</div>
+      <div class="windowCard"><b>财富/资产成形窗口</b><br>${windowText(wealth,'资产分')}</div>
+      <div class="windowCard"><b>身体高消耗注意窗口</b><br>${windowText(health,'消耗分')}<br><span class="meta">晚年收束提示：${windowText(old,'收束分')}</span></div>
+    </div>
+    <div class="lifeNote">规则：2024 为算法纪元，年度编码采用 mod60；2023 取 59，2024 取 0。日时间天干代表被测人本人，落入九宫后分析五行关系；伴侣投影按男女路径区分：男看我克者，女看克我者。起运前年度时间编码仍参与分析，尤其保留天干位作用；大运由年度三界采样聚合而成。以上仅为时间窗口提示，不作宿命断言。</div>
+  </div>`;
+}
+
 function render(targetId,d,label){
   const p=fourPillars(d), init=initialTen(p), conv=convolve(init), t=totals(conv.ten), dm=resolveDayMaster(dayMaster.value,p), vd=verdict(queryType.value,t,conv.transform);
   const tokenHTML=Object.entries({年盘:p.year,月盘:p.month,日盘:p.day,时盘:p.hour}).map(([n,c])=>`<div class="token"><span>${n}</span><b>${c.stem}${c.branch}</b><span>天干=${c.stem}｜地支=${c.branch}</span></div>`).join('');
@@ -1878,6 +2578,83 @@ function renderDiff(a,b){
   diffBox.innerHTML=`<div class="sectionTitle">A / B 时机差分</div><div style="line-height:1.85">${rows}</div><p><b>主变化：</b>${main[0]}势变化最明显（${main[1].toFixed(2)}）。${main[1]>0?'B 时刻该类信号增强。':'B 时刻该类信号减弱。'}</p><p><b>后天转化差分：</b>A 为 ${a.ht.transform.index}（${a.ht.transform.status}），B 为 ${b.ht.transform.index}（${b.ht.transform.status}），变化 ${transDelta>0?'+':''}${transDelta}｜${changeLabel(transDelta)}。</p><p><b>系统建议：</b>${recommend}。本建议综合场景指标、风险项与后天转化强度，而不是只看单一五行强弱。</p>`;
 }
 function bundleScore(x){const sc=x.vd.scores; return sc.推进+sc.稳定+sc.沟通+sc.落地-sc.风险 + (x.ht.transform.index>=70?4:0)}
+
+function reportBirthLabel(){
+  const birth=birthInputDate();
+  const gender=(birthGender&&birthGender.value)==='female'?'女命':'男命';
+  const z=n=>String(n).padStart(2,'0');
+  return `${birth.getFullYear()}-${z(birth.getMonth()+1)}-${z(birth.getDate())} ${z(birth.getHours())}:${z(birth.getMinutes())}｜${gender}`;
+}
+function renderBirthStandalone(){
+  const box=document.getElementById('birthStandalone');
+  if(!box) return;
+  const usingDefault=!(birthDate&&birthDate.value);
+  const html=birthLifePanelHTML(new Date());
+  box.innerHTML=`<div class="dayunStandaloneHead">
+      <div>
+        <div class="sectionTitle">个人大运时序盘${usingDefault?'｜默认样例 2000':''}</div>
+        <div class="hint">${usingDefault?'未填写生日，当前展示默认样例：2000-01-01 12:00。':'已按输入生日生成独立大运时序结果。'} 此模块与 A/B 三界时机结果分离，便于单独查看。</div>
+        <div class="reportTip">报告对象：${reportBirthLabel()}。点击右侧按钮可生成适合分发的打印版报告，并在浏览器中另存为 PDF。</div>
+      </div>
+      <div class="reportActions">
+        <button class="secondary" type="button" onclick="renderBirthStandalone()">刷新报告</button>
+        <button type="button" onclick="printBirthReport()">生成PDF报告</button>
+      </div>
+    </div>${html}`;
+}
+function printBirthReport(){
+  renderBirthStandalone();
+  const src=document.getElementById('birthStandalone');
+  if(!src) return;
+  const clone=src.cloneNode(true);
+  clone.querySelectorAll('button,.reportActions').forEach(n=>n.remove());
+  const generated=new Date().toLocaleString('zh-CN',{hour12:false});
+  const label=reportBirthLabel();
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><title>洛书个人大运报告</title>
+  <style>
+    @page{size:A4;margin:16mm 14mm}
+    *{box-sizing:border-box}
+    body{margin:0;background:#f6f1e6;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+    .reportWrap{max-width:980px;margin:0 auto;background:#fffdf7;min-height:100vh;padding:34px 38px;border:1px solid #e7dcc6}
+    .cover{padding:28px 30px;border-radius:24px;background:linear-gradient(135deg,#172033,#253858 58%,#4b3822);color:#fff;margin-bottom:22px;position:relative;overflow:hidden}
+    .cover:after{content:"";position:absolute;right:-80px;top:-80px;width:220px;height:220px;border-radius:50%;background:rgba(246,207,120,.20)}
+    .kicker{letter-spacing:.2em;color:#f6cf78;font-weight:800;font-size:12px}
+    h1{font-size:34px;line-height:1.15;margin:10px 0 8px}
+    .subtitle{color:#dce7f7;line-height:1.7;font-size:14px;max-width:680px}
+    .metaLine{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+    .metaLine span{border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:6px 10px;color:#fff4d5;font-size:12px}
+    .sectionTitle{font-weight:900;font-size:18px;margin:18px 0 10px;color:#172033}
+    .birthPanel{border:1px solid #eadfc8;border-radius:22px;background:#fffaf0;padding:18px;margin:0 0 18px}
+    .birthGrid,.windowCards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .birthMetric,.windowCard{border:1px solid #eadfc8;border-radius:16px;background:#fff;padding:12px;line-height:1.7}
+    .birthMetric span{display:block;color:#6b7280;font-size:12px}
+    .birthMetric b,.windowCard b{color:#182033}
+    .lifeTable{display:grid;gap:8px;margin-top:10px}
+    .lifeRow{display:grid;grid-template-columns:82px 1fr 54px 54px 54px;gap:8px;align-items:start;border:1px solid #eadfc8;border-radius:14px;background:#fff;padding:10px;font-size:12.5px;line-height:1.55;break-inside:avoid}
+    .lifeRow.header{background:#f2eadb;color:#5d6470;font-weight:800}
+    .dayunPhase{display:block;font-weight:900;color:#172033;margin-bottom:4px}
+    .dayunJudge{display:block;border-left:3px solid #c08a2d;background:#fff5dc;border-radius:10px;padding:8px 10px;color:#31220e;font-weight:750}
+    .dayunJudge small{display:block;color:#516070;font-weight:500;margin-top:4px}
+    .dayunTags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+    .dayunTags i{font-style:normal;font-size:11px;border:1px solid #d8c8a9;border-radius:999px;padding:2px 7px;color:#5a4524;background:#fff8e8}
+    .dayunPeaks{display:block;color:#5f6b7a;font-size:12px;margin-top:6px}
+    .fuxiangBlock{display:block;margin:7px 0 5px;padding:8px 10px;border-left:3px solid #4d9aae;border-radius:10px;background:#ecfbff;color:#1f3a42;line-height:1.65;font-weight:650}
+    .fuxiangBlock b{color:#6c4a08}.fuxiangTags{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0 3px}.fuxiangTags i{font-style:normal;font-size:11px;border:1px solid #b8dce6;border-radius:999px;padding:2px 7px;color:#28515c;background:#f7fdff}.kinshipLine{display:block;color:#5f6b7a;font-size:12px;margin-top:3px}
+        .lifeNote,.hint,.reportTip{font-size:12px;color:#667085;line-height:1.7}
+    .line{line-height:1.75;margin:8px 0}
+    .footer{margin-top:22px;padding-top:12px;border-top:1px solid #eadfc8;color:#7a8494;font-size:11.5px;line-height:1.7}
+    @media print{body{background:#fff}.reportWrap{border:0;padding:0}.cover{break-inside:avoid}.lifeRow,.windowCard{break-inside:avoid}}
+  </style></head><body><div class="reportWrap">
+    <div class="cover"><div class="kicker">LUOSHU PERSONAL DAYUN REPORT</div><h1>洛书个人大运时序报告</h1>
+    <div class="subtitle">以公历生日时间 embedding 为初始条件，按年度三界采样与十年大运聚合，生成个人阶段窗口、人生大事判词、伏象标记与亲缘投影提示。</div>
+    <div class="metaLine"><span>${label}</span><span>生成时间：${generated}</span><span>算法纪元：2024 mod60</span></div></div>
+    ${clone.innerHTML}
+    <div class="footer">声明：本报告为人文数理与时机模拟工具，不构成医学、法律、投资、婚恋或人生决策的确定性建议。事件判词表示时间窗口倾向，不代表必然发生。</div>
+  </div><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`;
+  const w=window.open('','_blank');
+  if(!w){ alert('浏览器阻止了弹窗。请允许弹窗后重试，或使用浏览器打印功能保存为 PDF。'); return; }
+  w.document.open(); w.document.write(doc); w.document.close();
+}
 function run(){ if(!dtA.value) setNow(); const aDate=new Date(dtA.value); const a=render('resultA',aDate,'时刻 A'); updateMiniBoard('A', aDate, a.conv); if(dtB.value){ const bDate=new Date(dtB.value); const b=render('resultB',bDate,'时刻 B'); updateMiniBoard('B', bDate, b.conv); renderDiff(a,b);} else {document.getElementById('resultB').innerHTML='<div class="sectionTitle">时刻 B</div><div style="color:var(--muted)">未输入第二时刻。填写后可进行 A/B 结构对比。</div>'; document.getElementById('miniBTime').textContent='未输入'; document.getElementById('miniBoardB').innerHTML=''; diffBox.innerHTML='';}}
 
 queryType.addEventListener('change',()=>{updateSubTypes();run();});
@@ -1890,6 +2667,8 @@ dtB.addEventListener('change',run);
 question.addEventListener('change',run);
 context.addEventListener('change',run);
 if(stockPool) stockPool.addEventListener('change',run);
+if(birthRunBtn) birthRunBtn.addEventListener('click',renderBirthStandalone);
+if(birthPdfBtn) birthPdfBtn.addEventListener('click',printBirthReport);
 cityPreset.addEventListener('change',()=>{const lat=cityLat(cityPreset.value); if(lat!==undefined) latitude.value=lat; run();});
 document.getElementById('runBtn').addEventListener('click',run);
 document.getElementById('nowBtn').addEventListener('click',()=>{setNow();run();});
@@ -1924,7 +2703,7 @@ function openFeedback(){
   window.open(`https://github.com/spotpan/luoshu-timing-lab/issues/new?title=${title}&body=${body}`,'_blank','noopener');
 }
 
-initUI(); setNow(); run(); renderCaseLog(); document.getElementById('saveCaseBtn').addEventListener('click',saveCase); document.getElementById('exportCaseBtn').addEventListener('click',exportCases); document.getElementById('feedbackBtn').addEventListener('click',openFeedback);
+initUI(); setNow(); run(); renderBirthStandalone(); renderCaseLog(); document.getElementById('saveCaseBtn').addEventListener('click',saveCase); document.getElementById('exportCaseBtn').addEventListener('click',exportCases); document.getElementById('feedbackBtn').addEventListener('click',openFeedback);
 
 // background particles
 (function(){
