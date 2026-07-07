@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v1.0.3 美股混合候选版</title>
+  <title>洛书时机仪 v1.2.0 大运卡片报告版</title>
   <style>
     :root{
       --bg:#071019;
@@ -577,7 +577,7 @@
 .dayunPeaks b{color:#dcecff}
 
 
-/* v1.0.3: polished report export */
+/* v1.2.0: polished report export */
 .reportActions{
   display:flex;
   gap:8px;
@@ -594,7 +594,7 @@
 }
 
 
-/* v1.0.3: Fuxiang and kinship projection inside Dayun judgments */
+/* v1.2.0: Fuxiang and kinship projection inside Dayun judgments */
 .fuxiangBlock{
   display:block;
   margin:7px 0 5px;
@@ -630,7 +630,7 @@
 }
 
 
-/* v1.0.3: event-specific Dayun phase labels */
+/* v1.2.0: event-specific Dayun phase labels */
 .dayunPhase{
   color:#ffe3a3!important;
   letter-spacing:.02em;
@@ -643,7 +643,7 @@
 }
 
 
-/* v1.0.3: fix left homepage mini Loshu boards being clipped */
+/* v1.2.0: fix left homepage mini Loshu boards being clipped */
 @media(min-width:961px){
   .heroMain{
     overflow-y:auto!important;
@@ -682,7 +682,7 @@
 }
 
 
-/* v1.0.3: weather rain flag */
+/* v1.2.0: weather rain flag */
 .rainFlag{
   display:inline-flex;
   align-items:center;
@@ -712,6 +712,798 @@
   line-height:1.6;
 }
 
+
+/* v1.2.0: homepage column alignment and right-only scroll */
+*,*::before,*::after{box-sizing:border-box}
+@media(min-width:961px){
+  .hero,
+  .main{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    align-items:start!important;
+  }
+  .hero > .panel,
+  .main > .panel{
+    width:100%!important;
+    min-width:0!important;
+  }
+  .heroMain{
+    display:block!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:26px 26px 22px!important;
+    scrollbar-width:auto!important;
+  }
+  .heroMain .heroVisual{
+    min-height:360px!important;
+    height:auto!important;
+    overflow:visible!important;
+    flex:none!important;
+  }
+  .heroMain .miniBoards{
+    overflow:visible!important;
+    padding-bottom:10px!important;
+    margin-bottom:8px!important;
+  }
+  .heroAside{
+    align-self:start!important;
+    height:min(88vh, 900px)!important;
+    min-height:720px!important;
+    max-height:min(88vh, 900px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:20px 18px 20px 20px!important;
+    scrollbar-width:thin;
+  }
+  .heroAside::-webkit-scrollbar{width:7px}
+  .heroAside::-webkit-scrollbar-thumb{background:rgba(148,163,184,.35);border-radius:999px}
+  .heroAside::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+  .dayunInputBlock{
+    margin-top:14px;
+    padding-top:12px;
+    border-top:1px solid rgba(255,255,255,.10);
+  }
+}
+@media(max-width:960px){
+  .hero,
+  .main{
+    grid-template-columns:1fr!important;
+  }
+  .heroMain,
+  .heroAside{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .dayunInputBlock{
+    margin-top:12px;
+    padding-top:10px;
+    border-top:1px solid rgba(255,255,255,.10);
+  }
+}
+
+
+/* v1.2.0: show both left mini Loshu boards fully, keep other layout unchanged */
+@media(min-width:961px){
+  .heroMain{
+    min-height:980px!important;
+    overflow:visible!important;
+  }
+  .heroMain .heroVisual{
+    min-height:300px!important;
+    max-height:330px!important;
+    overflow:visible!important;
+  }
+  .miniBoards{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:12px!important;
+    overflow:visible!important;
+    padding-bottom:16px!important;
+    margin-bottom:10px!important;
+    position:relative!important;
+    z-index:5!important;
+  }
+  .miniBoard{
+    min-height:300px!important;
+    overflow:visible!important;
+  }
+  .miniGrid,
+  #miniBoardA,
+  #miniBoardB{
+    overflow:visible!important;
+  }
+  .miniPal{
+    min-height:82px!important;
+  }
+  .legendRow{
+    margin-top:12px!important;
+    clear:both!important;
+  }
+}
+@media(max-width:960px){
+  .miniBoards,
+  .miniBoard,
+  .miniGrid,
+  #miniBoardA,
+  #miniBoardB{
+    overflow:visible!important;
+  }
+}
+
+
+/* v1.2.0: prevent lower result panels from covering the left mini Loshu boards */
+@media(min-width:961px){
+  .hero{
+    align-items:start!important;
+    overflow:visible!important;
+    margin-bottom:26px!important;
+  }
+  .heroMain{
+    position:relative!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    display:block!important;
+    z-index:2!important;
+  }
+  .heroMain .heroVisual{
+    height:300px!important;
+    min-height:300px!important;
+    max-height:300px!important;
+    overflow:hidden!important;
+  }
+  .miniBoards{
+    position:relative!important;
+    z-index:4!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    overflow:visible!important;
+    padding-bottom:12px!important;
+    margin-bottom:12px!important;
+  }
+  .miniBoard{
+    min-height:294px!important;
+    overflow:visible!important;
+  }
+  .miniGrid,
+  #miniBoardA,
+  #miniBoardB{
+    overflow:visible!important;
+  }
+  .miniPal{
+    min-height:82px!important;
+  }
+  .main{
+    position:relative!important;
+    z-index:1!important;
+    clear:both!important;
+    margin-top:26px!important;
+  }
+}
+
+
+/* v1.2.0: force homepage row to reserve enough height, so lower panels move below mini Loshu boards */
+@media(min-width:961px){
+  .hero{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    align-items:stretch!important;
+    overflow:visible!important;
+    margin-bottom:34px!important;
+  }
+  .hero > .panel{
+    width:100%!important;
+    min-width:0!important;
+    height:1120px!important;
+    min-height:1120px!important;
+    max-height:1120px!important;
+    align-self:stretch!important;
+  }
+  .heroMain{
+    height:1120px!important;
+    min-height:1120px!important;
+    max-height:1120px!important;
+    overflow:visible!important;
+    display:block!important;
+    padding:26px 26px 28px!important;
+    position:relative!important;
+    z-index:3!important;
+  }
+  .heroAside{
+    height:1120px!important;
+    min-height:1120px!important;
+    max-height:1120px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:20px 18px 24px 20px!important;
+    scrollbar-width:thin!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+  .heroMain .heroVisual{
+    height:300px!important;
+    min-height:300px!important;
+    max-height:300px!important;
+    overflow:hidden!important;
+    margin-top:16px!important;
+  }
+  .miniBoards{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:12px!important;
+    overflow:visible!important;
+    padding-bottom:18px!important;
+    margin-bottom:14px!important;
+    position:relative!important;
+    z-index:5!important;
+  }
+  .miniBoard{
+    min-height:300px!important;
+    overflow:visible!important;
+  }
+  .miniGrid,
+  #miniBoardA,
+  #miniBoardB{
+    overflow:visible!important;
+  }
+  .miniPal{
+    min-height:84px!important;
+  }
+  .main{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    position:relative!important;
+    z-index:1!important;
+    clear:both!important;
+    margin-top:34px!important;
+  }
+  .main > .panel{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+@media(max-width:960px){
+  .hero > .panel,
+  .heroMain,
+  .heroAside{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .main{
+    margin-top:22px!important;
+  }
+}
+
+
+/* v1.2.0: strict no-overlap homepage layout
+   Use natural left-panel height as the row height. The right panel matches that height
+   and scrolls internally. Lower A/B panels are placed after the full hero row. */
+@media(min-width:961px){
+  .hero{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    align-items:start!important;
+    overflow:visible!important;
+    margin-bottom:72px!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+  .hero > .panel{
+    width:100%!important;
+    min-width:0!important;
+    align-self:start!important;
+  }
+  .heroMain{
+    display:block!important;
+    height:auto!important;
+    min-height:1180px!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:26px 26px 42px!important;
+    position:relative!important;
+    z-index:3!important;
+  }
+  .heroAside{
+    height:1180px!important;
+    min-height:1180px!important;
+    max-height:1180px!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:20px 18px 28px 20px!important;
+    position:relative!important;
+    z-index:3!important;
+    scrollbar-width:thin!important;
+  }
+  .heroAside::-webkit-scrollbar{width:7px}
+  .heroAside::-webkit-scrollbar-thumb{background:rgba(148,163,184,.35);border-radius:999px}
+  .heroAside::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+  .heroMain .heroVisual{
+    height:300px!important;
+    min-height:300px!important;
+    max-height:300px!important;
+    overflow:hidden!important;
+    margin-top:16px!important;
+  }
+  .heroMain .miniBoards{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:12px!important;
+    position:relative!important;
+    z-index:6!important;
+    overflow:visible!important;
+    padding-bottom:28px!important;
+    margin-bottom:18px!important;
+  }
+  .heroMain .miniBoard{
+    min-height:310px!important;
+    overflow:visible!important;
+  }
+  .heroMain .miniGrid,
+  .heroMain #miniBoardA,
+  .heroMain #miniBoardB{
+    overflow:visible!important;
+  }
+  .heroMain .miniPal{
+    min-height:86px!important;
+  }
+  .heroMain .legendRow,
+  .heroMain .leftDisclaimer{
+    position:relative!important;
+    z-index:7!important;
+  }
+  .main{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    clear:both!important;
+    position:relative!important;
+    z-index:1!important;
+    margin-top:72px!important;
+    transform:none!important;
+  }
+  .main > .panel{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+@media(max-width:960px){
+  .hero,
+  .main{
+    grid-template-columns:1fr!important;
+  }
+  .heroMain,
+  .heroAside{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .main{
+    margin-top:24px!important;
+  }
+}
+
+
+/* v1.2.0: explicit spacer pushes lower A/B result panels farther down */
+@media(min-width:961px){
+  .hero{
+    margin-bottom:0!important;
+  }
+  .heroResultSpacer{
+    display:block!important;
+    height:260px!important;
+    min-height:260px!important;
+    pointer-events:none!important;
+    clear:both!important;
+  }
+  .main{
+    margin-top:0!important;
+    position:relative!important;
+    z-index:1!important;
+  }
+}
+@media(max-width:960px){
+  .heroResultSpacer{
+    display:none!important;
+  }
+}
+
+
+/* v1.2.0: make the hero-to-result gap look intentional and cleaner */
+@media(min-width:961px){
+  .heroResultSpacer{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:188px!important;
+    min-height:188px!important;
+    pointer-events:none!important;
+    clear:both!important;
+    position:relative!important;
+    z-index:1!important;
+  }
+  .heroResultSpacer::before{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    height:1px;
+    background:linear-gradient(90deg,transparent,rgba(246,207,120,.20),rgba(123,231,246,.18),transparent);
+  }
+  .heroResultSpacer::after{
+    content:"";
+    position:absolute;
+    width:min(620px,70%);
+    height:120px;
+    border-radius:999px;
+    background:radial-gradient(circle,rgba(123,231,246,.07),transparent 68%);
+    filter:blur(4px);
+  }
+  .resultBridge{
+    position:relative;
+    z-index:2;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:10px 16px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(7,16,26,.42);
+    backdrop-filter:blur(10px);
+    box-shadow:0 14px 42px rgba(0,0,0,.18);
+    color:#cbd7ea;
+    font-size:12px;
+    white-space:nowrap;
+  }
+  .bridgePill{
+    padding:6px 11px;
+    border-radius:999px;
+    color:#ffe7b4;
+    background:rgba(246,207,120,.10);
+    border:1px solid rgba(246,207,120,.22);
+    font-weight:850;
+    letter-spacing:.04em;
+  }
+  .bridgeSub{
+    color:#9fb0c7;
+  }
+  .bridgeLine{
+    display:block;
+    width:56px;
+    height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.24),transparent);
+  }
+  .main{
+    margin-top:0!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+  .resultPanel{
+    border-color:rgba(255,255,255,.13)!important;
+    background:
+      radial-gradient(circle at 14% 10%,rgba(246,207,120,.055),transparent 34%),
+      linear-gradient(180deg,rgba(255,255,255,.082),rgba(255,255,255,.04))!important;
+  }
+}
+@media(max-width:960px){
+  .heroResultSpacer{
+    display:none!important;
+  }
+}
+
+
+/* v1.2.0: polished homepage layout
+   Left panel height follows its content and frames both mini Loshu boards.
+   Right panel matches left height and scrolls internally.
+   The result section is separated by a quiet divider, with no redundant text. */
+@media(min-width:961px){
+  .hero{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    align-items:start!important;
+    overflow:visible!important;
+    margin-bottom:0!important;
+    position:relative!important;
+    z-index:3!important;
+  }
+  .hero > .panel{
+    width:100%!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    align-self:start!important;
+  }
+  .heroMain{
+    display:block!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:26px 26px 34px!important;
+    position:relative!important;
+    z-index:4!important;
+  }
+  .heroAside{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:20px 18px 24px 20px!important;
+    position:relative!important;
+    z-index:4!important;
+    scrollbar-width:thin!important;
+  }
+  .heroAside::-webkit-scrollbar{width:7px}
+  .heroAside::-webkit-scrollbar-thumb{background:rgba(148,163,184,.35);border-radius:999px}
+  .heroAside::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+  .heroMain .heroVisual{
+    height:300px!important;
+    min-height:300px!important;
+    max-height:300px!important;
+    overflow:hidden!important;
+    margin-top:16px!important;
+  }
+  .heroMain .miniBoards{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:12px!important;
+    overflow:visible!important;
+    position:relative!important;
+    z-index:6!important;
+    padding-bottom:14px!important;
+    margin-bottom:14px!important;
+  }
+  .heroMain .miniBoard{
+    min-height:312px!important;
+    overflow:visible!important;
+  }
+  .heroMain .miniGrid,
+  .heroMain #miniBoardA,
+  .heroMain #miniBoardB{
+    overflow:visible!important;
+  }
+  .heroMain .miniPal{
+    min-height:86px!important;
+  }
+  .heroMain .legendRow{
+    margin-top:12px!important;
+  }
+  .heroMain .leftDisclaimer{
+    margin-top:12px!important;
+  }
+  .heroResultSpacer{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    height:74px!important;
+    min-height:74px!important;
+    clear:both!important;
+    pointer-events:none!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+  .softResultDivider{
+    width:min(560px,68%);
+    height:1px;
+    background:linear-gradient(90deg,transparent,rgba(246,207,120,.32),rgba(123,231,246,.22),transparent);
+    box-shadow:0 0 28px rgba(123,231,246,.15);
+    opacity:.85;
+  }
+  .resultBridge,
+  .bridgePill,
+  .bridgeSub,
+  .bridgeLine{
+    display:none!important;
+  }
+  .main{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    margin-top:0!important;
+    clear:both!important;
+    position:relative!important;
+    z-index:2!important;
+  }
+  .main > .panel{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
+@media(max-width:960px){
+  .hero,
+  .main{
+    grid-template-columns:1fr!important;
+  }
+  .heroMain,
+  .heroAside{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .heroResultSpacer{
+    display:none!important;
+  }
+}
+
+
+/* v1.2.0: keep v1.1.1 visual style, only enforce right-panel scroll and left/right height alignment */
+@media(min-width:961px){
+  .hero{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    align-items:start!important;
+    overflow:visible!important;
+  }
+  .heroMain{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    display:block!important;
+  }
+  .heroAside{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    scrollbar-width:thin!important;
+    align-self:start!important;
+  }
+  .heroAside::-webkit-scrollbar{width:7px}
+  .heroAside::-webkit-scrollbar-thumb{background:rgba(148,163,184,.35);border-radius:999px}
+  .heroAside::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+}
+
+
+/* v1.2.0: right panel is capped to the real left-panel height; lower A/B panels align below the left panel */
+@media(min-width:961px){
+  .hero{
+    align-items:start!important;
+    margin-bottom:0!important;
+  }
+  .heroMain{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .heroAside{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    align-self:start!important;
+  }
+  .heroResultSpacer{
+    height:74px!important;
+    min-height:74px!important;
+  }
+  .main{
+    margin-top:0!important;
+    align-items:start!important;
+  }
+}
+
+
+/* v1.2.0: hard override -- right panel whole-card scroll, not local block scroll */
+@media(min-width:961px){
+  .hero{
+    --hero-left-h: auto;
+    align-items:start!important;
+  }
+  .heroMain{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  .heroAside{
+    height:var(--hero-left-h)!important;
+    min-height:var(--hero-left-h)!important;
+    max-height:var(--hero-left-h)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    align-self:start!important;
+    overscroll-behavior:contain;
+  }
+  /* Remove local scroll boxes inside the right panel; the whole right panel scrolls instead. */
+  .heroAside .quickCards,
+  .heroAside .advancedBox .insideAdv,
+  .heroAside .caseLog{
+    max-height:none!important;
+    overflow:visible!important;
+    padding-right:0!important;
+  }
+  .heroAside textarea{
+    overflow:auto;
+  }
+  .heroResultSpacer{
+    height:74px!important;
+    min-height:74px!important;
+  }
+  .main{
+    margin-top:0!important;
+  }
+}
+
+
+/* v1.2.0: hard specificity override
+   Older rules use ".hero > .panel { height:... !important }", so this must be more specific. */
+@media(min-width:961px){
+  .hero{
+    --hero-left-h: 760px;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:22px!important;
+    align-items:start!important;
+    overflow:visible!important;
+    margin-bottom:0!important;
+  }
+
+  /* Override old .hero > .panel fixed heights */
+  .hero > .panel.heroMain{
+    height:auto!important;
+    min-height:var(--hero-left-h)!important;
+    max-height:none!important;
+    overflow:visible!important;
+    align-self:start!important;
+  }
+  .hero > .panel.heroAside{
+    height:var(--hero-left-h)!important;
+    min-height:var(--hero-left-h)!important;
+    max-height:var(--hero-left-h)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    align-self:start!important;
+    overscroll-behavior:contain;
+    scrollbar-width:thin!important;
+  }
+
+  /* Stop nested scroll; the whole right card is the scroll container */
+  .hero > .panel.heroAside .quickCards,
+  .hero > .panel.heroAside .advancedBox .insideAdv,
+  .hero > .panel.heroAside .caseLog{
+    max-height:none!important;
+    overflow:visible!important;
+    padding-right:0!important;
+  }
+
+  .heroResultSpacer{
+    height:74px!important;
+    min-height:74px!important;
+  }
+  .main{
+    margin-top:0!important;
+    align-items:start!important;
+  }
+}
+@media(max-width:960px){
+  .hero{
+    --hero-left-h:auto;
+  }
+  .hero > .panel.heroMain,
+  .hero > .panel.heroAside{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -730,7 +1522,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v1.0.3 美股混合候选版</div>
+      <div class="badge">● 洛书时机仪 v1.2.0 大运卡片报告版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -798,17 +1590,6 @@
         <div class="field"><label>二级场景</label><select id="subType"></select></div>
       </div>
       <div class="field"><label>股票代码观察池（可选｜每行一个代码）</label><textarea id="stockPool" placeholder="不输入时，系统按当前首选行业自动给出候选。&#10;A股：300750 / 600519 / 000001&#10;港股：00700.HK / 03690.HK&#10;美股：AAPL / MSFT / NVDA"></textarea></div>
-      <div class="field">
-        <label>个人大运时序盘（独立模块）</label>
-        <div class="grid3">
-          <div class="field"><label>公历生日</label><input id="birthDate" type="date" placeholder="默认 2000-01-01"></div>
-          <div class="field"><label>出生时间</label><input id="birthTime" type="time" value="12:00"></div>
-          <div class="field"><label>性别路径</label><select id="birthGender"><option value="male">男｜阳动阴补</option><option value="female">女｜阴成阳引</option></select></div>
-        </div>
-        <button class="secondary dayunBtn" id="birthRunBtn" type="button">生成个人大运时序盘</button>
-        <button class="dayunBtn" id="birthPdfBtn" type="button">生成/打印PDF报告</button>
-        <div class="rightMiniNote"><b>说明：</b>此模块单独显示，不与三界 A/B 结果混排。未填写生日时使用默认样例：2000-01-01 12:00。</div>
-      </div>
       <div class="rightMiniNote" id="marketApiField"><b>免费行情接口：</b>GitHub Pages 版统一使用 TradingView Widget 显示图表；腾讯接口只负责报价与涨跌幅。查询频率写死为 60 秒缓存、每次只抓主候选 2 只。</div>
       <div class="field"><label>补充背景（可选）</label><textarea id="context" placeholder="例如：只做复盘观察，不作为直接交易依据；想比较上午和下午哪个窗口更适合关注行业轮动。"></textarea></div>
       <div class="grid2">
@@ -831,9 +1612,26 @@
         <button id="nowBtn">使用本机当前时间</button>
         <button class="secondary" id="runBtn">生成三界时机结构</button>
       </div>
-      <div class="disclaimer">右侧保留完整输入，并与左侧九宫视觉面板保持同高；左侧恢复完整 A/B 九宫小盘与原有视觉结构。</div>
+      <div class="dayunInputBlock">
+        <div class="field">
+          <label>个人大运时序盘（独立模块）</label>
+          <div class="grid3">
+            <div class="field"><label>公历生日</label><input id="birthDate" type="date" placeholder="默认 2000-01-01"></div>
+            <div class="field"><label>出生时间</label><input id="birthTime" type="time" value="12:00"></div>
+            <div class="field"><label>性别路径</label><select id="birthGender"><option value="male">男｜阳动阴补</option><option value="female">女｜阴成阳引</option></select></div>
+          </div>
+          <button class="secondary dayunBtn" id="birthRunBtn" type="button">生成个人大运时序盘</button>
+          <button class="dayunBtn" id="birthPdfBtn" type="button">生成/打印PDF报告</button>
+          <div class="rightMiniNote"><b>说明：</b>此模块单独显示，不与三界 A/B 结果混排。未填写生日时使用默认样例：2000-01-01 12:00。</div>
+        </div>
+      </div>
+      <div class="disclaimer">右侧输入区采用独立滚动；左侧主视觉不再使用滚动模式，并与下方结果区保持同列宽度。</div>
     </div>
   </section>
+
+  <div class="heroResultSpacer" aria-hidden="true">
+    <div class="softResultDivider"></div>
+  </div>
 
   <section class="main">
     <div class="panel resultPanel" id="resultA"></div>
@@ -2902,46 +3700,253 @@ function printBirthReport(){
   clone.querySelectorAll('button,.reportActions').forEach(n=>n.remove());
   const generated=new Date().toLocaleString('zh-CN',{hour12:false});
   const label=reportBirthLabel();
-  const doc=`<!doctype html><html><head><meta charset="utf-8"><title>洛书个人大运报告</title>
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><title>洛书一生大运卡</title>
   <style>
-    @page{size:A4;margin:16mm 14mm}
+    @page{size:A4;margin:8mm}
     *{box-sizing:border-box}
-    body{margin:0;background:#f6f1e6;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
-    .reportWrap{max-width:980px;margin:0 auto;background:#fffdf7;min-height:100vh;padding:34px 38px;border:1px solid #e7dcc6}
-    .cover{padding:28px 30px;border-radius:24px;background:linear-gradient(135deg,#172033,#253858 58%,#4b3822);color:#fff;margin-bottom:22px;position:relative;overflow:hidden}
-    .cover:after{content:"";position:absolute;right:-80px;top:-80px;width:220px;height:220px;border-radius:50%;background:rgba(246,207,120,.20)}
-    .kicker{letter-spacing:.2em;color:#f6cf78;font-weight:800;font-size:12px}
-    h1{font-size:34px;line-height:1.15;margin:10px 0 8px}
-    .subtitle{color:#dce7f7;line-height:1.7;font-size:14px;max-width:680px}
-    .metaLine{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
-    .metaLine span{border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:6px 10px;color:#fff4d5;font-size:12px}
-    .sectionTitle{font-weight:900;font-size:18px;margin:18px 0 10px;color:#172033}
-    .birthPanel{border:1px solid #eadfc8;border-radius:22px;background:#fffaf0;padding:18px;margin:0 0 18px}
-    .birthGrid,.windowCards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-    .birthMetric,.windowCard{border:1px solid #eadfc8;border-radius:16px;background:#fff;padding:12px;line-height:1.7}
-    .birthMetric span{display:block;color:#6b7280;font-size:12px}
-    .birthMetric b,.windowCard b{color:#182033}
-    .lifeTable{display:grid;gap:8px;margin-top:10px}
-    .lifeRow{display:grid;grid-template-columns:82px 1fr 54px 54px 54px;gap:8px;align-items:start;border:1px solid #eadfc8;border-radius:14px;background:#fff;padding:10px;font-size:12.5px;line-height:1.55;break-inside:avoid}
-    .lifeRow.header{background:#f2eadb;color:#5d6470;font-weight:800}
-    .dayunPhase{display:block;font-weight:900;color:#172033;margin-bottom:4px}
-    .dayunJudge{display:block;border-left:3px solid #c08a2d;background:#fff5dc;border-radius:10px;padding:8px 10px;color:#31220e;font-weight:750}
-    .dayunJudge small{display:block;color:#516070;font-weight:500;margin-top:4px}
-    .dayunTags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
-    .dayunTags i{font-style:normal;font-size:11px;border:1px solid #d8c8a9;border-radius:999px;padding:2px 7px;color:#5a4524;background:#fff8e8}
-    .dayunPeaks{display:block;color:#5f6b7a;font-size:12px;margin-top:6px}
-    .fuxiangBlock{display:block;margin:7px 0 5px;padding:8px 10px;border-left:3px solid #4d9aae;border-radius:10px;background:#ecfbff;color:#1f3a42;line-height:1.65;font-weight:650}
-    .fuxiangBlock b{color:#6c4a08}.fuxiangTags{display:flex;gap:5px;flex-wrap:wrap;margin:5px 0 3px}.fuxiangTags i{font-style:normal;font-size:11px;border:1px solid #b8dce6;border-radius:999px;padding:2px 7px;color:#28515c;background:#f7fdff}.kinshipLine{display:block;color:#5f6b7a;font-size:12px;margin-top:3px}
-        .lifeNote,.hint,.reportTip{font-size:12px;color:#667085;line-height:1.7}
-    .line{line-height:1.75;margin:8px 0}
-    .footer{margin-top:22px;padding-top:12px;border-top:1px solid #eadfc8;color:#7a8494;font-size:11.5px;line-height:1.7}
-    @media print{body{background:#fff}.reportWrap{border:0;padding:0}.cover{break-inside:avoid}.lifeRow,.windowCard{break-inside:avoid}}
+    html,body{margin:0;padding:0}
+    body{
+      background:#101820;
+      color:#172033;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+    }
+    .reportWrap{
+      width:194mm;
+      min-height:281mm;
+      max-height:281mm;
+      margin:0 auto;
+      overflow:hidden;
+      border-radius:24px;
+      padding:11mm 12mm 9mm;
+      position:relative;
+      background:
+        radial-gradient(circle at 10% 8%,rgba(103,232,249,.18),transparent 26%),
+        radial-gradient(circle at 90% 4%,rgba(246,207,120,.20),transparent 28%),
+        linear-gradient(135deg,#fffdf7,#f6f0df 58%,#eef8f9);
+      border:1px solid rgba(109,91,47,.22);
+      box-shadow:0 20px 70px rgba(0,0,0,.22);
+    }
+    .reportWrap:before{
+      content:"";
+      position:absolute;
+      inset:6mm;
+      border:1px solid rgba(23,32,51,.08);
+      border-radius:20px;
+      pointer-events:none;
+    }
+    .cover{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:10mm;
+      align-items:end;
+      padding:8mm 9mm;
+      border-radius:22px;
+      color:#fff;
+      background:
+        radial-gradient(circle at 92% 8%,rgba(246,207,120,.24),transparent 34%),
+        linear-gradient(135deg,#172033,#253858 56%,#4a3422);
+      overflow:hidden;
+      margin-bottom:6mm;
+    }
+    .cover:after{
+      content:"";
+      position:absolute;
+      right:-32mm;
+      top:-34mm;
+      width:82mm;
+      height:82mm;
+      border-radius:50%;
+      background:rgba(246,207,120,.16);
+    }
+    .kicker{letter-spacing:.22em;color:#f6cf78;font-weight:900;font-size:9.5px}
+    h1{font-size:27px;line-height:1.08;margin:5px 0 4px;letter-spacing:-.8px}
+    .subtitle{color:#dce7f7;line-height:1.45;font-size:11.5px;max-width:112mm}
+    .metaLine{
+      display:flex;
+      flex-wrap:wrap;
+      gap:5px;
+      justify-content:flex-end;
+      align-content:flex-end;
+      position:relative;
+      z-index:2;
+    }
+    .metaLine span{
+      border:1px solid rgba(255,255,255,.24);
+      border-radius:999px;
+      padding:4px 8px;
+      color:#fff4d5;
+      font-size:10px;
+      background:rgba(255,255,255,.06);
+      white-space:nowrap;
+    }
+
+    .dayunStandaloneHead{display:none!important}
+    .birthPanel{
+      position:relative;
+      z-index:1;
+      margin:0;
+      padding:0;
+      border:0;
+      background:transparent;
+    }
+    .birthPanel>.sectionTitle{display:none}
+    .birthGrid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:6px;
+      margin-bottom:5mm;
+    }
+    .birthMetric{
+      min-height:17mm;
+      border:1px solid rgba(109,91,47,.18);
+      border-radius:14px;
+      background:rgba(255,255,255,.58);
+      padding:7px 9px;
+      line-height:1.35;
+      box-shadow:0 8px 24px rgba(99,79,41,.06);
+    }
+    .birthMetric span{
+      display:block;
+      color:#727b88;
+      font-size:9.6px;
+      margin-bottom:3px;
+    }
+    .birthMetric b{
+      color:#162033;
+      font-size:13px;
+    }
+    .line{
+      margin:3mm 0;
+      padding:6px 9px;
+      border-radius:13px;
+      background:rgba(255,255,255,.48);
+      border:1px solid rgba(109,91,47,.13);
+      color:#354052;
+      line-height:1.5;
+      font-size:10.8px;
+    }
+    .line b{color:#172033}
+    .lifeTable{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:6px;
+      margin-top:5mm;
+    }
+    .lifeRow.header{display:none!important}
+    .lifeRow{
+      min-height:31mm;
+      display:grid;
+      grid-template-columns:18mm 1fr;
+      gap:7px;
+      align-items:start;
+      break-inside:avoid;
+      border:1px solid rgba(109,91,47,.18);
+      border-radius:16px;
+      background:rgba(255,255,255,.66);
+      padding:7px 8px;
+      box-shadow:0 10px 26px rgba(99,79,41,.07);
+      overflow:hidden;
+    }
+    .lifeRow>b{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:22mm;
+      border-radius:13px;
+      color:#fff8dc;
+      background:linear-gradient(135deg,#253858,#6d4b26);
+      font-size:13px;
+      letter-spacing:-.2px;
+    }
+    .lifeRow>span{
+      font-size:10.2px;
+      line-height:1.42;
+      color:#293345;
+    }
+    .lifeRow>span:nth-of-type(n+2){display:none!important}
+    .dayunPhase{
+      display:block;
+      color:#172033!important;
+      font-weight:950;
+      font-size:11.4px;
+      line-height:1.28;
+      margin-bottom:4px;
+      letter-spacing:-.1px;
+    }
+    .dayunPhase .ageHint{display:none!important}
+    .dayunJudge{
+      display:block;
+      padding:0!important;
+      margin:0!important;
+      border:0!important;
+      background:transparent!important;
+      color:#2a2419!important;
+      font-size:10.2px;
+      line-height:1.43!important;
+      font-weight:720!important;
+    }
+    .dayunJudge small{display:none!important}
+    .dayunTags,.dayunPeaks,.fuxiangBlock,.fuxiangTags,.kinshipLine{display:none!important}
+    .windowCards{display:none!important}
+    .lifeNote{
+      margin-top:5mm;
+      padding:6px 8px;
+      border-radius:12px;
+      background:rgba(23,32,51,.06);
+      color:#687385;
+      font-size:9px;
+      line-height:1.45;
+      max-height:18mm;
+      overflow:hidden;
+    }
+    .footer{
+      position:absolute;
+      left:12mm;
+      right:12mm;
+      bottom:7mm;
+      padding-top:5px;
+      border-top:1px solid rgba(109,91,47,.16);
+      color:#7a8494;
+      font-size:8.5px;
+      line-height:1.35;
+      z-index:2;
+    }
+    .reportSeal{
+      position:absolute;
+      right:13mm;
+      bottom:15mm;
+      width:23mm;
+      height:23mm;
+      border-radius:50%;
+      border:1px solid rgba(192,138,45,.35);
+      color:rgba(109,74,8,.38);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:9px;
+      transform:rotate(-13deg);
+    }
+    @media print{
+      body{background:#fff}
+      .reportWrap{box-shadow:none}
+    }
   </style></head><body><div class="reportWrap">
-    <div class="cover"><div class="kicker">LUOSHU PERSONAL DAYUN REPORT</div><h1>洛书个人大运时序报告</h1>
-    <div class="subtitle">以公历生日时间 embedding 为初始条件，按年度三界采样与十年大运聚合，生成个人阶段窗口、人生大事判词、伏象标记与亲缘投影提示。</div>
-    <div class="metaLine"><span>${label}</span><span>生成时间：${generated}</span><span>算法纪元：2024 mod60</span></div></div>
+    <div class="cover">
+      <div>
+        <div class="kicker">LUOSHU LIFE CARD</div>
+        <h1>一生大运卡</h1>
+        <div class="subtitle">把十年大运压缩成一张人生时间卡：突出流年峰值、主应阶段与核心判词。看见一生，不作宿命断言。</div>
+      </div>
+      <div class="metaLine"><span>${label}</span><span>${generated}</span><span>2024 mod60</span></div>
+    </div>
     ${clone.innerHTML}
-    <div class="footer">声明：本报告为人文数理与时机模拟工具，不构成医学、法律、投资、婚恋或人生决策的确定性建议。事件判词表示时间窗口倾向，不代表必然发生。</div>
+    <div class="reportSeal">洛书<br>时机</div>
+    <div class="footer">声明：本卡为人文数理与时机模拟工具，不构成医学、法律、投资、婚恋或人生决策建议。判词表示时间窗口倾向，不代表必然发生。</div>
   </div><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`;
   const w=window.open('','_blank');
   if(!w){ alert('浏览器阻止了弹窗。请允许弹窗后重试，或使用浏览器打印功能保存为 PDF。'); return; }
@@ -3017,6 +4022,313 @@ initUI(); setNow(); run(); renderBirthStandalone(); renderCaseLog(); document.ge
   function line(){ctx.lineWidth=1.2; [0,1].forEach(l=>{ctx.beginPath(); for(let i=0;i<=80;i++){const p=curvePoint(i/80,l); if(i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);} ctx.strokeStyle=l?'rgba(123,231,246,.20)':'rgba(246,207,120,.20)'; ctx.stroke();});}
   function triadTick(){ctx.clearRect(0,0,rect.width,rect.height); line(); drawNode(nodes.left,18,'rgba(123,231,246,.95)'); drawNode(nodes.mid,24,'rgba(246,207,120,.95)'); drawNode(nodes.right,18,'rgba(197,180,255,.95)'); label(nodes.left,'时轮'); label(nodes.mid,'洛书场'); label(nodes.right,'行印'); particles.forEach(p=>{p.t+=.003+(p.size*.0009); if(p.t>1) p.t=0; const pt=curvePoint(p.t,p.lane); ctx.beginPath(); ctx.fillStyle=p.lane?'rgba(123,231,246,.75)':'rgba(246,207,120,.75)'; ctx.arc(pt.x,pt.y,p.size,0,Math.PI*2); ctx.fill();}); requestAnimationFrame(triadTick);} window.addEventListener('resize',resize); resize(); triadTick();
 })();
+
+function syncHeroLayoutNoOverlap(){
+  try{
+    const hero=document.querySelector('.hero');
+    const left=document.querySelector('.heroMain');
+    const right=document.querySelector('.heroAside');
+    const main=document.querySelector('.main');
+    if(!hero||!left||!right||!main) return;
+    if(window.innerWidth<=960){
+      left.style.minHeight='';
+      right.style.height='';
+      right.style.maxHeight='';
+      main.style.marginTop='';
+      return;
+    }
+    // Measure real left content bottom, including visible mini-board overflow.
+    const leftRect=left.getBoundingClientRect();
+    let bottom=left.scrollHeight;
+    left.querySelectorAll('.miniBoards,.miniBoard,.miniPal,.legendRow,.leftDisclaimer').forEach(el=>{
+      const r=el.getBoundingClientRect();
+      bottom=Math.max(bottom, Math.ceil(r.bottom-leftRect.top+42));
+    });
+    const h=Math.max(1180,bottom);
+    left.style.minHeight=h+'px';
+    right.style.height=h+'px';
+    right.style.maxHeight=h+'px';
+    hero.style.marginBottom='0px';
+    const spacer=document.querySelector('.heroResultSpacer');
+    if(spacer){
+      spacer.style.height='188px';
+      spacer.style.minHeight='188px';
+    }
+    main.style.marginTop='0px';
+  }catch(e){}
+}
+window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHeroLayoutNoOverlap,250);setTimeout(syncHeroLayoutNoOverlap,900);});
+window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
+
+
+// v1.1.1 override: natural left height, right-panel scroll sync, no overlap.
+function syncHeroLayoutNoOverlap(){
+  try{
+    const hero=document.querySelector('.hero');
+    const left=document.querySelector('.heroMain');
+    const right=document.querySelector('.heroAside');
+    const spacer=document.querySelector('.heroResultSpacer');
+    if(!hero||!left||!right) return;
+    if(window.innerWidth<=960){
+      left.style.height='';
+      left.style.minHeight='';
+      right.style.height='';
+      right.style.maxHeight='';
+      hero.style.minHeight='';
+      if(spacer){spacer.style.height='';spacer.style.minHeight='';}
+      return;
+    }
+    // Remove old fixed inline constraints before measuring.
+    left.style.height='auto';
+    left.style.minHeight='0px';
+    left.style.maxHeight='none';
+    right.style.height='auto';
+    right.style.maxHeight='none';
+    hero.style.minHeight='0px';
+
+    const leftRect=left.getBoundingClientRect();
+    let bottom=left.scrollHeight;
+    left.querySelectorAll('.heroVisual,.miniBoards,.miniBoard,.miniPal,.legendRow,.leftDisclaimer').forEach(el=>{
+      const r=el.getBoundingClientRect();
+      bottom=Math.max(bottom, Math.ceil(r.bottom-leftRect.top+34));
+    });
+    const h=Math.max(760,bottom);
+    left.style.minHeight=h+'px';
+    hero.style.minHeight=h+'px';
+    right.style.height=h+'px';
+    right.style.maxHeight=h+'px';
+    if(spacer){
+      spacer.style.height='74px';
+      spacer.style.minHeight='74px';
+    }
+  }catch(e){}
+}
+window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHeroLayoutNoOverlap,250);setTimeout(syncHeroLayoutNoOverlap,900);});
+window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
+
+
+// v1.1.2 final override: right panel scrolls and matches the left panel height.
+function syncHeroLayoutNoOverlap(){
+  try{
+    const left=document.querySelector('.heroMain');
+    const right=document.querySelector('.heroAside');
+    const hero=document.querySelector('.hero');
+    if(!left||!right||!hero) return;
+    if(window.innerWidth<=960){
+      left.style.height='';
+      left.style.minHeight='';
+      left.style.maxHeight='';
+      left.style.overflow='';
+      right.style.height='';
+      right.style.minHeight='';
+      right.style.maxHeight='';
+      right.style.overflowY='';
+      hero.style.minHeight='';
+      return;
+    }
+
+    // Let the left side size naturally first.
+    left.style.height='auto';
+    left.style.minHeight='0px';
+    left.style.maxHeight='none';
+    left.style.overflow='visible';
+
+    const leftRect=left.getBoundingClientRect();
+    let h=left.scrollHeight;
+    left.querySelectorAll('.heroVisual,.miniBoards,.miniBoard,.miniPal,.legendRow,.leftDisclaimer').forEach(el=>{
+      const r=el.getBoundingClientRect();
+      h=Math.max(h, Math.ceil(r.bottom-leftRect.top+34));
+    });
+    h=Math.max(760,h);
+
+    left.style.minHeight=h+'px';
+    hero.style.minHeight=h+'px';
+
+    // Right side aligns to left and scrolls inside if content is longer.
+    right.style.height=h+'px';
+    right.style.minHeight=h+'px';
+    right.style.maxHeight=h+'px';
+    right.style.overflowY='auto';
+    right.style.overflowX='hidden';
+  }catch(e){}
+}
+window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHeroLayoutNoOverlap,250);setTimeout(syncHeroLayoutNoOverlap,900);});
+window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
+
+
+// v1.1.3 final override: cap right panel to actual left panel height, so A/B panels align below the left panel.
+function syncHeroLayoutNoOverlap(){
+  try{
+    const left=document.querySelector('.heroMain');
+    const right=document.querySelector('.heroAside');
+    const hero=document.querySelector('.hero');
+    const spacer=document.querySelector('.heroResultSpacer');
+    const main=document.querySelector('.main');
+    if(!left||!right||!hero) return;
+    if(window.innerWidth<=960){
+      left.style.height='';
+      left.style.minHeight='';
+      left.style.maxHeight='';
+      left.style.overflow='';
+      right.style.height='';
+      right.style.minHeight='';
+      right.style.maxHeight='';
+      right.style.overflowY='';
+      hero.style.minHeight='';
+      if(spacer){spacer.style.height='';spacer.style.minHeight='';}
+      if(main){main.style.marginTop='';}
+      return;
+    }
+
+    // Measure the left panel after clearing artificial constraints.
+    left.style.height='auto';
+    left.style.minHeight='0px';
+    left.style.maxHeight='none';
+    left.style.overflow='visible';
+
+    right.style.minHeight='0px';
+    right.style.height='auto';
+    right.style.maxHeight='none';
+
+    const leftRect=left.getBoundingClientRect();
+    let h=left.scrollHeight;
+    left.querySelectorAll('.heroVisual,.miniBoards,.miniBoard,.miniPal,.legendRow,.leftDisclaimer').forEach(el=>{
+      const r=el.getBoundingClientRect();
+      h=Math.max(h, Math.ceil(r.bottom-leftRect.top+34));
+    });
+
+    // No large artificial minimum: the right panel should not protrude beyond the left.
+    h=Math.max(520,h);
+
+    left.style.minHeight=h+'px';
+    hero.style.minHeight=h+'px';
+
+    right.style.height=h+'px';
+    right.style.minHeight=h+'px';
+    right.style.maxHeight=h+'px';
+    right.style.overflowY='auto';
+    right.style.overflowX='hidden';
+
+    if(spacer){
+      spacer.style.height='74px';
+      spacer.style.minHeight='74px';
+    }
+    if(main){
+      main.style.marginTop='0px';
+    }
+  }catch(e){}
+}
+window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHeroLayoutNoOverlap,250);setTimeout(syncHeroLayoutNoOverlap,900);});
+window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
+
+
+// v1.1.4 final override: set CSS variable for whole right-panel scroll height.
+function syncHeroLayoutNoOverlap(){
+  try{
+    const hero=document.querySelector('.hero');
+    const left=document.querySelector('.heroMain');
+    const right=document.querySelector('.heroAside');
+    const spacer=document.querySelector('.heroResultSpacer');
+    if(!hero||!left||!right) return;
+    if(window.innerWidth<=960){
+      hero.style.removeProperty('--hero-left-h');
+      left.style.height='';
+      left.style.minHeight='';
+      right.style.height='';
+      right.style.minHeight='';
+      right.style.maxHeight='';
+      right.style.overflowY='';
+      if(spacer){spacer.style.height='';spacer.style.minHeight='';}
+      return;
+    }
+
+    // Clear inline constraints; final height is applied through CSS variable because older CSS uses !important.
+    hero.style.removeProperty('--hero-left-h');
+    left.style.height='auto';
+    left.style.minHeight='0px';
+    left.style.maxHeight='none';
+    left.style.overflow='visible';
+
+    const leftRect=left.getBoundingClientRect();
+    let h=left.scrollHeight;
+    left.querySelectorAll('.heroVisual,.miniBoards,.miniBoard,.miniPal,.legendRow,.leftDisclaimer').forEach(el=>{
+      const r=el.getBoundingClientRect();
+      h=Math.max(h, Math.ceil(r.bottom-leftRect.top+34));
+    });
+    h=Math.max(520,h);
+
+    hero.style.setProperty('--hero-left-h', h+'px');
+    left.style.minHeight=h+'px';
+
+    // Whole right card scrolls; inner blocks no longer own scrollbars.
+    right.style.overflowY='auto';
+    right.style.overflowX='hidden';
+
+    if(spacer){
+      spacer.style.height='74px';
+      spacer.style.minHeight='74px';
+    }
+  }catch(e){}
+}
+window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHeroLayoutNoOverlap,250);setTimeout(syncHeroLayoutNoOverlap,900);});
+window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
+
+
+// v1.2.0: force CSS variable after all older layout scripts.
+function syncHeroLayoutNoOverlap(){
+  try{
+    const hero=document.querySelector('.hero');
+    const left=document.querySelector('.heroMain');
+    const right=document.querySelector('.heroAside');
+    if(!hero||!left||!right) return;
+
+    if(window.innerWidth<=960){
+      hero.style.removeProperty('--hero-left-h');
+      left.style.removeProperty('height');
+      left.style.removeProperty('min-height');
+      left.style.removeProperty('max-height');
+      right.style.removeProperty('height');
+      right.style.removeProperty('min-height');
+      right.style.removeProperty('max-height');
+      right.style.removeProperty('overflow-y');
+      return;
+    }
+
+    // Clear only the left side before measuring. Right side will be capped.
+    left.style.setProperty('height','auto','important');
+    left.style.setProperty('min-height','0px','important');
+    left.style.setProperty('max-height','none','important');
+    left.style.setProperty('overflow','visible','important');
+
+    const leftRect=left.getBoundingClientRect();
+    let h=left.scrollHeight;
+    left.querySelectorAll('.heroVisual,.miniBoards,.miniBoard,.miniPal,.legendRow,.leftDisclaimer').forEach(el=>{
+      const r=el.getBoundingClientRect();
+      h=Math.max(h, Math.ceil(r.bottom-leftRect.top+34));
+    });
+    h=Math.max(520,h);
+
+    hero.style.setProperty('--hero-left-h', h+'px');
+
+    // Use important inline styles too, because old CSS also uses important.
+    left.style.setProperty('min-height', h+'px', 'important');
+    right.style.setProperty('height', h+'px', 'important');
+    right.style.setProperty('min-height', h+'px', 'important');
+    right.style.setProperty('max-height', h+'px', 'important');
+    right.style.setProperty('overflow-y', 'auto', 'important');
+    right.style.setProperty('overflow-x', 'hidden', 'important');
+  }catch(e){}
+}
+function forceHeroSyncRepeated(){
+  syncHeroLayoutNoOverlap();
+  setTimeout(syncHeroLayoutNoOverlap,100);
+  setTimeout(syncHeroLayoutNoOverlap,350);
+  setTimeout(syncHeroLayoutNoOverlap,900);
+  setTimeout(syncHeroLayoutNoOverlap,1600);
+}
+window.addEventListener('load',forceHeroSyncRepeated);
+window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(forceHeroSyncRepeated,120);});
+
 </script>
 </body>
 </html>
