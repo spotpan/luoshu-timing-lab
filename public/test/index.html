@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v0.9.4 天气降雨标志版</title>
+  <title>洛书时机仪 v0.9.7 股票行业标签兜底版</title>
   <style>
     :root{
       --bg:#071019;
@@ -577,7 +577,7 @@
 .dayunPeaks b{color:#dcecff}
 
 
-/* v0.9.4: polished report export */
+/* v0.9.7: polished report export */
 .reportActions{
   display:flex;
   gap:8px;
@@ -594,7 +594,7 @@
 }
 
 
-/* v0.9.4: Fuxiang and kinship projection inside Dayun judgments */
+/* v0.9.7: Fuxiang and kinship projection inside Dayun judgments */
 .fuxiangBlock{
   display:block;
   margin:7px 0 5px;
@@ -630,7 +630,7 @@
 }
 
 
-/* v0.9.4: event-specific Dayun phase labels */
+/* v0.9.7: event-specific Dayun phase labels */
 .dayunPhase{
   color:#ffe3a3!important;
   letter-spacing:.02em;
@@ -643,7 +643,7 @@
 }
 
 
-/* v0.9.4: fix left homepage mini Loshu boards being clipped */
+/* v0.9.7: fix left homepage mini Loshu boards being clipped */
 @media(min-width:961px){
   .heroMain{
     overflow-y:auto!important;
@@ -682,7 +682,7 @@
 }
 
 
-/* v0.9.4: weather rain flag */
+/* v0.9.7: weather rain flag */
 .rainFlag{
   display:inline-flex;
   align-items:center;
@@ -730,7 +730,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v0.9.4 天气降雨标志版</div>
+      <div class="badge">● 洛书时机仪 v0.9.7 股票行业标签兜底版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -1134,17 +1134,138 @@ function inferMarket(symbol){
   return '美股/全球';
 }
 const demoStockMeta={
-  '300750.SZ':{name:'宁德时代',el:'火'},'002415.SZ':{name:'海康威视',el:'金'},'600519.SH':{name:'贵州茅台',el:'木'},'000001.SZ':{name:'平安银行',el:'金'},'601318.SH':{name:'中国平安',el:'金'},
-  '00700.HK':{name:'腾讯控股',el:'火'},'03690.HK':{name:'美团',el:'水'},'09988.HK':{name:'阿里巴巴',el:'水'},
-  'AAPL':{name:'Apple',el:'金'},'MSFT':{name:'Microsoft',el:'火'},'NVDA':{name:'NVIDIA',el:'火'},'TSLA':{name:'Tesla',el:'火'},'GOOGL':{name:'Alphabet',el:'水'},'AMZN':{name:'Amazon',el:'水'}
+  // A股｜火：科技、新能源、算力、传媒、电子热度
+  '300750.SZ':{name:'宁德时代',el:'火',sector:'新能源/动力电池'},
+  '002594.SZ':{name:'比亚迪',el:'火',sector:'新能源车'},
+  '300274.SZ':{name:'阳光电源',el:'火',sector:'光伏/储能'},
+  '601012.SH':{name:'隆基绿能',el:'火',sector:'光伏'},
+  '002230.SZ':{name:'科大讯飞',el:'火',sector:'AI应用'},
+  '300059.SZ':{name:'东方财富',el:'火',sector:'互联网金融热度'},
+  '002241.SZ':{name:'歌尔股份',el:'火',sector:'消费电子/VR'},
+  '300760.SZ':{name:'迈瑞医疗',el:'木',sector:'医疗器械/生命健康'},
+  // A股｜金：金融、硬件、制造、装备、半导体
+  '002415.SZ':{name:'海康威视',el:'金',sector:'安防硬件/智能制造'},
+  '000001.SZ':{name:'平安银行',el:'金',sector:'银行/金融规则'},
+  '601318.SH':{name:'中国平安',el:'金',sector:'保险/金融秩序'},
+  '600036.SH':{name:'招商银行',el:'金',sector:'银行/金融规则'},
+  '601166.SH':{name:'兴业银行',el:'金',sector:'银行/金融规则'},
+  '600030.SH':{name:'中信证券',el:'金',sector:'券商/交易规则'},
+  '688981.SH':{name:'中芯国际',el:'金',sector:'半导体制造'},
+  '603986.SH':{name:'兆易创新',el:'金',sector:'芯片/存储'},
+  '002371.SZ':{name:'北方华创',el:'金',sector:'半导体设备'},
+  '300124.SZ':{name:'汇川技术',el:'金',sector:'工业自动化'},
+  // A股｜木：消费、医药、农业、成长修复
+  '600519.SH':{name:'贵州茅台',el:'木',sector:'高端消费/白酒'},
+  '000858.SZ':{name:'五粮液',el:'木',sector:'消费/白酒'},
+  '600887.SH':{name:'伊利股份',el:'木',sector:'食品饮料'},
+  '600276.SH':{name:'恒瑞医药',el:'木',sector:'创新药/医药'},
+  '000538.SZ':{name:'云南白药',el:'木',sector:'中药/健康消费'},
+  '000568.SZ':{name:'泸州老窖',el:'木',sector:'消费/白酒'},
+  '603288.SH':{name:'海天味业',el:'木',sector:'食品消费'},
+  // A股｜土：资源、能源、基建、公用、高股息与稳定承载
+  '600900.SH':{name:'长江电力',el:'土',sector:'公用事业/水电'},
+  '601088.SH':{name:'中国神华',el:'土',sector:'煤炭/高股息'},
+  '600028.SH':{name:'中国石化',el:'土',sector:'能源/资源'},
+  '601857.SH':{name:'中国石油',el:'土',sector:'能源/资源'},
+  '600048.SH':{name:'保利发展',el:'土',sector:'地产/资产承载'},
+  '601668.SH':{name:'中国建筑',el:'土',sector:'基建/建筑'},
+  '601390.SH':{name:'中国中铁',el:'土',sector:'基建/工程'},
+  // A股｜水：物流、航运、出行、流通、通信/数据流
+  '601919.SH':{name:'中远海控',el:'水',sector:'航运/物流'},
+  '600029.SH':{name:'南方航空',el:'水',sector:'航空/出行'},
+  '600009.SH':{name:'上海机场',el:'水',sector:'机场/出行'},
+  '600050.SH':{name:'中国联通',el:'水',sector:'通信/数据流'},
+  '601816.SH':{name:'京沪高铁',el:'水',sector:'交通流动'},
+  // 港股
+  '00700.HK':{name:'腾讯控股',el:'火',sector:'互联网/游戏/AI应用'},
+  '03690.HK':{name:'美团',el:'水',sector:'本地生活/交易流'},
+  '09988.HK':{name:'阿里巴巴',el:'水',sector:'电商/云服务/流通'},
+  '09618.HK':{name:'京东集团',el:'水',sector:'电商/物流'},
+  '09868.HK':{name:'小鹏汽车',el:'火',sector:'新能源车'},
+  '02015.HK':{name:'理想汽车',el:'火',sector:'新能源车'},
+  '01211.HK':{name:'比亚迪股份',el:'火',sector:'新能源车'},
+  '00883.HK':{name:'中国海洋石油',el:'土',sector:'能源/资源'},
+  '00941.HK':{name:'中国移动',el:'水',sector:'通信/数据流'},
+  '01398.HK':{name:'工商银行',el:'金',sector:'银行/金融规则'},
+  // 美股/全球
+  'AAPL':{name:'Apple',el:'金',sector:'硬件/消费电子'},
+  'MSFT':{name:'Microsoft',el:'火',sector:'云计算/AI软件'},
+  'NVDA':{name:'NVIDIA',el:'火',sector:'AI算力/GPU'},
+  'TSLA':{name:'Tesla',el:'火',sector:'新能源车/机器人'},
+  'GOOGL':{name:'Alphabet',el:'水',sector:'搜索/广告/数据流'},
+  'GOOG':{name:'Alphabet',el:'水',sector:'搜索/广告/数据流'},
+  'AMZN':{name:'Amazon',el:'水',sector:'电商/云/物流'},
+  'META':{name:'Meta',el:'火',sector:'社交/AI应用'},
+  'AMD':{name:'AMD',el:'火',sector:'芯片/AI算力'},
+  'INTC':{name:'Intel',el:'金',sector:'半导体制造'},
+  'AVGO':{name:'Broadcom',el:'金',sector:'半导体/网络芯片'},
+  'JPM':{name:'JPMorgan Chase',el:'金',sector:'银行/金融规则'},
+  'V':{name:'Visa',el:'水',sector:'支付网络/交易流'},
+  'MA':{name:'Mastercard',el:'水',sector:'支付网络/交易流'},
+  'BABA':{name:'Alibaba',el:'水',sector:'电商/云服务/流通'},
+  'PDD':{name:'PDD',el:'水',sector:'电商/交易流'},
+  'NFLX':{name:'Netflix',el:'火',sector:'流媒体/内容热度'},
+  'KO':{name:'Coca-Cola',el:'木',sector:'消费品'},
+  'DIS':{name:'Disney',el:'火',sector:'传媒/内容IP'},
+// A股补充｜常见观察池
+  '000333.SZ':{name:'美的集团',el:'金',sector:'家电制造/消费硬件'},
+  '000651.SZ':{name:'格力电器',el:'金',sector:'家电制造/消费硬件'},
+  '600309.SH':{name:'万华化学',el:'土',sector:'化工材料/资源制造'},
+  '002475.SZ':{name:'立讯精密',el:'金',sector:'消费电子制造'},
+  '002352.SZ':{name:'顺丰控股',el:'水',sector:'物流/快递'},
+  '600570.SH':{name:'恒生电子',el:'火',sector:'金融科技/软件'},
+  '600703.SH':{name:'三安光电',el:'金',sector:'半导体/光电'},
+  '600438.SH':{name:'通威股份',el:'火',sector:'光伏/硅料'},
+  '600406.SH':{name:'国电南瑞',el:'金',sector:'电力设备/自动化'},
+  '601899.SH':{name:'紫金矿业',el:'土',sector:'有色金属/资源'},
+  '600585.SH':{name:'海螺水泥',el:'土',sector:'水泥/建材'},
+  '600104.SH':{name:'上汽集团',el:'金',sector:'汽车制造'},
+  '000063.SZ':{name:'中兴通讯',el:'水',sector:'通信设备/数据流'},
+  '300308.SZ':{name:'中际旭创',el:'火',sector:'光模块/AI算力'},
+  '300502.SZ':{name:'新易盛',el:'火',sector:'光模块/AI算力'},
+  '688111.SH':{name:'金山办公',el:'火',sector:'软件/AI办公'},
+  '688041.SH':{name:'海光信息',el:'火',sector:'AI芯片/算力'},
+  '688256.SH':{name:'寒武纪',el:'火',sector:'AI芯片/算力'},
+  '601728.SH':{name:'中国电信',el:'水',sector:'通信/数据流'},
+  '600941.SH':{name:'中国移动',el:'水',sector:'通信/数据流'},
+  '601628.SH':{name:'中国人寿',el:'金',sector:'保险/金融秩序'},
+  '601601.SH':{name:'中国太保',el:'金',sector:'保险/金融秩序'},
+  '600000.SH':{name:'浦发银行',el:'金',sector:'银行/金融规则'},
+  '600016.SH':{name:'民生银行',el:'金',sector:'银行/金融规则'},
+  '601398.SH':{name:'工商银行',el:'金',sector:'银行/金融规则'},
+  '601288.SH':{name:'农业银行',el:'金',sector:'银行/金融规则'},
+  '601988.SH':{name:'中国银行',el:'金',sector:'银行/金融规则'},
+  '601939.SH':{name:'建设银行',el:'金',sector:'银行/金融规则'},
+  // 港股/美股补充
+  '01810.HK':{name:'小米集团',el:'金',sector:'消费电子/智能硬件'},
+  '01024.HK':{name:'快手',el:'火',sector:'短视频/内容热度'},
+  '06618.HK':{name:'京东健康',el:'木',sector:'互联网医疗/健康'},
+  '02269.HK':{name:'药明生物',el:'木',sector:'生物医药/CDMO'},
+  '02318.HK':{name:'中国平安',el:'金',sector:'保险/金融秩序'},
+  '03988.HK':{name:'中国银行',el:'金',sector:'银行/金融规则'},
+  'HSBC':{name:'HSBC',el:'金',sector:'银行/金融规则'},
+  'NIO':{name:'NIO',el:'火',sector:'新能源车'},
+  'XPEV':{name:'XPeng',el:'火',sector:'新能源车'},
+  'LI':{name:'Li Auto',el:'火',sector:'新能源车'},
+  'SHOP':{name:'Shopify',el:'水',sector:'电商/交易流'},
+  'CRM':{name:'Salesforce',el:'火',sector:'云软件/AI应用'},
+  'ORCL':{name:'Oracle',el:'火',sector:'云计算/数据库'},
+  'QCOM':{name:'Qualcomm',el:'金',sector:'半导体/通信芯片'},
+  'MU':{name:'Micron',el:'金',sector:'半导体/存储'},
+  'ASML':{name:'ASML',el:'金',sector:'半导体设备'},
+  'LLY':{name:'Eli Lilly',el:'木',sector:'医药/创新药'},
+  'JNJ':{name:'Johnson & Johnson',el:'木',sector:'医药健康'},
+  'XOM':{name:'Exxon Mobil',el:'土',sector:'能源/资源'},
+  'CVX':{name:'Chevron',el:'土',sector:'能源/资源'},
+  'WMT':{name:'Walmart',el:'木',sector:'零售消费'}
 };
 
 const defaultIndustryStocks={
-  火:['NVDA','MSFT','300750.SZ','00700.HK'],
-  金:['AAPL','002415.SZ','000001.SZ','601318.SH'],
-  水:['GOOGL','AMZN','03690.HK','09988.HK'],
-  木:['600519.SH'],
-  土:['601318.SH','000001.SZ']
+  火:['NVDA','MSFT','300750.SZ','002594.SZ','00700.HK','TSLA','META','300274.SZ'],
+  金:['AAPL','002415.SZ','000001.SZ','600036.SH','688981.SH','JPM','601318.SH','002371.SZ'],
+  水:['GOOGL','AMZN','03690.HK','09988.HK','601919.SH','V','MA','600050.SH'],
+  木:['600519.SH','000858.SZ','600276.SH','300760.SZ','KO','600887.SH'],
+  土:['600900.SH','601088.SH','00883.HK','601668.SH','600028.SH','600048.SH']
 };
 function defaultRecommendedStocks(t,sub){
   const it=investmentTendency(t,sub);
@@ -1160,8 +1281,8 @@ function defaultRecommendedStocks(t,sub){
   if(it.focusEl && ![it.rank[0],it.rank[1]].includes(it.focusEl)) add(it.focusEl,1);
   add(it.rank[2],1);
   return codes.slice(0,5).map(c=>{
-    const meta=demoStockMeta[c]||{name:c,el:it.rank[0]};
-    return {code:c,name:meta.name||c,el:meta.el||it.rank[0],market:inferMarket(c),raw:c,auto:true,needsData:true};
+    const meta=demoStockMeta[c]||{name:c,el:'',sector:''};
+    return {code:c,name:meta.name||c,el:meta.el||'',sector:meta.sector||'',market:inferMarket(c),raw:c,auto:true,needsData:true};
   });
 }
 function extractStockCode(line){
@@ -1185,16 +1306,17 @@ function parseStockPool(){
   return stockPool.value.split(/\n+/).map(line=>line.trim()).filter(Boolean).map(line=>{
     const code=extractStockCode(line);
     const symbol=normalizeSymbol(code);
-    const meta=demoStockMeta[symbol]||{name:symbol,el:''};
+    const meta=demoStockMeta[symbol]||{name:symbol,el:'',sector:''};
+    const inferred=(!meta.el||!meta.sector)?industryFromUserLine(line,symbol):{el:'',sector:'',source:''};
     // If the user writes "贵州茅台｜600519.SH", keep the user-facing name before the delimiter
     let userName='';
     const namePart=line.split(/[,，\t\|｜]+/).map(x=>x.trim()).filter(Boolean).find(x=>!x.toUpperCase().includes(code.toUpperCase()) && !/^\d{5,6}(\.(SH|SZ|HK))?$/i.test(x));
     if(namePart && !/^[A-Z]{1,5}(\.[A-Z])?$/i.test(namePart)) userName=namePart;
-    return {code:symbol,name:userName||meta.name||symbol,el:meta.el||'',market:inferMarket(symbol),raw:line,auto:false,needsData:true};
+    return {code:symbol,name:userName||meta.name||symbol,el:meta.el||inferred.el||'',sector:meta.sector||inferred.sector||'',industrySource:meta.el?'内置行业库':(inferred.el?inferred.source:'行业标签待接入'),market:inferMarket(symbol),raw:line,auto:false,needsData:true};
   }).filter(x=>x.code);
 }
 function elementForStock(s, fallback){
-  return s.el || fallback || '金';
+  return s.el || '';
 }
 function norm(v,lo,hi){return Math.max(0,Math.min(100,Math.round((v-lo)/(hi-lo)*100)))}
 function stockOfflineMomentum(symbol){
@@ -1234,7 +1356,8 @@ function stockElementReason(el){
 function scoreStockCandidate(s,t,sub,tr){
   const it=investmentTendency(t,sub);
   const es=investmentElementScores(t,sub);
-  const el=elementForStock(s,it.rank[0]);
+  const stockEl=elementForStock(s);
+  const el=stockEl || it.rank[0];
   const industry=es[el]||50;
   const rank=it.rank.indexOf(el);
   const relative=rank<0?45:clampScore(82-rank*9);
@@ -1271,13 +1394,16 @@ function scoreStockCandidate(s,t,sub,tr){
   if(!s.needsData && s.maSignal && s.maSignal.status==='golden_cross') tag += '｜均线金叉';
   else if(!s.needsData && s.maSignal && s.maSignal.status==='near') tag += '｜均线临界';
   const mismatch = !s.needsData && marketScore>=70 && industry<58;
+  const classLine=stockEl
+    ? `股票本体五行：${stockBodyIndustryLabel({...s,el:stockEl})}。${stockElementReason(stockEl)}`
+    : `股票本体五行：标准行业库待接入。该代码尚未命中内置行业标签；若输入行包含行业关键词，系统会先用关键词兜底，否则仅用当前时机场主势 ${el}类 做临时适配计算。`;
   const reason=s.needsData
-    ? `五行分类：${el}类。${stockElementReason(el)} 当前洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。由于免费分时接口未确认，本项先作为模型候选，不冒充实时行情。`
-    : `五行分类：${el}类。${stockElementReason(el)} 当前行情强度 ${marketScore}，洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。${mismatch?'行情本身偏强，但当前时机场对该五行支持不足，所以综合候选分不会被拉得很高。':''}`;
+    ? `${classLine} 当前时机适配五行 ${el}类，洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。由于免费分时接口未确认，本项先作为模型候选，不冒充实时行情。`
+    : `${classLine} 当前行情强度 ${marketScore}，时机适配五行 ${el}类，洛书行业关注度 ${industry}，行业序位 ${rank>=0?('#'+(rank+1)):'待识别'}，后天合化适配 ${transformFit}。${mismatch?'行情本身偏强，但当前时机场对该五行支持不足，所以综合候选分不会被拉得很高。':''}`;
   const risk=s.needsData
     ? '实时行情未确认前，只能作为观察池候选；正式版需用分时走势、成交额、换手率和行业成分验证。'
     : (mismatch?'行情强不等于时机匹配，适合列入观察池，不宜直接视为追随信号。':(overheat>=14?'短线热度偏高，适合等待回踩或换手确认。':(active<45?'成交活跃度不足，信号容易失真。':'若后续缩量回落或跌破日内均线，观察信号减弱。')));
-  return {...s,el,score,tag,reason,risk,industry,trend,active,relative,transformFit,overheat,marketScore,maSignal:s.maSignal||null,maBoost};
+  return {...s,el:stockEl||'',scoreEl:el,score,tag,reason,risk,industry,trend,active,relative,transformFit,overheat,marketScore,maSignal:s.maSignal||null,maBoost};
 }
 
 function sparklineSVG(points){
@@ -1664,7 +1790,7 @@ async function fetchYahooChart(symbol){
 
 function stockIndustryLabel(el){
   const m=investmentMap[el];
-  return m?`${el}类｜${m.name}`:`${el||'待识别'}类｜行业待识别`;
+  return m?`${el}类｜${m.name}`:`${el||'待识别'}类｜行业标签待接入`;
 }
 
 function marketText(code){
@@ -1679,7 +1805,61 @@ function cleanIndustryLabel(el){
     '金':'高端制造/半导体/装备',
     '水':'平台经济/云服务/流动性资产'
   };
-  return `${el||'待识别'}类｜${map[el]||'行业待识别'}`;
+  return `${el||'待识别'}类｜${map[el]||'行业标签待接入'}`;
+}
+function stockBodyIndustryLabel(s){
+  const meta=demoStockMeta[(s&&s.code)||'']||{};
+  const el=(s&&s.el)||meta.el||'';
+  const sector=(s&&s.sector)||meta.sector||'';
+  if(!el) return '待接入｜标准行业库未命中';
+  return `${el}类｜${sector||cleanIndustryLabel(el).split('｜')[1]}`;
+}
+function industryStandardForSymbol(code){
+  const m=inferMarket(code||'');
+  if(m==='A股') return 'A股行业标签';
+  if(m==='港股') return '港股行业标签';
+  return '全球行业标签';
+}
+function inferIndustryFromFreeText(txt){
+  const s=String(txt||'').toUpperCase();
+  const has=(re)=>re.test(s);
+  if(has(/银行|证券|券商|保险|金融|BROKER|BANK|INSURANCE|JPM|HSBC/)) return {el:'金',sector:'金融/银行券商保险',source:'名称关键词推断'};
+  if(has(/半导体|芯片|集成电路|设备|制造|硬件|电子|光刻|机器人|自动化|CHIP|SEMICON|ASML|QCOM|INTEL|MICRON/)) return {el:'金',sector:'半导体/硬件制造',source:'名称关键词推断'};
+  if(has(/AI|算力|云|软件|传媒|游戏|新能源|电池|光伏|储能|汽车|电动车|互联网|视频|内容|CLOUD|SOFTWARE|MEDIA|GAME|EV|SOLAR/)) return {el:'火',sector:'科技成长/新能源/AI',source:'名称关键词推断'};
+  if(has(/医药|医疗|生物|药|中药|健康|消费|白酒|食品|饮料|农业|种业|PHARMA|BIO|HEALTH|DRUG|FOOD|BEVERAGE/)) return {el:'木',sector:'医药健康/消费农业',source:'名称关键词推断'};
+  if(has(/煤|石油|能源|电力|水电|公用|地产|建筑|基建|水泥|资源|矿|有色|钢铁|REIT|OIL|ENERGY|UTILITY|REAL ESTATE|MINING/)) return {el:'土',sector:'资源/公用/稳定资产',source:'名称关键词推断'};
+  if(has(/物流|快递|航运|航空|机场|港口|铁路|通信|运营商|电商|支付|交易流|DATA|PAY|LOGISTICS|AIR|PORT|RAIL|TELECOM|E.?COMMERCE/)) return {el:'水',sector:'流通/平台/数据流',source:'名称关键词推断'};
+  return {el:'',sector:'',source:''};
+}
+function industryFromUserLine(line,symbol){
+  const raw=String(line||'');
+  const parts=raw.split(/[,，\t\|｜]+/).map(x=>x.trim()).filter(Boolean);
+  const explicit=parts.find(x=>/[木火土金水]类|金融|消费|科技|医药|资源|公用|流通|平台|新能源|半导体|银行|保险|券商|医药|白酒|电力|煤炭|航运|物流|通信|地产|基建/.test(x));
+  return inferIndustryFromFreeText(explicit || raw.replace(symbol||'',''));
+}
+function broadIndustryTag(sector, el){
+  const s=String(sector||'');
+  if(/银行|券商|保险|金融|支付|交易/.test(s)) return '金融';
+  if(/半导体|芯片|硬件|电子|设备|制造|自动化|安防/.test(s)) return '硬科技/制造';
+  if(/新能源|电池|光伏|储能|电动车|汽车|算力|AI|云计算|软件|互联网|游戏|传媒|流媒体|社交/.test(s)) return '科技成长';
+  if(/医药|医疗|中药|健康|生命/.test(s)) return '医药健康';
+  if(/白酒|食品|饮料|消费|消费品/.test(s)) return '消费';
+  if(/煤炭|石油|能源|资源|水电|公用|地产|基建|建筑|工程|高股息/.test(s)) return '资源/公用/稳定资产';
+  if(/航运|航空|机场|交通|物流|电商|本地生活|通信|数据流|搜索|广告/.test(s)) return '流通/平台/数据流';
+  return el ? `${el}类综合` : '行业待补全';
+}
+function stockIndustryTagLabel(s){
+  const meta=demoStockMeta[(s&&s.code)||'']||{};
+  const sector=(s&&s.sector)||meta.sector||'';
+  const el=(s&&s.el)||meta.el||'';
+  const std=industryStandardForSymbol((s&&s.code)||'');
+  if(!sector&&!el) return `${std}｜标准行业库待接入｜可在输入中补充行业关键词`;
+  return `${std}｜${broadIndustryTag(sector,el)}｜${sector||'细分标签待接入'}`;
+}
+function stockTimingFitLabel(stockEl, timingEl, score){
+  if(!stockEl) return `本体行业标签待接入，暂按当前时机主势 ${timingEl}类 做适配计算`;
+  if(stockEl===timingEl) return `同频：${stockEl}类股票遇到${timingEl}类时机场`;
+  return `异频：股票本体${stockEl}类，当前主势${timingEl}类`;
 }
 function maActionText(ma, merged){
   const d1=Number(merged&&merged.d1);
@@ -1714,7 +1894,9 @@ function formatStockTitle(name, code){
 
 function quoteInfoHTML(s, merged, q, sourceLabel){
   const el=merged.el || s.el || '待识别';
-  const industry=cleanIndustryLabel(el);
+  const industry=stockBodyIndustryLabel(merged);
+  const industryTag=stockIndustryTagLabel(merged);
+  const industrySource=merged.industrySource||((demoStockMeta[code]&&demoStockMeta[code].el)?'内置行业库':'标准行业库待接入');
   const name=q.name || s.name || s.code;
   const code=s.code;
   const ma=merged.maSignal;
@@ -1723,7 +1905,7 @@ function quoteInfoHTML(s, merged, q, sourceLabel){
   const action=observationText(merged,ma);
   const maAction=maActionText(ma,merged);
   const hkNote=isHKSymbol(code)?'港股优先使用腾讯/本地图，避免 TradingView 弹窗或默认错显。':'';
-  return `<div class="quoteInfo"><b>${formatStockTitle(name,code)}</b><div class="quoteGrid"><div class="quoteCell">五行行业：${industry}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px"><b>观察译文：</b>${action}<br><b>趋势译文：</b>${maAction}<br><span class="meta">腾讯报价用于现价、涨跌幅和候选分重算；Vercel K线代理用于30/60均线。手机安全图只用于防空白，不代表 TradingView 实时图。${hkNote}</span></div></div>${maSignalHTML(ma)}`;
+  return `<div class="quoteInfo"><b>${formatStockTitle(name,code)}</b><div class="quoteGrid"><div class="quoteCell">股票本体行业：${industry}</div><div class="quoteCell">行业标签：${industryTag}</div><div class="quoteCell">标签来源：${industrySource}</div><div class="quoteCell">时机适配：${stockTimingFitLabel(merged.el, merged.scoreEl, merged.score)}</div><div class="quoteCell">行情源：${sourceLabel}</div><div class="quoteCell">现价：${price}</div><div class="quoteCell">今日涨跌：${pct}%</div><div class="quoteCell">行情强度：${merged.marketScore||'—'}</div><div class="quoteCell">综合候选分：${merged.score}</div></div><div style="margin-top:6px"><b>观察译文：</b>${action}<br><b>趋势译文：</b>${maAction}<br><span class="meta">腾讯报价用于现价、涨跌幅和候选分重算；Vercel K线代理用于30/60均线。手机安全图只用于防空白，不代表 TradingView 实时图。${hkNote}</span></div></div>${maSignalHTML(ma)}`;
 }
 function stockCandidateHTML(t,sub,conv,label){
   const userList=parseStockPool();
@@ -1733,10 +1915,10 @@ function stockCandidateHTML(t,sub,conv,label){
   const sourceText=userList.length?'代码观察池':'系统推荐候选';
   const scored=list.map(s=>scoreStockCandidate(s,t,sub,tr)).sort((a,b)=>b.score-a.score);
   const top=scored.slice(0,2);
-  const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">五行行业：${cleanIndustryLabel(s.el)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
-  const rows=scored.map((s,i)=>`<div class="stockRow"><span>#${i+1}</span><b>${s.name}</b><span>${stockIndustryLabel(s.el)}</span><span>${s.score}</span><span>${i<2?'主候选观察':'对照/备选观察'}｜${s.tag}</span></div>`).join('');
+  const cards=top.map(s=>`<div class="stockCard"><div class="name">${s.name}｜${s.code}<span class="apiTag">${s.market}</span></div><div class="score">${s.score}</div><div class="meta">股票本体行业：${stockBodyIndustryLabel(s)}｜行业标签：${stockIndustryTagLabel(s)}｜${s.tag}${s.auto?'｜自动候选':''}</div><div class="reason"><b>模型理由：</b>${s.reason}<br><b>风险：</b>${s.risk}</div><div id="chart_${label}_${s.code.replace(/[^A-Z0-9]/g,'_')}"><div class="meta">准备加载 TradingView 图表与腾讯报价...</div></div></div>`).join('');
+  const rows=scored.map((s,i)=>`<div class="stockRow"><span>#${i+1}</span><b>${s.name}</b><span>${stockBodyIndustryLabel(s)}</span><span>${s.score}</span><span>${i<2?'主候选观察':'对照/备选观察'}｜${s.tag}</span></div>`).join('');
   setTimeout(()=>fetchAndRenderStocks(label,scored.slice(0,2),t,sub,conv),50);
-  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、五行行业、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、五行行业、行情状态、趋势译文与30/60均线。A股优先使用腾讯分时图，港股/美股按可用性使用 TradingView 或本地图；普通手机浏览器会尝试显示桌面版 TradingView 缩放图；微信内置浏览器自动进入安全模式，不加载 TradingView iframe。支持“600519”“300750.SZ”或“贵州茅台｜600519.SH”这类写法。行情、图表与均线仅作观察展示，不构成买卖建议。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
+  return `<div class="stockPanel"><div class="headline">行业内候选股观察｜${sourceText}</div><div class="line">本模块不使用固定股票结论，但股票本体行业采用内置分类库固定归属；当前时机场只影响适配分，不改变股票本体五行。未输入代码时，系统会按当前首选行业给出 2 个主候选；输入代码后只分析你的观察池，并展示股票名称、股票本体行业五行、行业标签、时机适配五行、腾讯报价信息与图表。美股/全球股票使用 TradingView；A股/港股使用腾讯分时或报价示意图；腾讯报价用于现价和涨跌幅。查询频率固定为 60 秒缓存、每次只抓主候选 2 只。</div><div class="line"><b>当前首选行业：</b>${investmentMap[it.rank[0]].name}。<b>备选行业：</b>${it.rank[1]?investmentMap[it.rank[1]].name:'无'}。<b>展示规则：</b>上方两张卡是主候选；下方排序表中的 #3 以后主要作为备选或对照，不等同于推荐。</div><div class="line"><b>图表策略：</b>系统推荐候选与代码观察池共用同一规则：美股/全球股票走 TradingView，A股/港股走腾讯图表。</div><div class="line">输入股票代码后，卡片会显示股票名称、股票本体行业、行业标签、当前时机适配、行情状态、趋势译文与30/60均线。A股优先使用腾讯分时图，港股/美股按可用性使用 TradingView 或本地图；普通手机浏览器会尝试显示桌面版 TradingView 缩放图；微信内置浏览器自动进入安全模式，不加载 TradingView iframe。支持“600519”“300750.SZ”“贵州茅台｜600519.SH”，也支持“某股票｜代码｜半导体/银行/医药”等带行业关键词的写法。行情、图表与均线仅作观察展示，不构成买卖建议。</div><div class="stockCards">${cards}</div><div class="stockTable">${rows}</div></div>`;
 }
 
 function tvSymbolFor(symbol){
