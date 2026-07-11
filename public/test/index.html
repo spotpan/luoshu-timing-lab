@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v1.2.0 大运卡片报告版</title>
+  <title>洛书时机仪 v1.3.0 一生卷轴批注版</title>
   <style>
     :root{
       --bg:#071019;
@@ -577,7 +577,7 @@
 .dayunPeaks b{color:#dcecff}
 
 
-/* v1.2.0: polished report export */
+/* v1.3.0: polished report export */
 .reportActions{
   display:flex;
   gap:8px;
@@ -594,7 +594,7 @@
 }
 
 
-/* v1.2.0: Fuxiang and kinship projection inside Dayun judgments */
+/* v1.3.0: Fuxiang and kinship projection inside Dayun judgments */
 .fuxiangBlock{
   display:block;
   margin:7px 0 5px;
@@ -630,7 +630,7 @@
 }
 
 
-/* v1.2.0: event-specific Dayun phase labels */
+/* v1.3.0: event-specific Dayun phase labels */
 .dayunPhase{
   color:#ffe3a3!important;
   letter-spacing:.02em;
@@ -643,7 +643,7 @@
 }
 
 
-/* v1.2.0: fix left homepage mini Loshu boards being clipped */
+/* v1.3.0: fix left homepage mini Loshu boards being clipped */
 @media(min-width:961px){
   .heroMain{
     overflow-y:auto!important;
@@ -682,7 +682,7 @@
 }
 
 
-/* v1.2.0: weather rain flag */
+/* v1.3.0: weather rain flag */
 .rainFlag{
   display:inline-flex;
   align-items:center;
@@ -713,7 +713,7 @@
 }
 
 
-/* v1.2.0: homepage column alignment and right-only scroll */
+/* v1.3.0: homepage column alignment and right-only scroll */
 *,*::before,*::after{box-sizing:border-box}
 @media(min-width:961px){
   .hero,
@@ -787,7 +787,7 @@
 }
 
 
-/* v1.2.0: show both left mini Loshu boards fully, keep other layout unchanged */
+/* v1.3.0: show both left mini Loshu boards fully, keep other layout unchanged */
 @media(min-width:961px){
   .heroMain{
     min-height:980px!important;
@@ -836,7 +836,7 @@
 }
 
 
-/* v1.2.0: prevent lower result panels from covering the left mini Loshu boards */
+/* v1.3.0: prevent lower result panels from covering the left mini Loshu boards */
 @media(min-width:961px){
   .hero{
     align-items:start!important;
@@ -888,7 +888,7 @@
 }
 
 
-/* v1.2.0: force homepage row to reserve enough height, so lower panels move below mini Loshu boards */
+/* v1.3.0: force homepage row to reserve enough height, so lower panels move below mini Loshu boards */
 @media(min-width:961px){
   .hero{
     display:grid!important;
@@ -985,7 +985,7 @@
 }
 
 
-/* v1.2.0: strict no-overlap homepage layout
+/* v1.3.0: strict no-overlap homepage layout
    Use natural left-panel height as the row height. The right panel matches that height
    and scrolls internally. Lower A/B panels are placed after the full hero row. */
 @media(min-width:961px){
@@ -1095,7 +1095,7 @@
 }
 
 
-/* v1.2.0: explicit spacer pushes lower A/B result panels farther down */
+/* v1.3.0: explicit spacer pushes lower A/B result panels farther down */
 @media(min-width:961px){
   .hero{
     margin-bottom:0!important;
@@ -1120,7 +1120,7 @@
 }
 
 
-/* v1.2.0: make the hero-to-result gap look intentional and cleaner */
+/* v1.3.0: make the hero-to-result gap look intentional and cleaner */
 @media(min-width:961px){
   .heroResultSpacer{
     display:flex!important;
@@ -1205,7 +1205,7 @@
 }
 
 
-/* v1.2.0: polished homepage layout
+/* v1.3.0: polished homepage layout
    Left panel height follows its content and frames both mini Loshu boards.
    Right panel matches left height and scrolls internally.
    The result section is separated by a quiet divider, with no redundant text. */
@@ -1343,7 +1343,7 @@
 }
 
 
-/* v1.2.0: keep v1.1.1 visual style, only enforce right-panel scroll and left/right height alignment */
+/* v1.3.0: keep v1.1.1 visual style, only enforce right-panel scroll and left/right height alignment */
 @media(min-width:961px){
   .hero{
     display:grid!important;
@@ -1371,7 +1371,7 @@
 }
 
 
-/* v1.2.0: right panel is capped to the real left-panel height; lower A/B panels align below the left panel */
+/* v1.3.0: right panel is capped to the real left-panel height; lower A/B panels align below the left panel */
 @media(min-width:961px){
   .hero{
     align-items:start!important;
@@ -1399,7 +1399,7 @@
 }
 
 
-/* v1.2.0: hard override -- right panel whole-card scroll, not local block scroll */
+/* v1.3.0: hard override -- right panel whole-card scroll, not local block scroll */
 @media(min-width:961px){
   .hero{
     --hero-left-h: auto;
@@ -1441,7 +1441,7 @@
 }
 
 
-/* v1.2.0: hard specificity override
+/* v1.3.0: hard specificity override
    Older rules use ".hero > .panel { height:... !important }", so this must be more specific. */
 @media(min-width:961px){
   .hero{
@@ -1522,7 +1522,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v1.2.0 大运卡片报告版</div>
+      <div class="badge">● 洛书时机仪 v1.3.0 一生卷轴批注版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -3620,7 +3620,7 @@ function birthLifePanelHTML(currentDate){
       <div class="windowCard"><b>财富/资产成形窗口</b><br>${windowText(wealth,'资产分')}</div>
       <div class="windowCard"><b>身体高消耗注意窗口</b><br>${windowText(health,'消耗分')}<br><span class="meta">晚年收束提示：${windowText(old,'收束分')}</span></div>
     </div>
-    <div class="lifeNote">规则：2024 为算法纪元，年度编码采用 mod60；2023 取 59，2024 取 0。日时间天干代表被测人本人，落入九宫后分析五行关系；伴侣投影按男女路径区分：男看我克者，女看克我者。起运前年度时间编码仍参与分析，尤其保留天干位作用；大运由年度三界采样聚合而成。以上仅为时间窗口提示，不作宿命断言。</div>
+    <div class="lifeNote">规则：2024 为算法纪元，年度编码采用 mod60；2023 取 59，2024 取 0。日时间天干代表被测人本人，落入九宫后分析五行关系；伴侣投影按男女路径区分：男看我克者，女看克我者；父母线按男女命拆阴阳：男命父亲同阴阳、母亲异阴阳，女命父亲异阴阳、母亲同阴阳。起运前年度时间编码仍参与分析，尤其保留天干位作用；大运由年度三界采样聚合而成。以上仅为时间窗口提示，不作宿命断言。</div>
   </div>`;
 }
 
@@ -3700,7 +3700,174 @@ function printBirthReport(){
   clone.querySelectorAll('button,.reportActions').forEach(n=>n.remove());
   const generated=new Date().toLocaleString('zh-CN',{hour12:false});
   const label=reportBirthLabel();
-  const doc=`<!doctype html><html><head><meta charset="utf-8"><title>洛书一生大运卡</title>
+
+  function yyOpp(yy){return yy==='阳'?'阴':'阳'}
+  function elEn(el){return {水:'Water',木:'Wood',火:'Fire',土:'Earth',金:'Metal'}[el]||'Wood'}
+  function yyKeyFor(el,yy){return (yy==='阳'?'yang':'yin')+elEn(el)}
+  function keyCN(key){
+    const yy=key.startsWith('yang')?'阳':'阴';
+    const el=key.includes('Water')?'水':key.includes('Wood')?'木':key.includes('Fire')?'火':key.includes('Earth')?'土':'金';
+    return yy+el;
+  }
+  function tenVal(r,key){return Number((r&&r.conv&&r.conv.ten&&r.conv.ten[key])||0)}
+  function avgRange(records,fn,min=0,max=90){
+    const arr=records.filter(r=>r.age>=min&&r.age<=max).map(fn).filter(Number.isFinite);
+    return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;
+  }
+  function pickRoleWindows(records,scoreFn,minAge,maxAge,count=2,gap=5){
+    const cand=records.filter(r=>r.age>=minAge&&r.age<=maxAge).map(r=>({...r,_score:Math.max(0,Math.min(100,Math.round(scoreFn(r))))})).sort((a,b)=>b._score-a._score);
+    const picked=[];
+    for(const r of cand){
+      if(picked.some(p=>Math.abs(p.age-r.age)<=gap)) continue;
+      picked.push(r);
+      if(picked.length>=count) break;
+    }
+    return picked.sort((a,b)=>a.age-b.age);
+  }
+  function yearsLine(wins){
+    if(!wins||!wins.length) return '暂无明显峰值';
+    return wins.map(w=>`${w.age}岁`).join('、');
+  }
+  function shortPeak(wins){
+    if(!wins||!wins.length) return '未显';
+    return `${wins[0].age}岁`;
+  }
+  function transformTouches(r,key){
+    const tr=r&&r.conv&&r.conv.transform;
+    return !!(tr&&tr.name&&tr.name.includes(keyCN(key)));
+  }
+  function buildLifeAnnotations(){
+    try{
+      const birth=birthInputDate();
+      const gender=(birthGender&&birthGender.value)||'male';
+      const qStart=gender==='female'?7:8;
+      const qEnd=gender==='female'?14:16;
+      const birthP=fourPillars(birth), birthInit=initialTen(birthP), birthConv=convolve(birthInit), birthTotals=totals(birthConv.ten);
+      const personStem=birthP.day.stem, personEl=stemElement(personStem), personYY=stemYinYang(personStem);
+      const profile={personStem,personEl,personYY,birthTotals,gender};
+
+      const preRecords=[];
+      for(let age=qStart;age<=qEnd;age++) preRecords.push(lifeAnnualRecord(birth,age,profile,999));
+      const hs=preRecords.map(r=>r.hehua), th=mean(hs)+0.3*std(hs);
+      let qiyun=preRecords.find(r=>r.hehua>=th);
+      if(!qiyun) qiyun=preRecords.slice().sort((a,b)=>b.hehua-a.hehua)[0];
+
+      const records=[];
+      for(let age=0;age<=90;age++) records.push(lifeAnnualRecord(birth,age,profile,qiyun.age));
+
+      const spouseEl=gender==='female'?elByRelation(personEl,'controlMe'):elByRelation(personEl,'iControl');
+      const supportEl=elByRelation(personEl,'shengMe');
+      const childEl=elByRelation(personEl,'iSheng');
+      const controlEl=elByRelation(personEl,'controlMe');
+      const wealthEl=elByRelation(personEl,'iControl');
+
+      const spouseWins=pickRoleWindows(records,r=>{
+        const tr=(r.conv&&r.conv.transform)||{};
+        const transBoost=(tr.to===spouseEl?14:0)+(tr.strength||0)*18;
+        return r.relation*.42 + (r.t[spouseEl]||0)*42 + transBoost - Math.max(0,r.overload-82)*.18;
+      },18,58,3,5);
+      const relSpread=spouseWins.length>=2?Math.abs(spouseWins[spouseWins.length-1].age-spouseWins[0].age):0;
+      const relText = spouseWins.length>=2 && relSpread>=9
+        ? `${yearsLine(spouseWins.slice(0,2))}形成两个伴侣峰值簇，见关系二次定型或重组窗口；若早年承接稳定，则多表现为同一关系的阶段升级。`
+        : `${shortPeak(spouseWins)}前后伴侣线最显，更像一段关系持续推进、确认或现实承接。`;
+      const relTitle = gender==='female'?'感情线｜夫星合化':'感情线｜伴侣合化';
+
+      const childSameKey=yyKeyFor(childEl,personYY);
+      const childOppKey=yyKeyFor(childEl,yyOpp(personYY));
+      const childWins=pickRoleWindows(records,r=>{
+        const tr=(r.conv&&r.conv.transform)||{};
+        return r.hehua*.24 + (r.t[childEl]||0)*52 + (tr.to===childEl?10:0) + (tr.strength||0)*10;
+      },22,55,3,5);
+      const childScore=childWins[0]?childWins[0]._score:0;
+      const childSame=avgRange(records,r=>tenVal(r,childSameKey),22,55);
+      const childOpp=avgRange(records,r=>tenVal(r,childOppKey),22,55);
+      let childCount='1子象';
+      if(childScore<52) childCount='0–1子象，子女缘偏淡';
+      else if(childScore<64) childCount='1子象，子女缘有但不早';
+      else if(childScore<77) childCount='2子象';
+      else childCount='2–3子象，子女/传承线较重';
+      let childSex='阴阳较均，见一儿一女象';
+      if(Math.abs(childSame-childOpp)>.055){
+        childSex=childSame>childOpp?'儿子象偏重':'女儿象偏重';
+      }
+      const childText=`${childCount}，${childSex}；${shortPeak(childWins)}后我生之气转强，若现实不走生育路径，则多转为作品、学生、项目与长期输出。`;
+
+      const fatherYY=gender==='female'?yyOpp(personYY):personYY;
+      const motherYY=yyOpp(fatherYY);
+      const fatherKey=yyKeyFor(supportEl,fatherYY);
+      const motherKey=yyKeyFor(supportEl,motherYY);
+      function parentRiskWindows(key){
+        return pickRoleWindows(records,r=>{
+          const v=tenVal(r,key);
+          const tr=(r.conv&&r.conv.transform)||{};
+          const weak=(1-v)*62;
+          const touched=transformTouches(r,key)?(tr.strength||0)*85:0;
+          const supportWeak=(1-(r.t[supportEl]||0))*22;
+          return weak*.58 + supportWeak + r.overload*.22 + r.health*.12 + touched*.28;
+        },28,78,2,6);
+      }
+      const fatherWins=parentRiskWindows(fatherKey);
+      const motherWins=parentRiskWindows(motherKey);
+      function parentText(title,wins,key){
+        const w=wins[0];
+        if(!w) return `${title}线暂无明显高压窗口，平时以陪伴、体检与家宅沟通为主。`;
+        const sev=w._score>=76?'照护高压/告别象较重':(w._score>=66?'照护责任偏重':'家宅牵动');
+        return `${w.age}岁前后${title}（${keyCN(key)}）${sev}，宜提前关注体检、陪伴、居住、资产与家庭责任安排。`;
+      }
+
+      const nobleWins=pickRoleWindows(records,r=>{
+        const tr=(r.conv&&r.conv.transform)||{};
+        const controlStrong=(r.t[controlEl]||0)*38;
+        const supportStrong=(r.t[supportEl]||0)*30;
+        const transToSupport=(tr.to===supportEl?22:0);
+        const transInControl=(tr.name&&tr.name.includes(controlEl)?8:0);
+        return r.career*.35 + controlStrong + supportStrong + transToSupport + transInControl + (tr.strength||0)*14;
+      },22,68,2,6);
+      const nobleText=`${shortPeak(nobleWins)}前后克我者转为生我之力，贵人多来自平台、上级、制度入口、资质或关键项目；${gender==='female'?'若与伴侣峰值同段，需区分关系发生与资源托举，可视为关系/贵人同象。':'此线更像压力转资源，而非单纯被人提携。'}`;
+
+      const wealthWins=pickRoleWindows(records,r=>{
+        const tr=(r.conv&&r.conv.transform)||{};
+        return r.wealth*.48 + (r.t[wealthEl]||0)*34 + (tr.to===wealthEl?10:0) - Math.max(0,r.overload-84)*.12;
+      },25,76,2,6);
+      const wealthText=`${shortPeak(wealthWins)}前后资产承接增强，适合长期现金流、置业、股权、稳定资源配置；财线伴责任线，不宜高杠杆冒进。`;
+
+      const healthWins=pickRoleWindows(records,r=>r.health,35,85,1,5);
+      const healthText=`${shortPeak(healthWins)}前后身体节律与恢复力更需留余地，宜把睡眠、代谢、体检、慢性压力管理提前纳入安排。`;
+
+      const summary=`${gender==='female'?'女命':'男命'}以${personYY}${personEl}为主体，伴侣线取${spouseEl}，子女/传承线取${childEl}，父系取${keyCN(fatherKey)}，母系取${keyCN(motherKey)}。此盘重点不在早断法律缔约，而在观察关系发生、贵人入局、传承显化与家宅照护的时间窗口。`;
+      const notes=[
+        [relTitle,relText],
+        ['子女/传承线',childText],
+        ['事业贵人线',nobleText],
+        ['财富资产线',wealthText],
+        ['父系长辈线',parentText('父系长辈',fatherWins,fatherKey)],
+        ['母系长辈线',parentText('母系长辈',motherWins,motherKey)],
+        ['身心节律线',healthText]
+      ];
+      const noteHTML=notes.map(([h,p])=>`<div class="annoItem"><b>${h}</b><span>${p}</span></div>`).join('');
+      return `<div class="lifeSummary"><b>一生总判</b><span>${summary}</span></div><div class="annoGrid">${noteHTML}</div>`;
+    }catch(e){
+      return `<div class="lifeSummary"><b>一生总判</b><span>人生批注生成暂未完成，保留大运与年度峰值卡片。</span></div>`;
+    }
+  }
+
+  const annotationHTML=buildLifeAnnotations();
+
+  // 精简年度峰值：只保留“哪几年最像人生节点”，不展示算法过程。
+  let peakHTML='';
+  try{
+    const rows=[...clone.querySelectorAll('.windowCard')].slice(0,4).map(card=>{
+      const b=(card.querySelector('b')?.textContent||'').trim();
+      const txt=(card.textContent||'').replace(/\s+/g,' ').trim();
+      const short=txt.replace(b,'').replace(/合化强度|过载指数|峰值|参考|：|:/g,'').trim();
+      return `<div class="peakItem"><b>${b}</b><span>${short.slice(0,42)}</span></div>`;
+    }).filter(Boolean);
+    if(rows.length){
+      peakHTML=`<div class="peakPanel"><div class="peakTitle">年度峰值参考</div><div class="peakGrid">${rows.join('')}</div></div>`;
+    }
+  }catch(e){peakHTML='';}
+
+  const doc=`<!doctype html><html><head><meta charset="utf-8"><title>洛书一生大运卷轴</title>
   <style>
     @page{size:A4;margin:8mm}
     *{box-sizing:border-box}
@@ -3719,11 +3886,11 @@ function printBirthReport(){
       margin:0 auto;
       overflow:hidden;
       border-radius:24px;
-      padding:11mm 12mm 9mm;
+      padding:8.5mm 10mm 7mm;
       position:relative;
       background:
-        radial-gradient(circle at 10% 8%,rgba(103,232,249,.18),transparent 26%),
-        radial-gradient(circle at 90% 4%,rgba(246,207,120,.20),transparent 28%),
+        radial-gradient(circle at 10% 8%,rgba(103,232,249,.16),transparent 25%),
+        radial-gradient(circle at 90% 4%,rgba(246,207,120,.18),transparent 27%),
         linear-gradient(135deg,#fffdf7,#f6f0df 58%,#eef8f9);
       border:1px solid rgba(109,91,47,.22);
       box-shadow:0 20px 70px rgba(0,0,0,.22);
@@ -3731,7 +3898,7 @@ function printBirthReport(){
     .reportWrap:before{
       content:"";
       position:absolute;
-      inset:6mm;
+      inset:5.2mm;
       border:1px solid rgba(23,32,51,.08);
       border-radius:20px;
       pointer-events:none;
@@ -3740,17 +3907,17 @@ function printBirthReport(){
       position:relative;
       z-index:1;
       display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:10mm;
+      grid-template-columns:1.04fr .96fr;
+      gap:7mm;
       align-items:end;
-      padding:8mm 9mm;
-      border-radius:22px;
+      padding:6.2mm 7.5mm;
+      border-radius:21px;
       color:#fff;
       background:
         radial-gradient(circle at 92% 8%,rgba(246,207,120,.24),transparent 34%),
         linear-gradient(135deg,#172033,#253858 56%,#4a3422);
       overflow:hidden;
-      margin-bottom:6mm;
+      margin-bottom:4mm;
     }
     .cover:after{
       content:"";
@@ -3762,13 +3929,13 @@ function printBirthReport(){
       border-radius:50%;
       background:rgba(246,207,120,.16);
     }
-    .kicker{letter-spacing:.22em;color:#f6cf78;font-weight:900;font-size:9.5px}
-    h1{font-size:27px;line-height:1.08;margin:5px 0 4px;letter-spacing:-.8px}
-    .subtitle{color:#dce7f7;line-height:1.45;font-size:11.5px;max-width:112mm}
+    .kicker{letter-spacing:.22em;color:#f6cf78;font-weight:900;font-size:8.5px}
+    h1{font-size:24px;line-height:1.03;margin:4px 0 3px;letter-spacing:-.7px}
+    .subtitle{color:#dce7f7;line-height:1.38;font-size:10.2px;max-width:110mm}
     .metaLine{
       display:flex;
       flex-wrap:wrap;
-      gap:5px;
+      gap:4px;
       justify-content:flex-end;
       align-content:flex-end;
       position:relative;
@@ -3777,11 +3944,68 @@ function printBirthReport(){
     .metaLine span{
       border:1px solid rgba(255,255,255,.24);
       border-radius:999px;
-      padding:4px 8px;
+      padding:3.5px 7px;
       color:#fff4d5;
-      font-size:10px;
+      font-size:8.8px;
       background:rgba(255,255,255,.06);
       white-space:nowrap;
+    }
+
+    .lifeSummary{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:22mm 1fr;
+      gap:7px;
+      align-items:start;
+      padding:6px 8px;
+      border-radius:16px;
+      background:rgba(23,32,51,.88);
+      border:1px solid rgba(246,207,120,.22);
+      color:#eef4ff;
+      margin-bottom:3.2mm;
+      box-shadow:0 12px 28px rgba(30,24,12,.12);
+    }
+    .lifeSummary b{
+      color:#ffe7b4;
+      font-size:11px;
+      letter-spacing:.08em;
+      line-height:1.3;
+    }
+    .lifeSummary span{
+      font-size:9.4px;
+      line-height:1.42;
+      color:#e5edf7;
+    }
+    .annoGrid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:5px;
+      margin-bottom:3.2mm;
+    }
+    .annoItem{
+      min-height:18mm;
+      border-radius:14px;
+      padding:6px 7px;
+      background:rgba(255,255,255,.62);
+      border:1px solid rgba(109,91,47,.16);
+      box-shadow:0 8px 22px rgba(99,79,41,.05);
+      overflow:hidden;
+    }
+    .annoItem b{
+      display:block;
+      font-size:10.2px;
+      color:#172033;
+      margin-bottom:2px;
+      letter-spacing:.02em;
+    }
+    .annoItem span{
+      display:block;
+      font-size:8.6px;
+      line-height:1.32;
+      color:#344052;
     }
 
     .dayunStandaloneHead{display:none!important}
@@ -3797,74 +4021,119 @@ function printBirthReport(){
     .birthGrid{
       display:grid;
       grid-template-columns:repeat(4,1fr);
-      gap:6px;
-      margin-bottom:5mm;
+      gap:4px;
+      margin-bottom:3mm;
     }
     .birthMetric{
-      min-height:17mm;
-      border:1px solid rgba(109,91,47,.18);
-      border-radius:14px;
-      background:rgba(255,255,255,.58);
-      padding:7px 9px;
-      line-height:1.35;
-      box-shadow:0 8px 24px rgba(99,79,41,.06);
+      min-height:12.5mm;
+      border:1px solid rgba(109,91,47,.16);
+      border-radius:13px;
+      background:rgba(255,255,255,.54);
+      padding:5px 7px;
+      line-height:1.25;
+      box-shadow:0 8px 20px rgba(99,79,41,.05);
     }
     .birthMetric span{
       display:block;
       color:#727b88;
-      font-size:9.6px;
-      margin-bottom:3px;
+      font-size:8.2px;
+      margin-bottom:1px;
     }
     .birthMetric b{
       color:#162033;
-      font-size:13px;
+      font-size:11.3px;
     }
     .line{
-      margin:3mm 0;
-      padding:6px 9px;
-      border-radius:13px;
-      background:rgba(255,255,255,.48);
-      border:1px solid rgba(109,91,47,.13);
+      margin:1.8mm 0;
+      padding:4px 7px;
+      border-radius:12px;
+      background:rgba(255,255,255,.45);
+      border:1px solid rgba(109,91,47,.12);
       color:#354052;
-      line-height:1.5;
-      font-size:10.8px;
+      line-height:1.32;
+      font-size:8.8px;
     }
     .line b{color:#172033}
+    .line:nth-of-type(2){display:none!important}
+
+    .peakPanel{
+      margin:2.8mm 0 3.2mm;
+      padding:5px;
+      border-radius:16px;
+      background:linear-gradient(135deg,rgba(37,56,88,.92),rgba(109,75,38,.84));
+      color:#fff;
+      border:1px solid rgba(246,207,120,.25);
+      box-shadow:0 12px 28px rgba(62,43,19,.12);
+    }
+    .peakTitle{
+      font-size:10px;
+      font-weight:950;
+      color:#ffe6a8;
+      letter-spacing:.08em;
+      margin:0 2px 4px;
+    }
+    .peakGrid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:4px;
+    }
+    .peakItem{
+      min-height:12mm;
+      border-radius:12px;
+      padding:5px;
+      background:rgba(255,255,255,.09);
+      border:1px solid rgba(255,255,255,.13);
+      overflow:hidden;
+    }
+    .peakItem b{
+      display:block;
+      color:#fff3c8;
+      font-size:10.4px;
+      line-height:1.1;
+      margin-bottom:2px;
+    }
+    .peakItem span{
+      display:block;
+      color:#e2edf9;
+      font-size:7.8px;
+      line-height:1.25;
+    }
+
     .lifeTable{
       display:grid;
       grid-template-columns:repeat(2,1fr);
-      gap:6px;
-      margin-top:5mm;
+      gap:4px;
+      margin-top:3mm;
     }
     .lifeRow.header{display:none!important}
     .lifeRow{
-      min-height:31mm;
+      min-height:22mm;
       display:grid;
-      grid-template-columns:18mm 1fr;
-      gap:7px;
+      grid-template-columns:14mm 1fr;
+      gap:5px;
       align-items:start;
       break-inside:avoid;
-      border:1px solid rgba(109,91,47,.18);
-      border-radius:16px;
-      background:rgba(255,255,255,.66);
-      padding:7px 8px;
-      box-shadow:0 10px 26px rgba(99,79,41,.07);
+      border:1px solid rgba(109,91,47,.16);
+      border-radius:13px;
+      background:rgba(255,255,255,.62);
+      padding:5px 6px;
+      box-shadow:0 8px 22px rgba(99,79,41,.055);
       overflow:hidden;
     }
     .lifeRow>b{
       display:flex;
       align-items:center;
       justify-content:center;
-      min-height:22mm;
-      border-radius:13px;
+      min-height:17mm;
+      border-radius:11px;
       color:#fff8dc;
       background:linear-gradient(135deg,#253858,#6d4b26);
-      font-size:13px;
+      font-size:10.5px;
       letter-spacing:-.2px;
     }
     .lifeRow>span{
-      font-size:10.2px;
-      line-height:1.42;
+      font-size:8.3px;
+      line-height:1.25;
       color:#293345;
     }
     .lifeRow>span:nth-of-type(n+2){display:none!important}
@@ -3872,9 +4141,9 @@ function printBirthReport(){
       display:block;
       color:#172033!important;
       font-weight:950;
-      font-size:11.4px;
-      line-height:1.28;
-      margin-bottom:4px;
+      font-size:9.4px;
+      line-height:1.16;
+      margin-bottom:2px;
       letter-spacing:-.1px;
     }
     .dayunPhase .ageHint{display:none!important}
@@ -3885,50 +4154,50 @@ function printBirthReport(){
       border:0!important;
       background:transparent!important;
       color:#2a2419!important;
-      font-size:10.2px;
-      line-height:1.43!important;
+      font-size:8.2px;
+      line-height:1.22!important;
       font-weight:720!important;
     }
     .dayunJudge small{display:none!important}
     .dayunTags,.dayunPeaks,.fuxiangBlock,.fuxiangTags,.kinshipLine{display:none!important}
     .windowCards{display:none!important}
     .lifeNote{
-      margin-top:5mm;
-      padding:6px 8px;
-      border-radius:12px;
+      margin-top:2.8mm;
+      padding:4px 6px;
+      border-radius:11px;
       background:rgba(23,32,51,.06);
       color:#687385;
-      font-size:9px;
-      line-height:1.45;
-      max-height:18mm;
+      font-size:7.3px;
+      line-height:1.25;
+      max-height:10mm;
       overflow:hidden;
     }
     .footer{
       position:absolute;
-      left:12mm;
-      right:12mm;
-      bottom:7mm;
-      padding-top:5px;
+      left:10mm;
+      right:10mm;
+      bottom:5.5mm;
+      padding-top:4px;
       border-top:1px solid rgba(109,91,47,.16);
       color:#7a8494;
-      font-size:8.5px;
-      line-height:1.35;
+      font-size:7.2px;
+      line-height:1.25;
       z-index:2;
     }
     .reportSeal{
       position:absolute;
-      right:13mm;
-      bottom:15mm;
-      width:23mm;
-      height:23mm;
+      right:11mm;
+      bottom:12mm;
+      width:18mm;
+      height:18mm;
       border-radius:50%;
-      border:1px solid rgba(192,138,45,.35);
-      color:rgba(109,74,8,.38);
+      border:1px solid rgba(192,138,45,.32);
+      color:rgba(109,74,8,.34);
       display:flex;
       align-items:center;
       justify-content:center;
       font-weight:900;
-      font-size:9px;
+      font-size:7.6px;
       transform:rotate(-13deg);
     }
     @media print{
@@ -3938,15 +4207,17 @@ function printBirthReport(){
   </style></head><body><div class="reportWrap">
     <div class="cover">
       <div>
-        <div class="kicker">LUOSHU LIFE CARD</div>
-        <h1>一生大运卡</h1>
-        <div class="subtitle">把十年大运压缩成一张人生时间卡：突出流年峰值、主应阶段与核心判词。看见一生，不作宿命断言。</div>
+        <div class="kicker">LUOSHU LIFE SCROLL</div>
+        <h1>一生卷轴批注</h1>
+        <div class="subtitle">以伴侣合化、子女/传承、贵人转化与长辈照护线，浓缩一张可分享的人生时间卷轴。</div>
       </div>
       <div class="metaLine"><span>${label}</span><span>${generated}</span><span>2024 mod60</span></div>
     </div>
+    ${annotationHTML}
     ${clone.innerHTML}
+    ${peakHTML}
     <div class="reportSeal">洛书<br>时机</div>
-    <div class="footer">声明：本卡为人文数理与时机模拟工具，不构成医学、法律、投资、婚恋或人生决策建议。判词表示时间窗口倾向，不代表必然发生。</div>
+    <div class="footer">声明：本卡为人文数理与时机模拟工具，不构成医学、法律、投资、婚恋或人生决策建议。伴侣、子女、长辈与贵人均为时间窗口显象，不作必然断语；长辈节点仅作照护与家庭安排提醒。</div>
   </div><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`;
   const w=window.open('','_blank');
   if(!w){ alert('浏览器阻止了弹窗。请允许弹窗后重试，或使用浏览器打印功能保存为 PDF。'); return; }
@@ -4274,7 +4545,7 @@ window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHer
 window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
 
 
-// v1.2.0: force CSS variable after all older layout scripts.
+// v1.3.0: force CSS variable after all older layout scripts.
 function syncHeroLayoutNoOverlap(){
   try{
     const hero=document.querySelector('.hero');
