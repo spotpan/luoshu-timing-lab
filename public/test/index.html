@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v1.3.0 一生卷轴批注版</title>
+  <title>洛书时机仪 v1.3.1 卷轴修复版</title>
   <style>
     :root{
       --bg:#071019;
@@ -577,7 +577,7 @@
 .dayunPeaks b{color:#dcecff}
 
 
-/* v1.3.0: polished report export */
+/* v1.3.1: polished report export */
 .reportActions{
   display:flex;
   gap:8px;
@@ -594,7 +594,7 @@
 }
 
 
-/* v1.3.0: Fuxiang and kinship projection inside Dayun judgments */
+/* v1.3.1: Fuxiang and kinship projection inside Dayun judgments */
 .fuxiangBlock{
   display:block;
   margin:7px 0 5px;
@@ -630,7 +630,7 @@
 }
 
 
-/* v1.3.0: event-specific Dayun phase labels */
+/* v1.3.1: event-specific Dayun phase labels */
 .dayunPhase{
   color:#ffe3a3!important;
   letter-spacing:.02em;
@@ -643,7 +643,7 @@
 }
 
 
-/* v1.3.0: fix left homepage mini Loshu boards being clipped */
+/* v1.3.1: fix left homepage mini Loshu boards being clipped */
 @media(min-width:961px){
   .heroMain{
     overflow-y:auto!important;
@@ -682,7 +682,7 @@
 }
 
 
-/* v1.3.0: weather rain flag */
+/* v1.3.1: weather rain flag */
 .rainFlag{
   display:inline-flex;
   align-items:center;
@@ -713,7 +713,7 @@
 }
 
 
-/* v1.3.0: homepage column alignment and right-only scroll */
+/* v1.3.1: homepage column alignment and right-only scroll */
 *,*::before,*::after{box-sizing:border-box}
 @media(min-width:961px){
   .hero,
@@ -787,7 +787,7 @@
 }
 
 
-/* v1.3.0: show both left mini Loshu boards fully, keep other layout unchanged */
+/* v1.3.1: show both left mini Loshu boards fully, keep other layout unchanged */
 @media(min-width:961px){
   .heroMain{
     min-height:980px!important;
@@ -836,7 +836,7 @@
 }
 
 
-/* v1.3.0: prevent lower result panels from covering the left mini Loshu boards */
+/* v1.3.1: prevent lower result panels from covering the left mini Loshu boards */
 @media(min-width:961px){
   .hero{
     align-items:start!important;
@@ -888,7 +888,7 @@
 }
 
 
-/* v1.3.0: force homepage row to reserve enough height, so lower panels move below mini Loshu boards */
+/* v1.3.1: force homepage row to reserve enough height, so lower panels move below mini Loshu boards */
 @media(min-width:961px){
   .hero{
     display:grid!important;
@@ -985,7 +985,7 @@
 }
 
 
-/* v1.3.0: strict no-overlap homepage layout
+/* v1.3.1: strict no-overlap homepage layout
    Use natural left-panel height as the row height. The right panel matches that height
    and scrolls internally. Lower A/B panels are placed after the full hero row. */
 @media(min-width:961px){
@@ -1095,7 +1095,7 @@
 }
 
 
-/* v1.3.0: explicit spacer pushes lower A/B result panels farther down */
+/* v1.3.1: explicit spacer pushes lower A/B result panels farther down */
 @media(min-width:961px){
   .hero{
     margin-bottom:0!important;
@@ -1120,7 +1120,7 @@
 }
 
 
-/* v1.3.0: make the hero-to-result gap look intentional and cleaner */
+/* v1.3.1: make the hero-to-result gap look intentional and cleaner */
 @media(min-width:961px){
   .heroResultSpacer{
     display:flex!important;
@@ -1205,7 +1205,7 @@
 }
 
 
-/* v1.3.0: polished homepage layout
+/* v1.3.1: polished homepage layout
    Left panel height follows its content and frames both mini Loshu boards.
    Right panel matches left height and scrolls internally.
    The result section is separated by a quiet divider, with no redundant text. */
@@ -1343,7 +1343,7 @@
 }
 
 
-/* v1.3.0: keep v1.1.1 visual style, only enforce right-panel scroll and left/right height alignment */
+/* v1.3.1: keep v1.1.1 visual style, only enforce right-panel scroll and left/right height alignment */
 @media(min-width:961px){
   .hero{
     display:grid!important;
@@ -1371,7 +1371,7 @@
 }
 
 
-/* v1.3.0: right panel is capped to the real left-panel height; lower A/B panels align below the left panel */
+/* v1.3.1: right panel is capped to the real left-panel height; lower A/B panels align below the left panel */
 @media(min-width:961px){
   .hero{
     align-items:start!important;
@@ -1399,7 +1399,7 @@
 }
 
 
-/* v1.3.0: hard override -- right panel whole-card scroll, not local block scroll */
+/* v1.3.1: hard override -- right panel whole-card scroll, not local block scroll */
 @media(min-width:961px){
   .hero{
     --hero-left-h: auto;
@@ -1441,7 +1441,7 @@
 }
 
 
-/* v1.3.0: hard specificity override
+/* v1.3.1: hard specificity override
    Older rules use ".hero > .panel { height:... !important }", so this must be more specific. */
 @media(min-width:961px){
   .hero{
@@ -1522,7 +1522,7 @@
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v1.3.0 一生卷轴批注版</div>
+      <div class="badge">● 洛书时机仪 v1.3.1 卷轴修复版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -3797,22 +3797,34 @@ function printBirthReport(){
       const fatherKey=yyKeyFor(supportEl,fatherYY);
       const motherKey=yyKeyFor(supportEl,motherYY);
       function parentRiskWindows(key){
+        // v1.3.1 卷轴修复：父母线不再用“弱=风险”。
+        // 长辈事件更像“从背景位跃迁为事件位”：强显、异常显化、合化牵动、过载/家宅责任同频。
+        const base=avgRange(records,r=>tenVal(r,key),0,90);
+        const vals=records.map(r=>tenVal(r,key));
+        const sd=Math.sqrt(vals.reduce((s,v)=>s+Math.pow(v-base,2),0)/(vals.length||1)) || 0.02;
         return pickRoleWindows(records,r=>{
           const v=tenVal(r,key);
           const tr=(r.conv&&r.conv.transform)||{};
-          const weak=(1-v)*62;
-          const touched=transformTouches(r,key)?(tr.strength||0)*85:0;
-          const supportWeak=(1-(r.t[supportEl]||0))*22;
-          return weak*.58 + supportWeak + r.overload*.22 + r.health*.12 + touched*.28;
+          const exactTouched=transformTouches(r,key);
+          const elementTouched=tr && tr.name && tr.name.includes(supportEl);
+          const anomaly=Math.max(0,(v-base)/(sd+0.018));
+          const strongTerm=Math.min(42,v*72);
+          const anomalyTerm=Math.min(34,anomaly*15);
+          const familyTerm=Math.min(18,(r.t[supportEl]||0)*22);
+          const pressureTerm=Math.max(0,r.overload-64)*.48 + Math.max(0,r.health-62)*.22;
+          const transformTerm=exactTouched ? 10 + (tr.strength||0)*30 : (elementTouched ? 7 + (tr.strength||0)*18 : 0);
+          const extractionTerm=(exactTouched && tr.to!==supportEl) ? 8 : 0;
+          return strongTerm + anomalyTerm + familyTerm + pressureTerm + transformTerm + extractionTerm;
         },28,78,2,6);
       }
       const fatherWins=parentRiskWindows(fatherKey);
       const motherWins=parentRiskWindows(motherKey);
       function parentText(title,wins,key){
         const w=wins[0];
-        if(!w) return `${title}线暂无明显高压窗口，平时以陪伴、体检与家宅沟通为主。`;
-        const sev=w._score>=76?'照护高压/告别象较重':(w._score>=66?'照护责任偏重':'家宅牵动');
-        return `${w.age}岁前后${title}（${keyCN(key)}）${sev}，宜提前关注体检、陪伴、居住、资产与家庭责任安排。`;
+        if(!w || w._score<58) return `${title}线未形成孤立高压峰值，平时以陪伴、体检与家宅沟通为主。`;
+        const sev=w._score>=88?'家宅重大安排窗口':(w._score>=78?'照护高压窗口':(w._score>=66?'照护窗口':'长辈线牵动'));
+        const second=(wins[1]&&wins[1]._score>=64)?`；${wins[1].age}岁有次级牵动`:``;
+        return `${w.age}岁前后${title}（${keyCN(key)}）从背景位转为事件位，${sev}；宜提前关注体检、陪伴、居住、资产与家庭责任安排${second}。`;
       }
 
       const nobleWins=pickRoleWindows(records,r=>{
@@ -4217,7 +4229,7 @@ function printBirthReport(){
     ${clone.innerHTML}
     ${peakHTML}
     <div class="reportSeal">洛书<br>时机</div>
-    <div class="footer">声明：本卡为人文数理与时机模拟工具，不构成医学、法律、投资、婚恋或人生决策建议。伴侣、子女、长辈与贵人均为时间窗口显象，不作必然断语；长辈节点仅作照护与家庭安排提醒。</div>
+    <div class="footer">声明：本卡为人文数理与时机模拟工具，不构成医学、法律、投资、婚恋或人生决策建议。伴侣、子女、长辈与贵人均为时间窗口显象，不作必然断语；长辈节点按“显化+高压”提示照护与家庭安排。</div>
   </div><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`;
   const w=window.open('','_blank');
   if(!w){ alert('浏览器阻止了弹窗。请允许弹窗后重试，或使用浏览器打印功能保存为 PDF。'); return; }
@@ -4545,7 +4557,7 @@ window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHer
 window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
 
 
-// v1.3.0: force CSS variable after all older layout scripts.
+// v1.3.1: force CSS variable after all older layout scripts.
 function syncHeroLayoutNoOverlap(){
   try{
     const hero=document.querySelector('.hero');
