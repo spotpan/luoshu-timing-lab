@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>洛书量化观察仓 v1.4.0</title>
+  <style>
+    :root{
+      --bg:#071019;--bg2:#0d1424;--card:rgba(255,255,255,.075);--line:rgba(255,255,255,.14);
+      --text:#eef6ff;--muted:#9fb0c7;--gold:#f6cf78;--cyan:#7be7f6;--red:#ff8a9a;--green:#52e2a7;
+      --shadow:0 28px 80px rgba(0,0,0,.34);--radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;color:var(--text);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:
+      radial-gradient(circle at 12% 8%,rgba(123,231,246,.13),transparent 24%),
+      radial-gradient(circle at 86% 12%,rgba(246,207,120,.14),transparent 24%),
+      linear-gradient(135deg,#061018,#0b1020 55%,#15101d);}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px);background-size:42px 42px;opacity:.25}
+    .wrap{position:relative;z-index:1;width:min(1420px,calc(100% - 32px));margin:0 auto;padding:24px 0 50px}
+    .top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}
+    .badge{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(246,207,120,.28);background:rgba(246,207,120,.08);color:#fff0c8;border-radius:999px;padding:7px 12px;font-weight:850;font-size:12px}
+    h1{margin:12px 0 8px;font-size:42px;letter-spacing:-1.2px;line-height:1.05}.grad{background:linear-gradient(90deg,#f6cf78,#7be7f6,#c5b4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .sub{color:var(--muted);max-width:850px;line-height:1.7;margin:0;font-size:14px}
+    .nav{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.nav a,.nav button{appearance:none;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.06);color:#eaf6ff;text-decoration:none;padding:9px 13px;font-weight:850;cursor:pointer}
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:start}
+    .panel{padding:18px}.title{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px}.title b{font-size:17px}.hint{font-size:12px;color:var(--muted);line-height:1.55}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.stat{padding:13px;border-radius:17px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1)}.stat span{display:block;color:var(--muted);font-size:11px}.stat b{display:block;font-size:22px;margin-top:5px}.stat small{color:#9fb0c7}
+    .form{display:grid;grid-template-columns:repeat(12,1fr);gap:9px;align-items:end}.field{display:grid;gap:6px}.field label{font-size:11px;color:#aab8cd}.field input,.field select{width:100%;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);color:#fff;border-radius:13px;padding:10px 11px;outline:none}
+    .field input::placeholder{color:#7e8ca1}.span2{grid-column:span 2}.span3{grid-column:span 3}.span4{grid-column:span 4}.span5{grid-column:span 5}.span6{grid-column:span 6}.span12{grid-column:span 12}
+    button{appearance:none;border:0;border-radius:13px;padding:10px 12px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,#f6cf78,#7be7f6);color:#08111c}
+    button.secondary{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);color:#eaf6ff}button.danger{background:rgba(255,138,154,.13);border:1px solid rgba(255,138,154,.28);color:#ffdce2}
+    button:disabled{opacity:.45;cursor:not-allowed}.rowBtns{display:flex;gap:7px;flex-wrap:wrap}
+    .setup{display:none;margin:12px 0;padding:12px 14px;border-radius:16px;background:rgba(255,138,154,.12);border:1px solid rgba(255,138,154,.25);color:#ffe1e6;line-height:1.65;font-size:13px}
+    .setup.show{display:block}
+    .table{display:grid;gap:9px}.card{display:grid;grid-template-columns:1.1fr .85fr .85fr .85fr auto;gap:10px;align-items:center;padding:12px;border-radius:17px;background:rgba(255,255,255,.052);border:1px solid rgba(255,255,255,.1)}
+    .card .sym{font-weight:950;font-size:16px}.card .meta{font-size:12px;color:var(--muted);line-height:1.45}.num{font-weight:950}.up{color:var(--green)}.down{color:var(--red)}.gold{color:var(--gold)}
+    .candidates{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.cand{padding:13px;border-radius:18px;background:rgba(255,255,255,.052);border:1px solid rgba(255,255,255,.1)}.candTop{display:flex;justify-content:space-between;gap:8px}.score{font-size:24px;font-weight:950;color:#fff}.tag{display:inline-flex;border:1px solid rgba(246,207,120,.22);border-radius:999px;color:#ffe6aa;background:rgba(246,207,120,.08);padding:2px 7px;font-size:11px;margin-top:6px}
+    .tabs{display:flex;gap:8px;margin:12px 0}.tab{border:1px solid rgba(255,255,255,.14);padding:8px 11px;border-radius:999px;color:#cfe4f6;background:rgba(255,255,255,.05);font-weight:850;cursor:pointer}.tab.active{background:rgba(246,207,120,.12);border-color:rgba(246,207,120,.3);color:#fff0c8}
+    .log{max-height:170px;overflow:auto;display:grid;gap:7px}.logItem{font-size:12px;line-height:1.45;color:#cdd9e8;border-left:2px solid rgba(123,231,246,.35);padding:6px 8px;background:rgba(255,255,255,.035);border-radius:10px}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.candidates{grid-template-columns:1fr}.card{grid-template-columns:1fr}.top{display:block}.nav{justify-content:flex-start;margin-top:14px}.span2,.span3,.span4,.span5,.span6{grid-column:span 12}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="badge">● Quant Portfolio Lab v1.4.0</div>
+      <h1><span class="grad">洛书量化观察仓</span></h1>
+      <p class="sub">专业虚拟组合模块：以 USD 为账户基准，支持美股/A股/港股按真实股数买入卖出，并用实时汇率折算到统一资金账户。当前版本为数据库版雏形，需要 Supabase 环境变量与 SQL 表结构。</p>
+    </div>
+    <div class="nav">
+      <a href="/test/">返回洛书时机仪</a>
+      <button class="secondary" onclick="refreshAll()">刷新账户</button>
+    </div>
+  </div>
+
+  <div id="setup" class="setup"></div>
+
+  <section class="panel" style="margin-bottom:18px">
+    <div class="title"><b>虚拟账户</b><span class="hint" id="uidLabel"></span></div>
+    <div class="stats">
+      <div class="stat"><span>初始资金</span><b id="initialCash">--</b><small>USD</small></div>
+      <div class="stat"><span>可用现金</span><b id="cashUsd">--</b><small>USD</small></div>
+      <div class="stat"><span>持仓市值</span><b id="holdingValue">--</b><small>USD</small></div>
+      <div class="stat"><span>总资产</span><b id="totalAsset">--</b><small>USD</small></div>
+      <div class="stat"><span>浮盈浮亏</span><b id="totalPnl">--</b><small id="fxLine">FX loading...</small></div>
+    </div>
+    <div class="form" style="margin-top:14px">
+      <div class="field span3"><label>初始资金 USD</label><input id="initAmount" type="number" value="100000" min="1" step="1000"></div>
+      <div class="field span3"><label>账户操作</label><button onclick="initAccount()">初始化/读取账户</button></div>
+      <div class="field span3"><label>重置</label><button class="danger" onclick="resetAccount()">重置虚拟账户</button></div>
+      <div class="field span3"><label>说明</label><div class="hint">重置会关闭当前观察仓位，仅用于测试。</div></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="title"><b>虚拟买入 / 卖出</b><span class="hint">按真实股数成交，超出现金不能买入。</span></div>
+      <div class="form">
+        <div class="field span3"><label>股票代码</label><input id="tradeSymbol" placeholder="NVDA / 00700.HK / 600519.SH"></div>
+        <div class="field span2"><label>市场</label><select id="tradeMarket"><option>US</option><option>HK</option><option>CN</option></select></div>
+        <div class="field span2"><label>币种</label><input id="tradeCurrency" value="USD"></div>
+        <div class="field span2"><label>价格</label><input id="tradePrice" type="number" step="0.0001"></div>
+        <div class="field span2"><label>股数</label><input id="tradeQty" type="number" step="1" value="10"></div>
+        <div class="field span1"><label>&nbsp;</label><button class="secondary" onclick="loadQuote()">取价</button></div>
+        <div class="field span4"><label>预计成本</label><div class="stat" style="padding:10px"><b id="estimateCost">--</b><small id="estimateCostLocal"></small></div></div>
+        <div class="field span4"><label>买入理由/备注</label><input id="tradeReason" placeholder="趋势成形、回踩确认、观察实验..."></div>
+        <div class="field span4"><label>操作</label><div class="rowBtns"><button onclick="buy()">虚拟买入</button><button class="secondary" onclick="estimate()">计算成本</button></div></div>
+      </div>
+      <div class="hint" id="quoteHint" style="margin-top:10px"></div>
+
+      <div class="title" style="margin-top:22px"><b>当前持仓</b><span class="hint">卖出时按输入价格成交。</span></div>
+      <div id="positions" class="table"></div>
+    </div>
+
+    <div class="panel">
+      <div class="title"><b>股票池维护</b><span class="hint">暂不加入五行标签，先按专业股票池管理。</span></div>
+      <div class="form">
+        <div class="field span4"><label>代码</label><input id="poolSymbol" placeholder="MSFT"></div>
+        <div class="field span2"><label>市场</label><select id="poolMarket"><option>US</option><option>HK</option><option>CN</option></select></div>
+        <div class="field span3"><label>名称</label><input id="poolName" placeholder="可选"></div>
+        <div class="field span3"><label>行业</label><input id="poolSector" placeholder="可选"></div>
+        <div class="field span12"><button onclick="addPool()">加入我的股票池</button></div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" id="tabCand" onclick="showTab('cand')">今日候选</div>
+        <div class="tab" id="tabPool" onclick="showTab('pool')">我的股票池</div>
+      </div>
+
+      <div id="candBox" class="candidates"></div>
+      <div id="poolBox" class="table" style="display:none"></div>
+
+      <div class="title" style="margin-top:22px"><b>交易日志</b><span class="hint">后续数据库版将扩展为月度复盘。</span></div>
+      <div id="logs" class="log"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2});
+const fmt4=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:4});
+function userId(){
+  let id=localStorage.getItem('luoshu_portfolio_user_id');
+  if(!id){id='anon_'+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('luoshu_portfolio_user_id',id);}
+  return id;
+}
+let state={account:null,positions:[],summary:null,fx:{USD:1,CNY:7.2,HKD:7.8},pool:[],setup:false,logs:[]};
+function log(msg){state.logs.unshift({t:new Date().toLocaleTimeString('zh-CN',{hour12:false}),msg});renderLogs();}
+function setup(msg,obj){
+  const el=$('setup');
+  if(!msg){el.classList.remove('show');el.innerHTML='';return;}
+  el.classList.add('show');
+  el.innerHTML=`<b>数据库尚未就绪：</b>${msg}<br><span>请在 Vercel 配置 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY，并在 Supabase 执行 sql/supabase_schema.sql。</span>`;
+  if(obj&&obj.need_sql) console.warn(obj);
+}
+async function api(path,opts={}){
+  const headers={'Content-Type':'application/json','X-Luoshu-User':userId(),...(opts.headers||{})};
+  const res=await fetch(path,{...opts,headers});
+  return await res.json();
+}
+async function loadFx(){
+  try{
+    const r=await api('/api/fx');
+    if(r.ok){state.fx=r.rates; $('fxLine').textContent=`≈ CNY ${fmt((state.summary?.total_asset_usd||0)*state.fx.CNY)} ｜ HKD ${fmt((state.summary?.total_asset_usd||0)*state.fx.HKD)}`;}
+  }catch(e){}
+}
+async function initAccount(){
+  const amount=Number($('initAmount').value||100000);
+  const r=await api('/api/account',{method:'POST',body:JSON.stringify({user_id:userId(),initial_cash_usd:amount,action:'init'})});
+  if(!r.ok){setup(r.error||'Account API error',r);return;}
+  setup('');
+  state.account=r.account;
+  log(`账户已初始化：${fmt(r.account.initial_cash_usd)} USD`);
+  await refreshAll();
+}
+async function resetAccount(){
+  if(!confirm('确定重置虚拟账户？当前持仓会被关闭为 reset 状态。')) return;
+  const amount=Number($('initAmount').value||100000);
+  const r=await api('/api/account',{method:'POST',body:JSON.stringify({user_id:userId(),initial_cash_usd:amount,action:'reset'})});
+  if(!r.ok){setup(r.error||'Reset API error',r);return;}
+  log('账户已重置');
+  await refreshAll();
+}
+async function loadPositions(){
+  const r=await api('/api/positions?user_id='+encodeURIComponent(userId()));
+  if(!r.ok){setup(r.error||'Positions API error',r);return;}
+  setup('');
+  state.account=r.account; state.positions=r.positions||[]; state.summary=r.summary||{};
+  renderAccount(); renderPositions();
+}
+function renderAccount(){
+  $('uidLabel').textContent='User: '+userId();
+  const a=state.account||{}, s=state.summary||{};
+  $('initialCash').textContent=fmt(a.initial_cash_usd);
+  $('cashUsd').textContent=fmt(s.cash_usd);
+  $('holdingValue').textContent=fmt(s.holding_value_usd);
+  $('totalAsset').textContent=fmt(s.total_asset_usd);
+  const pnl=s.pnl_usd||0;
+  $('totalPnl').textContent=(pnl>=0?'+':'')+fmt(pnl)+' / '+(Number(s.pnl_pct||0)>=0?'+':'')+fmt(s.pnl_pct)+'%';
+  $('totalPnl').className=pnl>=0?'up':'down';
+  $('fxLine').textContent=`≈ CNY ${fmt((s.total_asset_usd||0)*(state.fx.CNY||7.2))} ｜ HKD ${fmt((s.total_asset_usd||0)*(state.fx.HKD||7.8))}`;
+}
+function renderPositions(){
+  const box=$('positions');
+  const open=(state.positions||[]).filter(p=>p.status==='open');
+  if(!open.length){box.innerHTML='<div class="hint">暂无持仓。可从候选池载入股票，按股数虚拟买入。</div>';return;}
+  box.innerHTML=open.map(p=>{
+    const pnl=Number(p.pnl_usd||0);
+    const pct=Number(p.pnl_pct||0);
+    return `<div class="card">
+      <div><div class="sym">${p.symbol}</div><div class="meta">${p.market}｜${p.currency}｜${Number(p.quantity).toFixed(4)} 股<br>成本 ${fmt4(p.avg_price_local)} ${p.currency}</div></div>
+      <div><div class="meta">当前价</div><div class="num">${fmt4(p.current_price_local)} ${p.currency}</div></div>
+      <div><div class="meta">市值 USD</div><div class="num">${fmt(p.current_value_usd)}</div></div>
+      <div><div class="meta">浮盈浮亏</div><div class="num ${pnl>=0?'up':'down'}">${pnl>=0?'+':''}${fmt(pnl)} / ${pct>=0?'+':''}${fmt(pct)}%</div></div>
+      <div class="rowBtns"><button class="secondary" onclick="loadToTicket('${p.symbol}','${p.market}','${p.currency}',${p.current_price_local||p.avg_price_local})">载入</button><button class="danger" onclick="sell('${p.id}','all')">全卖</button><button class="danger" onclick="sell('${p.id}','half')">卖50%</button></div>
+    </div>`;
+  }).join('');
+}
+function inferMarket(symbol){
+  const s=String(symbol||'').toUpperCase();
+  if(s.endsWith('.HK') || /^\d{5}$/.test(s)) return 'HK';
+  if(s.endsWith('.SH') || s.endsWith('.SZ') || /^\d{6}$/.test(s)) return 'CN';
+  return 'US';
+}
+function currencyFor(m){return m==='HK'?'HKD':(m==='CN'?'CNY':'USD')}
+function loadToTicket(symbol,market,currency,price){
+  $('tradeSymbol').value=symbol;$('tradeMarket').value=market||inferMarket(symbol);$('tradeCurrency').value=currency||currencyFor($('tradeMarket').value);
+  if(price)$('tradePrice').value=Number(price).toFixed(4);
+  estimate();
+}
+$('tradeSymbol').addEventListener('input',()=>{const m=inferMarket($('tradeSymbol').value);$('tradeMarket').value=m;$('tradeCurrency').value=currencyFor(m);});
+$('tradeMarket').addEventListener('change',()=>{$('tradeCurrency').value=currencyFor($('tradeMarket').value);estimate();});
+$('tradePrice').addEventListener('input',estimate);$('tradeQty').addEventListener('input',estimate);
+function estimate(){
+  const price=Number($('tradePrice').value||0), qty=Number($('tradeQty').value||0), c=$('tradeCurrency').value;
+  const local=price*qty; let usd=local;
+  if(c==='CNY') usd=local/(state.fx.CNY||7.2); if(c==='HKD') usd=local/(state.fx.HKD||7.8);
+  $('estimateCost').textContent=fmt(usd)+' USD';
+  $('estimateCostLocal').textContent=`${fmt(local)} ${c}`;
+}
+async function loadQuote(){
+  const symbol=$('tradeSymbol').value.trim();
+  if(!symbol) return alert('请输入股票代码');
+  const r=await api('/api/ma?symbol='+encodeURIComponent(symbol));
+  if(!r.ok){$('quoteHint').innerHTML=`取价失败：${r.error||r.message||'未知错误'}`;return;}
+  $('tradePrice').value=Number(r.price||0).toFixed(4);
+  const m=inferMarket(symbol);$('tradeMarket').value=m;$('tradeCurrency').value=currencyFor(m);
+  $('quoteHint').innerHTML=`${r.source}｜最新 ${r.price}｜MA30 ${r.ma30}｜MA60 ${r.ma60}｜观察分 ${r.observeScore}｜${r.riskLabel}`;
+  estimate();
+}
+async function buy(){
+  const body={user_id:userId(),action:'buy',symbol:$('tradeSymbol').value.trim(),market:$('tradeMarket').value,currency:$('tradeCurrency').value,price_local:Number($('tradePrice').value),quantity:Number($('tradeQty').value),reason:$('tradeReason').value};
+  const r=await api('/api/trade',{method:'POST',body:JSON.stringify(body)});
+  if(!r.ok){alert(r.error||'买入失败');return;}
+  log(`买入 ${body.symbol} ${body.quantity} 股，成本 ${fmt(r.trade.notional_usd)} USD`);
+  await refreshAll();
+}
+async function sell(position_id,mode){
+  const p=(state.positions||[]).find(x=>x.id===position_id);
+  if(!p) return;
+  const price=Number(prompt(`卖出价格（${p.currency}）`,p.current_price_local||p.avg_price_local));
+  if(!Number.isFinite(price)||price<=0) return;
+  let qty=mode==='half'?Number(p.quantity)/2:'all';
+  const r=await api('/api/trade',{method:'POST',body:JSON.stringify({user_id:userId(),action:'sell',position_id,price_local:price,quantity:qty})});
+  if(!r.ok){alert(r.error||'卖出失败');return;}
+  log(`卖出 ${p.symbol} ${mode==='half'?'50%':'全部'}，实现 ${fmt(r.trade.realized_pnl_usd)} USD`);
+  await refreshAll();
+}
+async function loadPool(){
+  const r=await api('/api/pool?user_id='+encodeURIComponent(userId()));
+  if(!r.ok&&r.code!=='setup_missing'){setup(r.error||'Pool API error',r);}
+  state.pool=r.items||[];
+  renderPool();
+  await renderCandidates();
+}
+function renderPool(){
+  const userItems=state.pool.filter(x=>x.source==='user');
+  $('poolBox').innerHTML=userItems.length?userItems.map(x=>`<div class="card"><div><div class="sym">${x.symbol}</div><div class="meta">${x.name||x.symbol}｜${x.market}｜${x.currency}<br>${x.sector||''}</div></div><div></div><div></div><div></div><div class="rowBtns"><button class="secondary" onclick="loadToTicket('${x.symbol}','${x.market}','${x.currency}',0)">载入</button><button class="danger" onclick="deletePool('${x.symbol}')">停用</button></div></div>`).join(''):'<div class="hint">暂无自选池。可以输入代码加入。</div>';
+}
+async function addPool(){
+  const symbol=$('poolSymbol').value.trim(); if(!symbol) return alert('请输入代码');
+  const market=$('poolMarket').value, currency=currencyFor(market);
+  const r=await api('/api/pool',{method:'POST',body:JSON.stringify({user_id:userId(),symbol,market,currency,name:$('poolName').value,sector:$('poolSector').value})});
+  if(!r.ok){alert(r.error||'添加失败');return;}
+  log(`加入股票池：${symbol}`);
+  await loadPool();
+}
+async function deletePool(symbol){
+  const r=await api('/api/pool',{method:'POST',body:JSON.stringify({user_id:userId(),action:'delete',symbol})});
+  if(!r.ok){alert(r.error||'删除失败');return;}
+  await loadPool();
+}
+async function renderCandidates(){
+  const box=$('candBox');
+  const items=(state.pool||[]).slice().sort((a,b)=>(b.priority||0)-(a.priority||0)).slice(0,12);
+  box.innerHTML=items.map(x=>`<div class="cand" id="cand_${x.symbol.replace(/[^A-Z0-9]/g,'_')}"><div class="candTop"><div><div class="sym">${x.symbol}</div><div class="meta">${x.name||x.symbol}｜${x.market}｜${x.currency}</div></div><div class="score">...</div></div><div class="tag">MA加载中</div></div>`).join('');
+  for(const x of items){
+    enrichCandidate(x).catch(()=>{});
+  }
+}
+async function enrichCandidate(x){
+  const id='cand_'+x.symbol.replace(/[^A-Z0-9]/g,'_');
+  const el=$(id); if(!el) return;
+  const r=await api('/api/ma?symbol='+encodeURIComponent(x.symbol));
+  if(!r.ok){el.innerHTML=`<div class="candTop"><div><div class="sym">${x.symbol}</div><div class="meta">${x.name||x.symbol}</div></div><div class="score">--</div></div><div class="tag">均线待确认</div><div class="hint">${r.error||''}</div>`;return;}
+  el.innerHTML=`<div class="candTop"><div><div class="sym">${x.symbol}</div><div class="meta">${x.name||x.symbol}｜${x.market}｜${x.currency}</div></div><div class="score">${r.observeScore}</div></div>
+  <div class="tag">${r.label}</div><div class="hint">价 ${r.price}｜MA30 ${r.ma30}｜MA60 ${r.ma60}｜${r.riskLabel}</div>
+  <div class="rowBtns" style="margin-top:10px"><button class="secondary" onclick="loadToTicket('${x.symbol}','${x.market}','${x.currency}',${r.price})">载入交易票</button></div>`;
+}
+function showTab(t){
+  $('tabCand').classList.toggle('active',t==='cand');$('tabPool').classList.toggle('active',t==='pool');
+  $('candBox').style.display=t==='cand'?'grid':'none';$('poolBox').style.display=t==='pool'?'grid':'none';
+}
+function renderLogs(){
+  $('logs').innerHTML=state.logs.length?state.logs.slice(0,20).map(x=>`<div class="logItem"><b>${x.t}</b>｜${x.msg}</div>`).join(''):'<div class="hint">暂无本地操作日志。数据库中会保存正式交易日志。</div>';
+}
+async function refreshAll(){
+  await loadFx();
+  await loadPositions();
+  await loadPool();
+  estimate();
+}
+window.addEventListener('load',async()=>{
+  $('uidLabel').textContent='User: '+userId();
+  await refreshAll();
+});
+</script>
+</body>
+</html>
