@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>洛书时机仪 v1.3.1 卷轴修复版</title>
+  <title>洛书时机仪 v1.4.0 专业观察仓数据库版</title>
   <style>
     :root{
       --bg:#071019;
@@ -577,7 +577,7 @@
 .dayunPeaks b{color:#dcecff}
 
 
-/* v1.3.1: polished report export */
+/* v1.4.0: polished report export */
 .reportActions{
   display:flex;
   gap:8px;
@@ -594,7 +594,7 @@
 }
 
 
-/* v1.3.1: Fuxiang and kinship projection inside Dayun judgments */
+/* v1.4.0: Fuxiang and kinship projection inside Dayun judgments */
 .fuxiangBlock{
   display:block;
   margin:7px 0 5px;
@@ -630,7 +630,7 @@
 }
 
 
-/* v1.3.1: event-specific Dayun phase labels */
+/* v1.4.0: event-specific Dayun phase labels */
 .dayunPhase{
   color:#ffe3a3!important;
   letter-spacing:.02em;
@@ -643,7 +643,7 @@
 }
 
 
-/* v1.3.1: fix left homepage mini Loshu boards being clipped */
+/* v1.4.0: fix left homepage mini Loshu boards being clipped */
 @media(min-width:961px){
   .heroMain{
     overflow-y:auto!important;
@@ -682,7 +682,7 @@
 }
 
 
-/* v1.3.1: weather rain flag */
+/* v1.4.0: weather rain flag */
 .rainFlag{
   display:inline-flex;
   align-items:center;
@@ -713,7 +713,7 @@
 }
 
 
-/* v1.3.1: homepage column alignment and right-only scroll */
+/* v1.4.0: homepage column alignment and right-only scroll */
 *,*::before,*::after{box-sizing:border-box}
 @media(min-width:961px){
   .hero,
@@ -787,7 +787,7 @@
 }
 
 
-/* v1.3.1: show both left mini Loshu boards fully, keep other layout unchanged */
+/* v1.4.0: show both left mini Loshu boards fully, keep other layout unchanged */
 @media(min-width:961px){
   .heroMain{
     min-height:980px!important;
@@ -836,7 +836,7 @@
 }
 
 
-/* v1.3.1: prevent lower result panels from covering the left mini Loshu boards */
+/* v1.4.0: prevent lower result panels from covering the left mini Loshu boards */
 @media(min-width:961px){
   .hero{
     align-items:start!important;
@@ -888,7 +888,7 @@
 }
 
 
-/* v1.3.1: force homepage row to reserve enough height, so lower panels move below mini Loshu boards */
+/* v1.4.0: force homepage row to reserve enough height, so lower panels move below mini Loshu boards */
 @media(min-width:961px){
   .hero{
     display:grid!important;
@@ -985,7 +985,7 @@
 }
 
 
-/* v1.3.1: strict no-overlap homepage layout
+/* v1.4.0: strict no-overlap homepage layout
    Use natural left-panel height as the row height. The right panel matches that height
    and scrolls internally. Lower A/B panels are placed after the full hero row. */
 @media(min-width:961px){
@@ -1095,7 +1095,7 @@
 }
 
 
-/* v1.3.1: explicit spacer pushes lower A/B result panels farther down */
+/* v1.4.0: explicit spacer pushes lower A/B result panels farther down */
 @media(min-width:961px){
   .hero{
     margin-bottom:0!important;
@@ -1120,7 +1120,7 @@
 }
 
 
-/* v1.3.1: make the hero-to-result gap look intentional and cleaner */
+/* v1.4.0: make the hero-to-result gap look intentional and cleaner */
 @media(min-width:961px){
   .heroResultSpacer{
     display:flex!important;
@@ -1205,7 +1205,7 @@
 }
 
 
-/* v1.3.1: polished homepage layout
+/* v1.4.0: polished homepage layout
    Left panel height follows its content and frames both mini Loshu boards.
    Right panel matches left height and scrolls internally.
    The result section is separated by a quiet divider, with no redundant text. */
@@ -1343,7 +1343,7 @@
 }
 
 
-/* v1.3.1: keep v1.1.1 visual style, only enforce right-panel scroll and left/right height alignment */
+/* v1.4.0: keep v1.1.1 visual style, only enforce right-panel scroll and left/right height alignment */
 @media(min-width:961px){
   .hero{
     display:grid!important;
@@ -1371,7 +1371,7 @@
 }
 
 
-/* v1.3.1: right panel is capped to the real left-panel height; lower A/B panels align below the left panel */
+/* v1.4.0: right panel is capped to the real left-panel height; lower A/B panels align below the left panel */
 @media(min-width:961px){
   .hero{
     align-items:start!important;
@@ -1399,7 +1399,7 @@
 }
 
 
-/* v1.3.1: hard override -- right panel whole-card scroll, not local block scroll */
+/* v1.4.0: hard override -- right panel whole-card scroll, not local block scroll */
 @media(min-width:961px){
   .hero{
     --hero-left-h: auto;
@@ -1441,7 +1441,7 @@
 }
 
 
-/* v1.3.1: hard specificity override
+/* v1.4.0: hard specificity override
    Older rules use ".hero > .panel { height:... !important }", so this must be more specific. */
 @media(min-width:961px){
   .hero{
@@ -1504,6 +1504,10 @@
   }
 }
 
+
+    .portfolioEntry{position:fixed;right:18px;top:18px;z-index:30;display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;background:rgba(7,16,25,.72);border:1px solid rgba(246,207,120,.30);box-shadow:0 16px 46px rgba(0,0,0,.28);backdrop-filter:blur(14px);color:#fff4d5;text-decoration:none;font-size:13px;font-weight:850}
+    .portfolioEntry:hover{border-color:rgba(123,231,246,.45);color:#e9fbff}
+
 </style>
 </head>
 <body>
@@ -1519,10 +1523,12 @@
 </script>
 
 <canvas id="bgParticles"></canvas>
+<a class="portfolioEntry" href="/portfolio/" title="进入独立量化观察仓">量化观察仓 →</a>
+
 <div class="wrap">
   <section class="hero">
     <div class="panel heroMain">
-      <div class="badge">● 洛书时机仪 v1.3.1 卷轴修复版</div>
+      <div class="badge">● 洛书时机仪 v1.4.0 专业观察仓数据库版</div>
       <h1><span class="grad">洛书时机仪</span><span class="subH">不是问命，而是看势。</span></h1>
       <p class="slogan"><b>以三界时空模型</b>，将“此刻、此地、此事”的行动窗口转译为可复盘的结构化轨迹：<b>先天定时</b>、<b>中天成场</b>、<b>后天取用</b>。你看到的不只是结论，而是时空场如何生成行动译文。</p>
       <div class="philo">
@@ -4557,7 +4563,7 @@ window.addEventListener('load',()=>{syncHeroLayoutNoOverlap();setTimeout(syncHer
 window.addEventListener('resize',()=>{clearTimeout(window.__heroLayoutTimer);window.__heroLayoutTimer=setTimeout(syncHeroLayoutNoOverlap,120);});
 
 
-// v1.3.1: force CSS variable after all older layout scripts.
+// v1.4.0: force CSS variable after all older layout scripts.
 function syncHeroLayoutNoOverlap(){
   try{
     const hero=document.querySelector('.hero');
