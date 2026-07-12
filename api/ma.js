@@ -34,14 +34,21 @@ function averageLast(vals,n,endExclusive){
   return slice.reduce((a,b)=>a+b,0)/n;
 }
 function calcMA3060(points){
-  const closes=points.map(p=>Number(p.close)).filter(Number.isFinite);
+  const rows=points.map(p=>({date:p.date,close:Number(p.close)})).filter(p=>Number.isFinite(p.close));
+  const closes=rows.map(p=>p.close);
   if(closes.length<61) throw new Error(`日线点不足：${closes.length}`);
+  const price=closes[closes.length-1];
+  const prevClose=closes[closes.length-2];
   const ma30=averageLast(closes,30);
   const ma60=averageLast(closes,60);
   const prevMa30=averageLast(closes,30,closes.length-1);
   const prevMa60=averageLast(closes,60,closes.length-1);
   const diff=ma30-ma60, prevDiff=prevMa30-prevMa60;
   const rel=Math.abs(diff)/(ma60||1);
+  const ma30Slope=(ma30-prevMa30)/(prevMa30||1)*100;
+  const ma60Slope=(ma60-prevMa60)/(prevMa60||1)*100;
+  const bias30=(price-ma30)/(ma30||1)*100;
+  const bias60=(price-ma60)/(ma60||1)*100;
   let status='below', label='均线弱势', boost=-2, message='30日均价仍在60日均价下方，中期趋势尚未转强。';
   if(prevDiff<=0 && diff>0){
     status='golden_cross'; label='30/60均线金叉'; boost=6;
@@ -53,10 +60,25 @@ function calcMA3060(points){
     status='near'; label='均线临界观察'; boost=1;
     message='30日均价接近60日均价，处在趋势临界区，需等待确认。';
   }
+  let observeScore=50;
+  if(ma30>ma60) observeScore+=18; else observeScore-=12;
+  if(price>ma30) observeScore+=10; else observeScore-=8;
+  if(ma30Slope>0) observeScore+=8; else observeScore-=5;
+  if(ma60Slope>0) observeScore+=8; else observeScore-=5;
+  if(Math.abs(bias30)<=4) observeScore+=8;
+  if(bias30>9) observeScore-=16;
+  if(price<ma60) observeScore-=18;
+  observeScore=Math.max(0,Math.min(100,Math.round(observeScore)));
+  const riskLabel=bias30>9?'乖离偏高':(price<ma60?'结构破位':(ma30>ma60?'趋势观察':'等待确认'));
   return {
     status,label,boost,message,
-    ma30:+ma30.toFixed(2), ma60:+ma60.toFixed(2),
-    prevMa30:+prevMa30.toFixed(2), prevMa60:+prevMa60.toFixed(2)
+    price:+price.toFixed(4), prevClose:+prevClose.toFixed(4),
+    date:rows[rows.length-1]?.date || '',
+    ma30:+ma30.toFixed(4), ma60:+ma60.toFixed(4),
+    prevMa30:+prevMa30.toFixed(4), prevMa60:+prevMa60.toFixed(4),
+    ma30Slope:+ma30Slope.toFixed(3), ma60Slope:+ma60Slope.toFixed(3),
+    bias30:+bias30.toFixed(3), bias60:+bias60.toFixed(3),
+    observeScore, riskLabel
   };
 }
 async function fetchYahoo(symbol){
