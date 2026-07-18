@@ -1,5 +1,6 @@
 import { getSupabase, setupMissingPayload, getOrCreateAccount, ensureUser } from './_supabase.js';
 import { parseBody, cleanSymbol, normalizeMarket, normalizeCurrency, fetchUsdRates, localToUsd, localToUsdRate, json } from './_market.js';
+import { fetchMarketMA } from './_quote.js';
 
 function assertPositive(n,name){
   const x=Number(n);
@@ -28,7 +29,13 @@ export default async function handler(req,res){
       if(!symbol) throw new Error('missing symbol');
       const market=normalizeMarket(symbol,body.market);
       const currency=normalizeCurrency(body.currency,market);
-      const price=assertPositive(body.price_local,'price_local');
+      let price=Number(body.price_local);
+      if(!Number.isFinite(price)||price<=0){
+        const q=await fetchMarketMA(symbol);
+        if(!q.ok || !Number.isFinite(Number(q.price))) throw new Error('无法获取当前价格，请手动输入成交价');
+        price=Number(q.price);
+      }
+      price=assertPositive(price,'price_local');
       const quantity=assertPositive(body.quantity,'quantity');
       const notionalLocal=price*quantity;
       const notionalUsd=localToUsd(notionalLocal,currency,rates);
@@ -104,7 +111,13 @@ export default async function handler(req,res){
       if(pErr) throw pErr;
       if(!pos){json(res,404,{ok:false,error:'position not found'});return;}
       const currency=normalizeCurrency(pos.currency,pos.market);
-      const price=assertPositive(body.price_local,'price_local');
+      let price=Number(body.price_local);
+      if(!Number.isFinite(price)||price<=0){
+        const q=await fetchMarketMA(pos.symbol);
+        if(!q.ok || !Number.isFinite(Number(q.price))) throw new Error('无法获取当前卖出价格，请稍后重试或手动输入价格');
+        price=Number(q.price);
+      }
+      price=assertPositive(price,'price_local');
       const reqQty=String(body.quantity||'all').toLowerCase()==='all' ? Number(pos.quantity) : assertPositive(body.quantity,'quantity');
       const quantity=Math.min(reqQty,Number(pos.quantity));
       if(quantity<=0 || quantity>Number(pos.quantity)+1e-8){json(res,200,{ok:false,code:'invalid_quantity',error:'卖出数量超出当前持仓'});return;}
